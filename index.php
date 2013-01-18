@@ -28,6 +28,7 @@ class Supervisor
 		//the creation of the output buffer
 		ob_start();
 		
+		//the primary scenario
 		@eval(file_get_contents(dirname(__FILE__).DIRECTORY_SEPARATOR.'bootstrap.php'));
 	}
 
