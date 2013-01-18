@@ -1,31 +1,69 @@
 <?php
 
-// Define path to application directory
+//Setup default timezone
+date_default_timezone_set('Europe/Helsinki');
 
-defined('LIB_PATH')
-|| define('LIB_PATH', realpath(dirname(__FILE__).DIRECTORY_SEPARATOR.'library'));
+//Error List for interrupt handling
+error_reporting(E_ALL | E_STRICT);
 
-defined('PROG_PATH')
-|| define('PROG_PATH', realpath(dirname(__FILE__).DIRECTORY_SEPARATOR.'programs'));
+//Set output options for PHP errors
+ini_set('display_errors','On');
 
+/***************************************************************/
 
+/**
+ *
+ * The error handler
+ * @category	NULL
+ * @package		Supervisor
+ * @return		The output buffer function 'ob_start()' of php
+ */
+class Supervisor
+{
+	public function __construct()
+	{
+		//registration handler critical error
+		register_shutdown_function(array($this, 'FatalErrorCatcher'));
 
-//echo APP_PATH;
+		//the creation of the output buffer
+		ob_start();
+		
+		@eval(file_get_contents(dirname(__FILE__).DIRECTORY_SEPARATOR.'bootstrap.php'));
+	}
 
-set_include_path(
-	implode(PATH_SEPARATOR, 
-		array(
-			realpath(PROG_PATH),
-			realpath(LIB_PATH),
-			get_include_path()
-		)
-	)
-);
+	public function FatalErrorCatcher()
+	{
+		$error = error_get_last();
+		if (isset($error)){
+			if(
+				$error['type'] == E_STRICT ||
+				$error['type'] == E_COMPILE_ERROR ||
+				$error['type'] == E_CORE_ERROR
+			){
+				echo 'Warning!!! Error: '.$error['message'].'<br />';
+				echo '# file - "'.$error['file'].'", line - '.$error['line'].'<br />';
+				//reset the buffer, shut down the buffer
+				ob_end_clean();
+				
+				// контроль критических ошибок:
+				// - записать в лог
+				// - вернуть заголовок 500
+				// - вернуть после заголовка данные для пользователя
+			}else{
+				if($error['message']!='Can only throw objects'){
+					echo 'Warning!!! Error: '.$error['message'].'<br />';
+					echo '# file - "'.$error['file'].'", line - '.$error['line'].'<br />';
+				}
+				//the conclusion buffer, shut down the buffer
+				ob_end_flush();
+			}
+		}else{
+			//the conclusion buffer, shut down the buffer
+			ob_end_flush();
+		}
+	}
+}
 
-
-require_once 'Dadiweb/Bootstrap.php';
-
-// Create application, bootstrap, and run
-$dadi = new Dadiweb_Bootstrap();
-
+// bootstrap
+new Supervisor();
 

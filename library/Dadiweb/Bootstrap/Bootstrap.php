@@ -1,7 +1,7 @@
 <?php
 require_once 'Dadiweb/Loader/Autoload.php';
 require_once 'Dadiweb/Bootstrap/Exception.php';
-class Dadiweb_Bootstrap_Bootstrap //extends Dadiweb_Throw_ErrorException
+class Dadiweb_Bootstrap_Bootstrap extends Dadiweb_Throw_ErrorException
 {
 	/**
 	 * 
@@ -33,10 +33,10 @@ class Dadiweb_Bootstrap_Bootstrap //extends Dadiweb_Throw_ErrorException
 	 * @return		MVC object
 	 */	
 	public function __construct($mode=NULL, $option=array()){
-		//parent::__construct();
+		parent::__construct();
 		$this->autoload();
 		$a=Dadiweb_Pattern_Pattern::getInstance();
-		//var_dump($a);die;exit;
+		var_dump($a);die;exit;
 		//var_dump(this);die;exit;
 	}
 /***************************************************************/

@@ -95,20 +95,24 @@ class Dadiweb_Pattern_Pattern
 			}
 			$i=$i+1;
 		}
-		$this->setApplication($this->uri[0]);
-		$this->setController($this->uri[1]);
-		$this->setModel($this->uri[2]);
-		$this->uri=split('\?',$this->uri[3],2);
-		foreach(array_chunk(split('\/',$this->uri[0]), 2) as $value){
-			if($value[1]!=NULL and strlen(trim($value[1]))>0){
-				$this->variables[$value[0]]=$value[1];
+		if(isset($this->uri[0])){$this->setApplication($this->uri[0]);}
+		if(isset($this->uri[1])){$this->setController($this->uri[1]);}
+		if(isset($this->uri[2])){$this->setModel($this->uri[2]);}
+		if(isset($this->uri[3])){
+			$this->uri=split('\?',$this->uri[3],2);
+			foreach(array_chunk(split('\/',$this->uri[0]), 2) as $value){
+				if($value[1]!=NULL and strlen(trim($value[1]))>0){
+					$this->variables[$value[0]]=$value[1];
+				}
 			}
 		}
-		$this->uri=split('\&',$this->uri[1]);
-		foreach($this->uri as $value){
-			$value=split('=',$value);
-			if($value[1]!=NULL and strlen(trim($value[1]))>0){
-				$this->variables[$value[0]]=$value[1];
+		if(isset($this->uri[1])){
+			$this->uri=split('\&',$this->uri[1]);
+			foreach($this->uri as $value){
+				$value=split('=',$value);
+				if($value[1]!=NULL and strlen(trim($value[1]))>0){
+					$this->variables[$value[0]]=$value[1];
+				}
 			}
 		}
 		return $this;
