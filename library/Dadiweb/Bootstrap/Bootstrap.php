@@ -37,7 +37,7 @@ class Dadiweb_Bootstrap_Bootstrap extends Dadiweb_Throw_ErrorException
 		$this->autoload();
 		$a=Dadiweb_Pattern_Pattern::getInstance();
 		Dadiweb_Configuration_Settings::getInstance()->getGeneric();
-		//var_dump($a);die;exit;
+		//var_dump(Dadiweb_Aides_Filesystem::getInstance()->getScanDir(INI_PATH));die;exit;
 		//var_dump(HTDOCS_PATH);die;exit;
 		// Обрабатываем с секциями
 		//$ini_array = parse_ini_file(HTDOCS_PATH.DIRECTORY_SEPARATOR."resources.ini", true);

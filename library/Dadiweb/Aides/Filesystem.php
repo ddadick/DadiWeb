@@ -103,7 +103,7 @@ class Dadiweb_Aides_Filesystem
     		}
     		
     	}else{
-    		$options=self::getScanDir(realpath($_SERVER["DOCUMENT_ROOT"]),$sorting,$key_type);
+    		$options=NULL;
     	}
     	return $options;
     }
