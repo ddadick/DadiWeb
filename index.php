@@ -34,6 +34,7 @@ class Supervisor
 
 	public function FatalErrorCatcher()
 	{
+		//the secondary scenario
 		$error = error_get_last();
 		if (isset($error)){
 			if(
