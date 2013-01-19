@@ -62,9 +62,9 @@ class Dadiweb_Aides_Filesystem
     {
     	if(is_array($options)) {
     		if($key_type!==NULL && !$key_type){
-    			$options=array_change_key_case ($options, CASE_LOWER);
+    			$options=Dadiweb_Aides_Array::getInstance()->array_AllKeysToLowerCase($options);
     		}elseif($key_type!==NULL && $key_type){
-    			$options=array_change_key_case ($options, CASE_UPPER);
+    			$options=Dadiweb_Aides_Array::getInstance()->array_AllKeysToUpperCase($options);
     		}
     		foreach($options as $key=>$item){
     			if(is_array($item)){
