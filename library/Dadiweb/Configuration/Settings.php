@@ -69,6 +69,8 @@ class Dadiweb_Configuration_Settings
     	if($generic!=NULL && is_array($generic)){
 	    	foreach(Dadiweb_Aides_Filesystem::getInstance()->getScanDir(INI_PATH) as $items){
     			if(!$items['type']){
+    				Dadiweb_Aides_Debug::getInstance(parse_ini_file(INI_PATH.DIRECTORY_SEPARATOR.$items['item']));
+    				//var_dump($items['item']);die;exit;
     				//var_dump(parse_ini_file(INI_PATH.DIRECTORY_SEPARATOR.$items['item']));die;exit;
     			}
     		}
