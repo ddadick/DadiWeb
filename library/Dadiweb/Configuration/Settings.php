@@ -63,8 +63,6 @@ class Dadiweb_Configuration_Settings
      */
     protected function setGeneric()
     {
-    	//var_dump(Dadiweb_Aides_Filesystem::getInstance()->getScanDir(INI_PATH));die;exit;
-    	//$ini_array = parse_ini_file(HTDOCS_PATH.DIRECTORY_SEPARATOR."resources.ini", true);
     	$generic=Dadiweb_Aides_Filesystem::getInstance()->getScanDir(INI_PATH);
     	if($generic!=NULL && is_array($generic)){
 	    	foreach(Dadiweb_Aides_Filesystem::getInstance()->getScanDir(INI_PATH) as $items){

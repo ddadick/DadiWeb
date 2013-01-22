@@ -12,7 +12,13 @@ class Dadiweb_Aides_Debug
 	/**
      * Singleton pattern implementation makes "new" unavailable
      *
-     * @return void
+     * $options - variable for debugger
+     *
+     * $key_type: 
+     * 0 - continue the script; 
+     * 1 - stop script 
+     *
+     * @return information debugger
      */
 	protected function __construct($options=NULL,$key_type=NULL){
 		self::debug($options,$key_type);
@@ -26,10 +32,16 @@ class Dadiweb_Aides_Debug
     protected function __clone(){}
 /***************************************************************/
     /**
-     * Returns an instance of Dadiweb_Aides_Debug
-     * Singleton pattern implementation
+     * Returns information debugger
      *
-     * @return Dadiweb_Aides_Debug Provides a fluent interface
+     * $options - variable for debugger
+     *
+     * $key_type: 
+     * 0 - continue the script; 
+     * 1 - stop script
+     *
+     *
+     * @return information debugger
      */
     public static function getInstance($options=NULL,$key_type=NULL)
     {
@@ -41,6 +53,13 @@ class Dadiweb_Aides_Debug
 /***************************************************************/
     /**
      * Returns Debug
+     * 
+     * $options - variable for debugger
+     *
+     * $key_type: 
+     * 0 - continue the script; 
+     * 1 - stop script
+     * 
      * 
      * @var Array()
      * @return stdClass()
