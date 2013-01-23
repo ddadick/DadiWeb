@@ -74,6 +74,7 @@ class Dadiweb_Aides_Debug
     	echo 'File - "'.$target[2]['file'].'"; line - '.$target[2]['line'].'<br />';
     	echo 'Class - "'.$target[3]['class'].'"; function - "'.$target[3]['function'].'"<br />';
     	echo '<br />'.$s.'</pre>';
+    	ob_start();
     	if($key_type!==NULL){
     		exit;
     	}

@@ -67,7 +67,13 @@ class Dadiweb_Configuration_Settings
     	if($generic!=NULL && is_array($generic)){
 	    	foreach(Dadiweb_Aides_Filesystem::getInstance()->getScanDir(INI_PATH) as $items){
     			if(!$items['type']){
-    				Dadiweb_Aides_Debug::getInstance(parse_ini_file(INI_PATH.DIRECTORY_SEPARATOR.$items['item']));
+    				$file=parse_ini_file(INI_PATH.DIRECTORY_SEPARATOR.$items['item']);
+    				
+    				foreach($file as $key=>$item){
+    					$a=Dadiweb_Aides_Array::getInstance()->explode($key,'.');
+    					$a=Dadiweb_Aides_Array::getInstance()->items_2_MultiDimensionalKeys($a,$item);
+    					Dadiweb_Aides_Debug::getInstance($a);
+    				}
     				//var_dump($items['item']);die;exit;
     				//var_dump(parse_ini_file(INI_PATH.DIRECTORY_SEPARATOR.$items['item']));die;exit;
     			}

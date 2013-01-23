@@ -48,7 +48,7 @@ class Dadiweb_Aides_Array
      * @var Array()
      * @return stdClass()
      */
-    public function arr4obj($options=array(), $key_type=NULL)
+    public function arr2obj($options=array(), $key_type=NULL)
     {
     	if(is_array($options)){
     		if($key_type!==NULL && !$key_type){
@@ -58,7 +58,7 @@ class Dadiweb_Aides_Array
     		}
     		foreach($options as $key=>$item){
     			if(is_array($item)){
-    				$options[$key]=self::arr4obj($item, $key_type);
+    				$options[$key]=self::arr2obj($item, $key_type);
     			}
     		}
     	}else{
@@ -78,7 +78,7 @@ class Dadiweb_Aides_Array
      * @var stdClass()
      * @return Array()
      */
-    public function obj4arr($options=NULL,$key_type=NULL)
+    public function obj2arr($options=NULL,$key_type=NULL)
     {
     	if($options instanceof stdClass){
     		$options=(array)$options;
@@ -89,7 +89,7 @@ class Dadiweb_Aides_Array
     		}
     		foreach($options as $key=>$item){
     			if($item instanceof stdClass){
-    				$options[$key]=self::obj4arr($item, $key_type);
+    				$options[$key]=self::obj2arr($item, $key_type);
     			}
     		}
     	}else{
@@ -136,6 +136,77 @@ class Dadiweb_Aides_Array
     		}
     	}else{
     		$options=array();
+    	}
+    	return $options;
+    }
+/***************************************************************/
+    /**
+     * Split a string by string as stdClass() or Array()
+     *
+     * $string - the input string
+     * $delimiter - the boundary string
+     * $return:
+     * - NULL : return Array();
+     * - 0    : return Array();
+     * - 1    : return stdClass();
+     * @var string
+     * @return Array() or stdClass()
+     */
+    public function explode($string=NULL, $delimiter=NULL, $return=NULL)
+    {
+    	$result=array();
+    	if($delimiter!==NULL && $string!==NULL){
+    		$result=explode($delimiter, $string);
+	    	if(is_array($result)){
+    			if($return!==NULL && $return){
+    				$result=self::arr2obj($result);
+    			}
+	    	}
+    	}
+    	return $result;
+    }
+    /***************************************************************/
+    /**
+     * Elements of the Array(stdClass) in turn key multi-dimensional Array(stdClass)
+     *
+     * $options - the input array()
+     * $item - assigned value to key multi-dimensional Array(stdClass)
+     * $reverse:
+     *  - NULL : Array(stdClass) as is;
+     *  - 0    : Array(stdClass) as is;
+     *  - 1    : Array(stdClass) as reverse;
+     * $key_type:
+     *  - NULL : key's Array(stdClass) as is;
+     *  - 0    : key's Array(stdClass) as lower case;
+     *  - 1    : key's Array(stdClass) as upper case;
+     * $return:
+     * - NULL : return Array();
+     * - 0    : return Array();
+     * - 1    : return stdClass();
+     * @var string
+     * @return Array() or stdClass()
+     */
+    public function items_2_MultiDimensionalKeys($options=NULL, $item=NULL,$reverse=NULL,$key_type=NULL, $return=NULL)
+    {
+    	if($reverse!==NULL && $reverse){
+    		$options=array_reverse($options);
+    	}
+    	for($i=(count($options)-1);$i>=0;$i--){
+    		if($i==(count($options)-1)){
+    			$result=array($options[$i]=>$item);
+    		}else{
+    			$result=array($options[$i]=>$result);
+    		}
+    	}
+    	$options=$result;
+    	unset($result);
+    	if($key_type!==NULL && !$key_type){
+    		$options=self::array_AllKeysToLowerCase($options);
+    	}elseif($key_type!==NULL && $key_type){
+    		$options=self::array_AllKeysToUpperCase($options);
+    	}
+    	if($return!==NULL && $return){
+    		$options=self::arr2obj($options);
     	}
     	return $options;
     }
