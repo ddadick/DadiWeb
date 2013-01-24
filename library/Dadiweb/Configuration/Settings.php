@@ -13,16 +13,14 @@ class Dadiweb_Configuration_Settings
      *
      * @var Array()
      */
-    protected $_settings = array();
+    protected $_settings = NULL;
 /***************************************************************/
 	/**
      * Singleton pattern implementation makes "new" unavailable
      *
      * @return void
      */
-	protected function __construct(){
-		$this->_settings = new stdClass();
-	}
+	protected function __construct(){}
 /***************************************************************/
 	/**
      * Singleton pattern implementation makes "clone" unavailable
@@ -52,7 +50,9 @@ class Dadiweb_Configuration_Settings
      */
     public function getGeneric()
     {
-    	$this->setGeneric();
+    	if(!is_array($this->_settings)){
+    		$this->setGeneric();
+    	}
     	return $this->_settings;
     }
 /***************************************************************/

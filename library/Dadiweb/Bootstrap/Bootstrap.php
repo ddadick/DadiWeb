@@ -36,7 +36,10 @@ class Dadiweb_Bootstrap_Bootstrap extends Dadiweb_Throw_ErrorException
 		parent::__construct();
 		$this->autoload();
 		Dadiweb_Pattern_Pattern::getInstance();
-		Dadiweb_Configuration_Settings::getInstance()->getGeneric();
+		Dadiweb_Configuration_Settings::getInstance()->setGeneric();
+		Dadiweb_Aides_Debug::show(
+		Dadiweb_Configuration_Settings::getInstance()->getGeneric()
+		);
 	}
 /***************************************************************/
 	/**
