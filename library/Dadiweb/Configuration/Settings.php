@@ -20,7 +20,9 @@ class Dadiweb_Configuration_Settings
      *
      * @return void
      */
-	protected function __construct(){}
+	protected function __construct(){
+		self::setGeneric();
+	}
 /***************************************************************/
 	/**
      * Singleton pattern implementation makes "clone" unavailable
@@ -51,7 +53,7 @@ class Dadiweb_Configuration_Settings
     public function getGeneric()
     {
     	if(!is_array($this->_settings)){
-    		$this->setGeneric();
+    		self::setGeneric();
     	}
     	return $this->_settings;
     }
