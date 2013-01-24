@@ -68,12 +68,13 @@ class Dadiweb_Configuration_Settings
 	    	foreach(Dadiweb_Aides_Filesystem::getInstance()->getScanDir(INI_PATH) as $items){
     			if(!$items['type']){
     				$file=parse_ini_file(INI_PATH.DIRECTORY_SEPARATOR.$items['item']);
-    				
+    				Dadiweb_Aides_Debug::debug($file);
     				foreach($file as $key=>$item){
     					$a=Dadiweb_Aides_Array::getInstance()->explode($key,'.');
     					$a=Dadiweb_Aides_Array::getInstance()->items_2_MultiDimensionalKeys($a,$item);
-    					Dadiweb_Aides_Debug::getInstance($a);
+    					Dadiweb_Aides_Debug::debug($a);
     				}
+    				echo 'asdasd';
     				//var_dump($items['item']);die;exit;
     				//var_dump(parse_ini_file(INI_PATH.DIRECTORY_SEPARATOR.$items['item']));die;exit;
     			}

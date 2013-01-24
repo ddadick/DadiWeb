@@ -20,7 +20,7 @@ class Dadiweb_Aides_Debug
      *
      * @return information debugger
      */
-	protected function __construct($options=NULL,$key_type=NULL){
+	public function __construct($options=NULL,$key_type=NULL){
 		self::debug($options,$key_type);
 	}
 /***************************************************************/
@@ -43,6 +43,7 @@ class Dadiweb_Aides_Debug
      *
      * @return information debugger
      */
+    
     public static function getInstance($options=NULL,$key_type=NULL)
     {
     	if (null === self::$_instance) {
@@ -64,17 +65,12 @@ class Dadiweb_Aides_Debug
      * @var Array()
      * @return stdClass()
      */
-    public function debug($options=NULL, $key_type=NULL)
+    public static function debug($options=NULL, $key_type=NULL)
     {
     	$target=debug_backtrace();
-    	ob_start();
-    	var_dump($options);
-    	$s=ob_get_clean();
     	echo '<pre>';
-    	echo 'File - "'.$target[2]['file'].'"; line - '.$target[2]['line'].'<br />';
-    	echo 'Class - "'.$target[3]['class'].'"; function - "'.$target[3]['function'].'"<br />';
-    	echo '<br />'.$s.'</pre>';
-    	ob_start();
+    	echo 'File - "'.$target[0]['file'].'"; line - '.$target[0]['line'].'<br />';
+    	echo '<br />'.var_dump($options).'</pre>';
     	if($key_type!==NULL){
     		exit;
     	}
