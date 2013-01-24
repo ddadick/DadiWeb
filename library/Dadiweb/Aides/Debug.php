@@ -71,7 +71,7 @@ class Dadiweb_Aides_Debug
     	echo '<pre>';
     	echo 'File - "'.$target[0]['file'].'"; line - '.$target[0]['line'].'<br />';
     	echo '<br />'.var_dump($options).'</pre>';
-    	if($key_type!==NULL){
+    	if($key_type!==NULL && $key_type){
     		exit;
     	}
     	return ;
