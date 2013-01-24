@@ -11,9 +11,9 @@ class Dadiweb_Configuration_Settings
     /**
      * General variable
      *
-     * @var stdClass()
+     * @var Array()
      */
-    protected $_settings = null;
+    protected $_settings = array();
 /***************************************************************/
 	/**
      * Singleton pattern implementation makes "new" unavailable
@@ -67,19 +67,25 @@ class Dadiweb_Configuration_Settings
     	if($generic!=NULL && is_array($generic)){
 	    	foreach(Dadiweb_Aides_Filesystem::getInstance()->getScanDir(INI_PATH) as $items){
     			if(!$items['type']){
-    				$file=parse_ini_file(INI_PATH.DIRECTORY_SEPARATOR.$items['item']);
-    				Dadiweb_Aides_Debug::show($file);
-    				foreach($file as $key=>$item){
-    					$a=Dadiweb_Aides_Array::getInstance()->explode($key,'.');
-    					$a=Dadiweb_Aides_Array::getInstance()->items_2_MultiDimensionalKeys($a,$item);
-    					Dadiweb_Aides_Debug::show($a);
+    				if(!is_array($this->_settings)){
+    					$this->_settings=array();
     				}
-    				echo 'asdasd';
-    				//var_dump($items['item']);die;exit;
-    				//var_dump(parse_ini_file(INI_PATH.DIRECTORY_SEPARATOR.$items['item']));die;exit;
+    				foreach(parse_ini_file(INI_PATH.DIRECTORY_SEPARATOR.$items['item']) as $key=>$item){
+    					$this->_settings=array_merge_recursive(
+    						$this->_settings,
+    						Dadiweb_Aides_Array::getInstance()->items_2_MultiDimensionalKeys(
+    							Dadiweb_Aides_Array::getInstance()->explode($key,'.'),
+    							$item
+    						)
+    					);
+    				}
     			}
     		}
     	}
+    	unset($generic);
+    	unset($items);
+    	unset($item);
+    	unset($key);
     }
 /***************************************************************/
 	/**

@@ -35,15 +35,8 @@ class Dadiweb_Bootstrap_Bootstrap extends Dadiweb_Throw_ErrorException
 	public function __construct($mode=NULL, $option=array()){
 		parent::__construct();
 		$this->autoload();
-		$a=Dadiweb_Pattern_Pattern::getInstance();
+		Dadiweb_Pattern_Pattern::getInstance();
 		Dadiweb_Configuration_Settings::getInstance()->getGeneric();
-		//var_dump(Dadiweb_Aides_Filesystem::getInstance()->getScanDir(INI_PATH));die;exit;
-		//var_dump(HTDOCS_PATH);die;exit;
-		// Обрабатываем с секциями
-		//$ini_array = parse_ini_file(HTDOCS_PATH.DIRECTORY_SEPARATOR."resources.ini", true);
-		//var_dump($ini_array);
-		
-		//var_dump(this);die;exit;
 	}
 /***************************************************************/
 	/**
