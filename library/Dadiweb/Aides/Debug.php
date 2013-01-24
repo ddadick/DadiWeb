@@ -65,7 +65,7 @@ class Dadiweb_Aides_Debug
      * @var Array()
      * @return stdClass()
      */
-    public static function debug($options=NULL, $key_type=NULL)
+    public static function show($options=NULL, $key_type=NULL)
     {
     	$target=debug_backtrace();
     	echo '<pre>';
