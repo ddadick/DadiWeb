@@ -67,12 +67,20 @@ class Dadiweb_Configuration_Settings
     {
     	$generic=Dadiweb_Aides_Filesystem::getInstance()->getScanDir(INI_PATH);
     	if($generic!=NULL && is_array($generic)){
-	    	foreach(Dadiweb_Aides_Filesystem::getInstance()->getScanDir(INI_PATH) as $items){
+	    	foreach($generic as $items){
     			if(!$items['type']){
     				if(!is_array($this->_settings)){
     					$this->_settings=array();
     				}
-    				foreach(parse_ini_file(INI_PATH.DIRECTORY_SEPARATOR.$items['item']) as $key=>$item){
+    				$file=INI_PATH.DIRECTORY_SEPARATOR.$items['item'];
+    				if(!is_file($file)){
+    					throw Dadiweb_Throw_ErrorException::showThrow(sprintf('The general configuration ini-file "%s" does not exist', $file));
+    				}
+    				$ini=parse_ini_file($file,true);
+    				if(!$ini){
+    					throw Dadiweb_Throw_ErrorException::showThrow(sprintf('The general configuration ini-file "%s" does not exist or empty', $file));
+    				}
+    				foreach($ini as $key=>$item){
     					$this->_settings=array_merge_recursive(
     						$this->_settings,
     						Dadiweb_Aides_Array::getInstance()->items_2_MultiDimensionalKeys(

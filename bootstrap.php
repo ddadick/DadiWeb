@@ -3,16 +3,16 @@
 // Define path to application directory
 
 defined('LIB_PATH')
-|| define('LIB_PATH', realpath(dirname(__FILE__).DIRECTORY_SEPARATOR.'library'));
+|| define('LIB_PATH', realpath(dirname(__FILE__).DIRECTORY_SEPARATOR.'library').DIRECTORY_SEPARATOR);
 
-defined('PROG_PATH')
-|| define('PROG_PATH', realpath(dirname(__FILE__).DIRECTORY_SEPARATOR.'programs'));
+defined('APPS_PATH')
+|| define('APPS_PATH', realpath(dirname(__FILE__).DIRECTORY_SEPARATOR.'apps').DIRECTORY_SEPARATOR);
 
 defined('HTDOCS_PATH')
 || define('HTDOCS_PATH', realpath($_SERVER["DOCUMENT_ROOT"]));
 
 defined('INI_PATH')
-|| define('INI_PATH', realpath(dirname(__FILE__).DIRECTORY_SEPARATOR.'apps'.DIRECTORY_SEPARATOR.'settings'));
+|| define('INI_PATH', realpath(dirname(__FILE__).DIRECTORY_SEPARATOR.'apps'.DIRECTORY_SEPARATOR.'settings').DIRECTORY_SEPARATOR);
 
 /***************************************************************/
 
@@ -21,7 +21,7 @@ defined('INI_PATH')
 set_include_path(
 	implode(PATH_SEPARATOR, 
 		array(
-			realpath(PROG_PATH),
+			realpath(APPS_PATH),
 			realpath(LIB_PATH),
 			get_include_path()
 		)
