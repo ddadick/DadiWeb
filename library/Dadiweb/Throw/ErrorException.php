@@ -30,17 +30,16 @@ class Dadiweb_Throw_ErrorException extends ErrorException
    }
 /***************************************************************/
    /**
-    * Returns Debug
+    * Returns User Throw
     *
-    * @var Array()
-    * @return stdClass()
+    * @return Throw
     */
    public static function showThrow($message)
    {
    	$target=debug_backtrace();
    	echo '<br />';
    	echo 'File - "'.$target[0]['file'].'"; line - '.$target[0]['line'].'<br />';
-   	echo $message.'<br />';
+   	echo 'Warning!!! '. $message.'<br />';
    	exit;
    	return ;
    }
