@@ -36,7 +36,6 @@ class Dadiweb_Configuration_Exception
     public function getMessage($message){
     	$i=1;
 		$trace_log=array_reverse(debug_backtrace());
-		Dadiweb_Aides_Debug::show($trace_log);
 		$trace_result=array();
 		foreach ($trace_log as $trace){
 			if(false===array_search('Dadiweb_Configuration_Exception',$trace['args']) && $trace['class']!='Dadiweb_Configuration_Exception' && $trace['function']!='__call'){

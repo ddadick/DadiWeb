@@ -23,19 +23,20 @@ class Dadiweb_Configuration_Pattern
 	protected $controller = NULL;
 	
 	/**
-	 * MVC - default Model
-	 * 
-	 * @return object
-	 */
-	protected $model = NULL;
-	
-	/**
 	 * MVC - default View
 	 * 
 	 * @return object
 	 */
 	protected $view = NULL;
+
+	/**
+	 * MVC - default Model
+	 *
+	 * @return object
+	 */
+	protected $model = NULL;
 	
+
 	/**
 	 * MVC - variables url
 	 * 
@@ -99,7 +100,7 @@ class Dadiweb_Configuration_Pattern
 			}
 			if(isset($this->uri[0])){$this->setApplication($this->uri[0]);}
 			if(isset($this->uri[1])){$this->setController($this->uri[1]);}
-			if(isset($this->uri[2])){$this->setModel($this->uri[2]);}
+			if(isset($this->uri[2])){$this->setView($this->uri[2]);}
 			if(isset($this->uri[3])){
 				$this->uri=split('\?',$this->uri[3],2);
 				foreach(array_chunk(split('\/',$this->uri[0]), 2) as $value){
@@ -194,6 +195,30 @@ class Dadiweb_Configuration_Pattern
    	public function getModel()
    	{
    		return $this->model;
+   	}
+/***************************************************************/
+   	/**
+   	 *
+   	 * Set view
+   	 *
+   	 * @var View
+   	 *
+   	 */
+   	protected function setView($view=NULL)
+   	{
+   		$this->view=$view;
+   	}
+/***************************************************************/
+   	/**
+   	 *
+   	 * Get view
+   	 *
+   	 * @return View
+   	 *
+   	 */
+   	public function getView()
+   	{
+   		return $this->view;
    	}
 /***************************************************************/    	
     /**

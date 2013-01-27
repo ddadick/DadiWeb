@@ -14,6 +14,13 @@ class Dadiweb_Configuration_Settings
      * @var Array()
      */
     protected $_settings = NULL;
+ 
+    /**
+     * Application path
+     *
+     * @var String()
+     */
+    protected $_path = NULL;
 /***************************************************************/
 	/**
      * Singleton pattern implementation makes "new" unavailable
@@ -97,6 +104,32 @@ class Dadiweb_Configuration_Settings
     	unset($item);
     	unset($key);
     }
+/***************************************************************/
+    /**
+     *
+     * Set application path
+     *
+     * @var String()
+     *
+     */
+    public function setPath($path=NULL)
+    {
+    	return $this->_path=$path;
+    }
+/***************************************************************/
+    /**
+     *
+     * Get application path
+     *
+     * @return String()
+     *
+     */
+    public function getPath()
+    {
+    	return $this->_path;
+    
+    }
+    
 /***************************************************************/
 	/**
      * 
