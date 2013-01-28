@@ -1,11 +1,12 @@
 <?php
- 
-class Test_TestCtrl
+
+class Test_TestCtrl extends test_Test
 {
 	
-	public function  __construct(){
-	}
-	public function test(){
+
+	public function TestMethod(){
 		echo 'asdasd';
+		parent::testtest();
 	}
+
 }

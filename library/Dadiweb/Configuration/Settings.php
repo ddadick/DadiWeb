@@ -53,6 +53,17 @@ class Dadiweb_Configuration_Settings
     }
 /***************************************************************/
     /**
+     * Reset instance of Dadiweb_Configuration_Settings
+     * Singleton pattern implementation
+     *
+     * @return Dadiweb_Configuration_Settings Provides a fluent interface
+     */
+    public static function resetInstance()
+    {
+        return self::$_instance=NULL;
+    }
+/***************************************************************/
+    /**
      * Returns Configuration Settings
      *
      * @return stdClass

@@ -38,10 +38,26 @@ class Dadiweb_Throw_ErrorException extends ErrorException
    {
    	$target=debug_backtrace();
    	echo '<br />';
-   	echo 'File - "'.$target[0]['file'].'"; line - '.$target[0]['line'].'<br />';
    	echo 'Warning!!! '. $message.'<br />';
-   	exit;
-   	return ;
+	$i=0;
+	$trace_result=array();
+	foreach ($target as $trace){
+		if(isset($trace['args']) && false===array_search('Dadiweb_Throw_ErrorException',$trace['args']) && $trace['function']!='__call'){
+			array_push($trace_result,
+			(isset($trace['file'])?' file "'.$trace['file'].'","':'')
+			.(isset($trace['line'])?' line "'.$trace['line'].'" :"':'')
+			.(isset($trace['class'])?' class - "'.$trace['class'].'";"':'')
+			.(isset($trace['function'])?' method - "'.$trace['function'].'";"':'')
+			.((count($trace['args'])>0)?' argumnets - \''.implode("','", $trace['args']).'\';':'')
+			);
+		}
+		$i=$i+1;
+	}
+	foreach ($trace_result as $key=>$trace){
+		echo '#'.($key+1).' '.$trace.'<br />';
+	}
+	$GLOBALS['SUPERVISOR_STOP']=false;
+   	return;
    }
 /***************************************************************/
 }

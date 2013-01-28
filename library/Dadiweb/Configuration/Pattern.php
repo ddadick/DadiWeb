@@ -81,6 +81,17 @@ class Dadiweb_Configuration_Pattern
         }
    	    return self::$_instance;
    	}
+/***************************************************************/    
+   	/**
+     * Reset instance of Dadiweb_Configuration_Pattern
+   	 * Singleton pattern implementation
+     *
+   	 * @return Dadiweb_Configuration_Pattern Provides a fluent interface
+     */
+   	public static function resetInstance()
+    {
+   	    return self::$_instance=NULL;
+   	}
 /***************************************************************/   	
    	/**
      * Returns an instance of Dadiweb_Configuration_Pattern

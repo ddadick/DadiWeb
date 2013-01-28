@@ -23,11 +23,11 @@ class Dadiweb_Configuration_Kernel
     protected $_ctrl = NULL;
     
     /**
-     * Current view
+     * Current method
      *
      * @return String()
      */
-    protected $_view = NULL;
+    protected $_method = NULL;
     
     /**
      * Current model
@@ -49,6 +49,21 @@ class Dadiweb_Configuration_Kernel
      * @return String()
      */
     protected $_file_ctrl = NULL;
+
+    /**
+     * External class (current)
+     *
+     * @return String()
+     */
+    protected $_class = NULL;
+    
+    /**
+     * Output buffer (current)
+     *
+     * @return Object
+     */
+    protected $_ob_buffer = NULL;
+    
     
 /***************************************************************/
 	/**
@@ -88,71 +103,38 @@ class Dadiweb_Configuration_Kernel
      */
     protected function buildKernel()
     {
-    	$p=Dadiweb_Configuration_Pattern::getInstance();
-    	$s=Dadiweb_Configuration_Settings::getInstance();
-		$resourse=Dadiweb_Aides_Array::getInstance()->arr2obj($s->getGeneric())->resource;
-		//self::setPath($resourse->Master->path);
-		//Dadiweb_Aides_Debug::show(realpath(self::getPath()),true);
-		if(!isset($resourse->Master->path) || self::setPath($resourse->Master->path)===NULL || false===realpath(self::getPath())){
+    	$GLOBALS['SUPERVISOR_PATTERN']=Dadiweb_Configuration_Pattern::getInstance();
+    	Dadiweb_Configuration_Pattern::resetInstance();
+    	$GLOBALS['SUPERVISOR_INI']=Dadiweb_Aides_Array::getInstance()->arr2obj(Dadiweb_Configuration_Settings::getInstance()->getGeneric());
+    	Dadiweb_Configuration_Settings::resetInstance();
+		if(
+				!isset($GLOBALS['SUPERVISOR_INI']->resource->Master->path) ||
+				!strlen(trim($GLOBALS['SUPERVISOR_INI']->resource->Master->path)) ||
+				self::setPath($GLOBALS['SUPERVISOR_INI']->resource->Master->path)===NULL || 
+				false===realpath(self::getPath())
+		){
 			throw Dadiweb_Throw_ErrorException::showThrow(sprintf('Path into "resource.Master.path" in the file "%sresourse.ini" is not valid', INI_PATH));
 		}
-		if(NULL===$p->getApplication() && NULL===$p->getController() && NULL===$p->getView()){
-			if(!isset($resourse->Master->prog) || !strlen(trim(self::setProgram($resourse->Master->prog)))){
+		if(
+				NULL===$GLOBALS['SUPERVISOR_PATTERN']->getApplication() && 
+				NULL===$GLOBALS['SUPERVISOR_PATTERN']->getController() && 
+				NULL===$GLOBALS['SUPERVISOR_PATTERN']->getView()
+		){
+			if(!isset($GLOBALS['SUPERVISOR_INI']->resource->Master->prog) || !strlen(trim(self::setProgram($GLOBALS['SUPERVISOR_INI']->resource->Master->prog)))){
 				throw Dadiweb_Throw_ErrorException::showThrow(sprintf('Value into "resource.Master.prog" in the file "%sresourse.ini" is not valid or empty', INI_PATH));
-			}elseif(!isset($resourse->Master->ctrl) || !strlen(trim(self::setController($resourse->Master->ctrl)))){
+			}elseif(!isset($GLOBALS['SUPERVISOR_INI']->resource->Master->ctrl) || !strlen(trim(self::setController($GLOBALS['SUPERVISOR_INI']->resource->Master->ctrl)))){
 				throw Dadiweb_Throw_ErrorException::showThrow(sprintf('Value into "resource.Master.ctrl" in the file "%sresourse.ini" is not valid or empty', INI_PATH));
-			}elseif(!isset($resourse->Master->view) || !strlen(trim(self::setView($resourse->Master->view)))){
-				throw Dadiweb_Throw_ErrorException::showThrow(sprintf('Value into "resource.Master.view" in the file "%sresourse.ini" is not valid or empty', INI_PATH));
+			}elseif(!isset($GLOBALS['SUPERVISOR_INI']->resource->Master->method) || !strlen(trim(self::setMethod(ucfirst($GLOBALS['SUPERVISOR_INI']->resource->Master->method).'Method')))){
+				self::setMethod('IndexMethod');
 			}elseif(false===realpath(self::setPathCtrl(self::getPath().DIRECTORY_SEPARATOR.self::getProgram()))){
 				throw Dadiweb_Throw_ErrorException::showThrow(sprintf('Directory "%s" does not exist', self::getPathCtrl()));
 			}elseif(false===is_file(self::setFileCtrl(self::getPathCtrl().DIRECTORY_SEPARATOR.ucfirst(self::getController()).'Ctrl.php'))){
 				throw Dadiweb_Throw_ErrorException::showThrow(sprintf('File "%s" does not exist', self::getFileCtrl()));
 			}
-			
-			$return=get_include_path();
-			
-			set_include_path(
-				implode(PATH_SEPARATOR,
-					array(
-						realpath(self::getPath()),
-						get_include_path()
-					)
-				)
-			);
-			Dadiweb_Aides_Debug::show(get_include_path());
-			
-			set_include_path(
-				implode(PATH_SEPARATOR,
-					array(
-						realpath(self::getPath())
-					)
-				)
-			);
-			var_dump(get_include_path());die;exit;
-			
-			
-			ob_start(array($this,'test'));
-			$d=self::getProgram()."_".ucfirst(self::getController()).'Ctrl';
-			//$newfunc = create_function('$a', 'new "ln($a) + ln($b) = " . log($a * $b);');
-			$s=new $d;
-			//$s = new "self::getProgram()_ucfirst(self::getController())Ctrl";
-			$s->test();
-			//ob_get_contents();
-			ob_end_flush();
-			//echo $s;
-			
-			
-			
+			self::setClass(self::getProgram()."_".ucfirst(self::getController()).'Ctrl');
 			
 		}
-		
-		//APPS_PATH,$resourse['resource']['Master']['path'];
-		//$d=ucfirst(self::getProgram())."_".ucfirst(self::getController()).'Ctrl';
-		Dadiweb_Aides_Debug::show(ucfirst(self::getProgram())."_".ucfirst(self::getController()).'Ctrl');
-		Dadiweb_Aides_Debug::show(self::getPath());
-    }
-    protected function test($content){
-    	return (str_replace("as", "oranges", $content));
+		self::ob_class(self::getPath(),self::getClass(), self::getMethod());
     }
 /***************************************************************/
     /**
@@ -230,26 +212,26 @@ class Dadiweb_Configuration_Kernel
 /***************************************************************/
     /**
      *
-     * Set current view
+     * Set current method
      *
      * @var String()
      *
      */
-    protected function setView($view=NULL)
+    protected function setMethod($method=NULL)
     {
-    	return $this->_view=$view;
+    	return $this->_method=$method;
     }
 /***************************************************************/
     /**
      *
-     * Get current view
+     * Get current method
      *
      * @return String()
      *
      */
-    protected function getView()
+    protected function getMethod()
     {
-    	return $this->_view;
+    	return $this->_method;
     }
 /***************************************************************/
     /**
@@ -302,7 +284,7 @@ class Dadiweb_Configuration_Kernel
 /***************************************************************/
     /**
      *
-     * Set file's controller (current)
+     * Set external class (current)
      *
      * @var String()
      *
@@ -323,7 +305,101 @@ class Dadiweb_Configuration_Kernel
     {
     	return $this->_file_ctrl;
     }
+/***************************************************************/
+    /**
+     *
+     * Set external class (current)
+     *
+     * @var String()
+     *
+     */
+    protected function setClass($class=NULL)
+    {
+    	return $this->_class=$class;
+    }
+/***************************************************************/
+    /**
+     *
+     * Get external class (current)
+     *
+     * @return String()
+     *
+     */
+    protected function getClass()
+    {
+    	return $this->_class;
+    }
+/***************************************************************/
+    /**
+     *
+     * Output buffer (current)
+     *
+     * @return Object
+     *
+     */
     
+    protected function ob_buffer($content){
+    	return $content;
+    }
+/***************************************************************/
+    /**
+     *
+     * Init external Class
+     *
+     * @return Object
+     *
+     */
+    
+    public function ob_class($path=NULL,$class=NULL,$method=NULL){
+    	if($class===NULL || (is_string($class) && !strlen(trim($class)))){
+    		throw Dadiweb_Throw_ErrorException::showThrow(sprintf('Variable $class is empty', $class));
+    	}
+    	if($method===NULL || (is_string($method) && !strlen(trim($method)))){
+    		throw Dadiweb_Throw_ErrorException::showThrow(sprintf('Variable $function is empty', $method));
+    	}
+    	$return=get_include_path();
+    	if(is_array($path)){
+    		foreach ($path as $key=>$item){
+    			if(!is_string($item) || (is_string($item) && !realpath($item))){
+    				throw Dadiweb_Throw_ErrorException::showThrow(sprintf('Path "%s" does not exist', $item));
+    			}else{
+    				$path[$key]=realpath($item);
+    			}
+    		}
+    		set_include_path(
+	    		implode(PATH_SEPARATOR,
+    				$path
+    			)
+    		);
+    	}else{
+    		if(!is_string($path) || !strlen(trim($path)) || (is_string($path) && !realpath($path))){
+    			throw Dadiweb_Throw_ErrorException::showThrow(sprintf('Path "%s" does not exist', $path));
+    		}
+	    	set_include_path(
+    			implode(PATH_SEPARATOR,
+			    	array(
+    					realpath($path)
+			    	)
+    			)
+    		);
+    	}
+    	$GLOBALS['SUPERVISOR_STOP']=NULL;
+    	$class=new $class;
+    	ob_start(array($this,'ob_buffer'));
+    	$class->$method();
+    	ob_end_flush();
+    	if($GLOBALS['SUPERVISOR_STOP']!==NULL){
+    		exit;
+    	}
+    	set_include_path(
+	    	implode(PATH_SEPARATOR,
+    			array(
+			    	$return
+		    	)
+    		)
+    	);
+    	return;
+    }    
 /***************************************************************/
 	/**
      * 

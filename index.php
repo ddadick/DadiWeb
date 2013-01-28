@@ -66,6 +66,8 @@ class Supervisor
 	}
 }
 
+$SUPERVISOR_STOP=NULL;
+
 // bootstrap
 new Supervisor();
 
