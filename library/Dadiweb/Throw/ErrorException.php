@@ -36,6 +36,7 @@ class Dadiweb_Throw_ErrorException extends ErrorException
     */
    public static function showThrow($message)
    {
+   	ob_start();
    	$target=debug_backtrace();
    	echo '<br />';
    	echo 'Warning!!! '. $message.'<br />';
@@ -56,8 +57,12 @@ class Dadiweb_Throw_ErrorException extends ErrorException
 	foreach ($trace_result as $key=>$trace){
 		echo '#'.($key+1).' '.$trace.'<br />';
 	}
-	$GLOBALS['SUPERVISOR_STOP']=false;
-   	return;
+	$p=ob_get_contents();
+	$GLOBALS['SUPERVISOR_DEBUG']=ob_get_contents();
+	//$GLOBALS['SUPERVISOR_STOP']=false;
+	ob_end_clean();
+	exit;
+   	//return;
    }
 /***************************************************************/
 }
