@@ -107,24 +107,20 @@ class Dadiweb_Configuration_Kernel
     	Dadiweb_Configuration_Pattern::resetInstance();
     	$GLOBALS['SUPERVISOR_INI']=Dadiweb_Aides_Array::getInstance()->arr2obj(Dadiweb_Configuration_Settings::getInstance()->getGeneric());
     	Dadiweb_Configuration_Settings::resetInstance();
-		if(
-				!isset($GLOBALS['SUPERVISOR_INI']->resource->Master->path) ||
-				!strlen(trim($GLOBALS['SUPERVISOR_INI']->resource->Master->path)) ||
-				self::setPath($GLOBALS['SUPERVISOR_INI']->resource->Master->path)===NULL || 
-				false===realpath(self::getPath())
-		){
+		if(!isset($GLOBALS['SUPERVISOR_INI']->resource->Master->path) || !strlen(trim($GLOBALS['SUPERVISOR_INI']->resource->Master->path)) || 
+				self::setPath($GLOBALS['SUPERVISOR_INI']->resource->Master->path)===NULL || false===realpath(self::getPath())){
 			throw Dadiweb_Throw_ErrorException::showThrow(sprintf('Path into "resource.Master.path" in the file "%sresourse.ini" is not valid', INI_PATH));
 		}
-		if(
-				NULL===$GLOBALS['SUPERVISOR_PATTERN']->getApplication() && 
-				NULL===$GLOBALS['SUPERVISOR_PATTERN']->getController() && 
-				NULL===$GLOBALS['SUPERVISOR_PATTERN']->getView()
-		){
-			if(!isset($GLOBALS['SUPERVISOR_INI']->resource->Master->prog) || !strlen(trim(self::setProgram($GLOBALS['SUPERVISOR_INI']->resource->Master->prog)))){
+		if(NULL===$GLOBALS['SUPERVISOR_PATTERN']->getApplication() && NULL===$GLOBALS['SUPERVISOR_PATTERN']->getController() && 
+				NULL===$GLOBALS['SUPERVISOR_PATTERN']->getView()){
+			if(!isset($GLOBALS['SUPERVISOR_INI']->resource->Master->prog) || 
+					!strlen(trim(self::setProgram($GLOBALS['SUPERVISOR_INI']->resource->Master->prog)))){
 				throw Dadiweb_Throw_ErrorException::showThrow(sprintf('Value into "resource.Master.prog" in the file "%sresourse.ini" is not valid or empty', INI_PATH));
-			}elseif(!isset($GLOBALS['SUPERVISOR_INI']->resource->Master->ctrl) || !strlen(trim(self::setController($GLOBALS['SUPERVISOR_INI']->resource->Master->ctrl)))){
+			}elseif(!isset($GLOBALS['SUPERVISOR_INI']->resource->Master->ctrl) || 
+					!strlen(trim(self::setController($GLOBALS['SUPERVISOR_INI']->resource->Master->ctrl)))){
 				throw Dadiweb_Throw_ErrorException::showThrow(sprintf('Value into "resource.Master.ctrl" in the file "%sresourse.ini" is not valid or empty', INI_PATH));
-			}elseif(!isset($GLOBALS['SUPERVISOR_INI']->resource->Master->method) || !strlen(trim(self::setMethod(ucfirst($GLOBALS['SUPERVISOR_INI']->resource->Master->method).'Method')))){
+			}elseif(!isset($GLOBALS['SUPERVISOR_INI']->resource->Master->method) || 
+					!strlen(trim(self::setMethod(ucfirst($GLOBALS['SUPERVISOR_INI']->resource->Master->method).'Method')))){
 				self::setMethod('IndexMethod');
 			}elseif(false===realpath(self::setPathCtrl(self::getPath().DIRECTORY_SEPARATOR.self::getProgram()))){
 				throw Dadiweb_Throw_ErrorException::showThrow(sprintf('Directory "%s" does not exist', self::getPathCtrl()));

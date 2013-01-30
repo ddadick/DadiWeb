@@ -60,8 +60,13 @@ class Supervisor
 				ob_end_flush();
 			}
 		}else{
+			
 			//the conclusion buffer, shut down the buffer
+			
 			ob_end_flush();
+			if(isset($GLOBALS['SUPERVISOR_DEBUG'])){
+				echo $GLOBALS['SUPERVISOR_DEBUG'];
+			}
 		}
 	}
 }

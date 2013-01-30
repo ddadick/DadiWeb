@@ -68,12 +68,17 @@ class Dadiweb_Aides_Debug
     public static function show($options=NULL, $key_type=NULL)
     {
     	$target=debug_backtrace();
+    	ob_start();
     	echo '<pre>';
     	echo 'File - "'.$target[0]['file'].'"; line - '.$target[0]['line'].'<br />';
     	echo '<br />'.var_dump($options).'</pre>';
+    	$p=ob_get_contents();
     	if($key_type!==NULL && $key_type){
+			$GLOBALS['SUPERVISOR_DEBUG']=$p;
+    		ob_end_flush();
     		exit;
     	}
+    	ob_end_flush();
     	return ;
     }
 /***************************************************************/
