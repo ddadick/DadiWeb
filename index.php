@@ -64,7 +64,7 @@ class Supervisor
 			//the conclusion buffer, shut down the buffer
 			
 			ob_end_flush();
-			if(isset($GLOBALS['SUPERVISOR_DEBUG'])){
+			if(isset($GLOBALS['SUPERVISOR_DEBUG']) && isset($GLOBALS['SUPERVISOR_STOP']) && $GLOBALS['SUPERVISOR_STOP']){
 				echo $GLOBALS['SUPERVISOR_DEBUG'];
 			}
 		}

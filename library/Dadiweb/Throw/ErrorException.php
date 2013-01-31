@@ -59,7 +59,7 @@ class Dadiweb_Throw_ErrorException extends ErrorException
 	}
 	$p=ob_get_contents();
 	$GLOBALS['SUPERVISOR_DEBUG']=ob_get_contents();
-	//$GLOBALS['SUPERVISOR_STOP']=false;
+	$GLOBALS['SUPERVISOR_STOP']=true;
 	ob_end_clean();
 	exit;
    	//return;
