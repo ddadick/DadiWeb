@@ -109,6 +109,7 @@ class Dadiweb_Configuration_Kernel
     	Dadiweb_Configuration_Settings::resetInstance();
     	Dadiweb_Configuration_Render::getInstance()->getGeneric();
     	Dadiweb_Configuration_Render::resetInstance();
+    	Dadiweb_Aides_Debug::show($GLOBALS['SUPERVISOR_RENDER'],true);
 		if(!isset($GLOBALS['SUPERVISOR_INI']->resource->Master->path) || !strlen(trim($GLOBALS['SUPERVISOR_INI']->resource->Master->path)) || 
 				self::setPath($GLOBALS['SUPERVISOR_INI']->resource->Master->path)===NULL || false===realpath(self::getPath())){
 			throw Dadiweb_Throw_ErrorException::showThrow(sprintf('Path into "resource.Master.path" in the file "%sresourse.ini" is not valid', INI_PATH));
@@ -338,7 +339,6 @@ class Dadiweb_Configuration_Kernel
      */
     
     protected function ob_buffer($content){
-    	
     	return $GLOBALS['SUPERVISOR_RENDER']->_echo($content);
     }
 /***************************************************************/

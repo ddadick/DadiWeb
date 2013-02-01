@@ -108,6 +108,54 @@ class Dadiweb_Aides_Filesystem
     	return $options;
     }
 /***************************************************************/
+    /**
+     * Returns directory
+     * 
+     * $options - path for validation
+     * @var String() 
+     * @return String()
+     */
+    public static function pathValidator($options=NULL)
+    {
+    	if($options==NULL && !is_string($options) && !strlen(trim($options))){
+    		throw Dadiweb_Throw_ErrorException::showThrow(sprintf('Critical error. Path was not transmitted into "%s"', __METHOD__));
+    	}
+    	$options=preg_replace('/[\/\\\\]+/', DIRECTORY_SEPARATOR, $options);
+    	$options=array_filter(explode(DIRECTORY_SEPARATOR, $options), 'strlen');
+    	$return=array();
+    	foreach($options as $key=>$item){
+    		$item=trim($item);
+    		if($item!='.'){
+    			if($item=='..'){
+    				array_pop($return);
+    			}else{
+    				$return[]=$item;
+    			}
+    		}
+    	}
+    	$options=implode(DIRECTORY_SEPARATOR,$return);
+    	unset($return);
+    	return (strtoupper(substr(php_uname('s'), 0,3))==='WIN')?$options.DIRECTORY_SEPARATOR:DIRECTORY_SEPARATOR.$options.DIRECTORY_SEPARATOR;
+    }
+/***************************************************************/
+    /**
+     * Create directory
+     * 
+     * $options - path for create
+     * @var String() 
+     * @return String()
+     */
+    public static function pathCreate($options=NULL)
+    {
+    	if($options==NULL && !is_string($options) && !strlen(trim($options))){
+    		throw Dadiweb_Throw_ErrorException::showThrow(sprintf('Critical error. Path was not transmitted into "%s"', __METHOD__));
+    	}
+    	if(!is_dir($options=self::pathValidator($options)) && !mkdir($options,'755',true)){
+    		throw Dadiweb_Throw_ErrorException::showThrow(sprintf('Critical error. You do not have sufficient rights to create a path "%s"', $options));
+    	}
+    	return $options;
+    }
+/***************************************************************/
 	/**
      * 
      * The handler functions that do not exist

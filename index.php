@@ -22,6 +22,7 @@ class Supervisor
 {
 	public function __construct()
 	{
+		
 		$GLOBALS['SUPERVISOR_DEBUG']=array();
 		
 		//registration handler critical error
@@ -73,11 +74,11 @@ class Supervisor
 					echo $item;
 				}
 			}
+			
 		}
 	}
 }
 
-$SUPERVISOR_STOP=NULL;
 
 // bootstrap
 new Supervisor();

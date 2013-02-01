@@ -89,9 +89,9 @@ resource.Render.cache_dir = APPS_PATH "/../cache/render_cache"
     	if(!isset($GLOBALS['SUPERVISOR_INI']->resource->Render->bootstrap) || !strlen(trim($GLOBALS['SUPERVISOR_INI']->resource->Render->bootstrap))){
     		throw Dadiweb_Throw_ErrorException::showThrow(sprintf('Variable into "resource.Render.bootstrap" in the file "%sresourse.ini" is not valid', INI_PATH));
     	}
-    	$bootstrap=Dadiweb_Render_Bootstrap::getInstance($GLOBALS['SUPERVISOR_INI']->resource->Render->bootstrap);
+    	Dadiweb_Render_Bootstrap::getInstance($GLOBALS['SUPERVISOR_INI']->resource->Render->bootstrap);
     	//Dadiweb_Aides_Debug::show($bootstrap,true);
-    	return $bootstrap;
+    	return;
     	/**
     	if(!isset($GLOBALS['SUPERVISOR_INI']->resource->Render->filename) || !strlen(trim($GLOBALS['SUPERVISOR_INI']->resource->Render->filename))){
     		throw Dadiweb_Throw_ErrorException::showThrow(sprintf('Variable into "resource.Render.filename" in the file "%sresourse.ini" is not valid', INI_PATH));

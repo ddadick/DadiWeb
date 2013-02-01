@@ -18,9 +18,11 @@ class Dadiweb_Render_Bootstrap
 		if($options===NULL || !is_string($options)){
 			throw Dadiweb_Throw_ErrorException::showThrow(sprintf('Critical error. Variable "resource.Render.bootstrap" from the file "%sresourse.ini" was not transmitted in class "%s"', INI_PATH,get_class($this)));
 		}
-		$options='Dadiweb_Render_'.($bootstrap=ucfirst($options));
+		$bootstrap=ucfirst($options);
+		$options='Dadiweb_Render_'.$bootstrap;
+		//Dadiweb_Aides_Debug::show($options,true);
 		$options=new $options($bootstrap);
-		return $options;
+		return;
 	}
 /***************************************************************/
 	/**
@@ -65,7 +67,7 @@ class Dadiweb_Render_Bootstrap
 	public function __call($method, $args) 
     {
     	if(!method_exists($this, $method)) { 
-         	throw Dadiweb_Aides_Exception::getInstance()->getMessage(sprintf('The required method "%s" does not exist for %s', $method, get_class($this))); 
+         	throw Dadiweb_Render_Exception::getInstance()->getMessage(sprintf('The required method "%s" does not exist for %s', $method, get_class($this))); 
        	} 	
     }
 /***************************************************************/
