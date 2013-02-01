@@ -84,7 +84,7 @@ class Dadiweb_Render_Smarty
 	}
 /***************************************************************/
     /**
-     * The function init Smapty
+     * The function init Smarty
      *
      * @return string
      */
