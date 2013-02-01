@@ -22,6 +22,8 @@ class Supervisor
 {
 	public function __construct()
 	{
+		$GLOBALS['SUPERVISOR_DEBUG']=array();
+		
 		//registration handler critical error
 		register_shutdown_function(array($this, 'FatalErrorCatcher'));
 
@@ -64,8 +66,12 @@ class Supervisor
 			//the conclusion buffer, shut down the buffer
 			
 			ob_end_flush();
-			if(isset($GLOBALS['SUPERVISOR_DEBUG']) && isset($GLOBALS['SUPERVISOR_STOP']) && $GLOBALS['SUPERVISOR_STOP']){
-				echo $GLOBALS['SUPERVISOR_DEBUG'];
+			if(isset($GLOBALS['SUPERVISOR_THROW']) && isset($GLOBALS['SUPERVISOR_STOP']) && $GLOBALS['SUPERVISOR_STOP']){
+				echo $GLOBALS['SUPERVISOR_THROW'];
+			}elseif(count($GLOBALS['SUPERVISOR_DEBUG'])){
+				foreach($GLOBALS['SUPERVISOR_DEBUG'] as $item){
+					echo $item;
+				}
 			}
 		}
 	}

@@ -67,6 +67,7 @@ class Dadiweb_Aides_Debug
      */
     public static function show($options=NULL, $key_type=NULL)
     {
+    	
     	$target=debug_backtrace();
     	ob_start();
     	echo '<pre>';
@@ -74,11 +75,12 @@ class Dadiweb_Aides_Debug
     	echo '<br />'.var_dump($options).'</pre>';
     	$p=ob_get_contents();
     	if($key_type!==NULL && $key_type){
-			$GLOBALS['SUPERVISOR_DEBUG']=$p;
-    		ob_end_flush();
+			$GLOBALS['SUPERVISOR_DEBUG'][]=$p;
+    		ob_end_clean();
     		exit;
     	}
-    	ob_end_flush();
+    	ob_end_clean();
+    	$GLOBALS['SUPERVISOR_DEBUG'][]=$p;
     	return ;
     }
 /***************************************************************/

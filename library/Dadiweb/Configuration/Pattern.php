@@ -58,7 +58,6 @@ class Dadiweb_Configuration_Pattern
    	 */
 	protected function __construct(){
    		$this->setMVC();
-   		Dadiweb_Aides_Debug::show($this);
 	}
 /***************************************************************/	
 	/**

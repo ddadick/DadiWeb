@@ -18,8 +18,8 @@ class Dadiweb_Render_Bootstrap
 		if($options===NULL || !is_string($options)){
 			throw Dadiweb_Throw_ErrorException::showThrow(sprintf('Critical error. Variable "resource.Render.bootstrap" from the file "%sresourse.ini" was not transmitted in class "%s"', INI_PATH,get_class($this)));
 		}
-		$options='Dadiweb_Render_'.ucfirst($options);
-		$options=new $options;
+		$options='Dadiweb_Render_'.($bootstrap=ucfirst($options));
+		$options=new $options($bootstrap);
 		return $options;
 	}
 /***************************************************************/
