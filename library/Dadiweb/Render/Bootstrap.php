@@ -8,6 +8,7 @@ class Dadiweb_Render_Bootstrap
      */
     protected static $_instance = null;
     
+    
 /***************************************************************/
 	/**
      * Singleton pattern implementation makes "new" unavailable
@@ -16,12 +17,13 @@ class Dadiweb_Render_Bootstrap
      */
 	protected function __construct($options=NULL){
 		if($options===NULL || !is_string($options)){
-			throw Dadiweb_Throw_ErrorException::showThrow(sprintf('Critical error. Variable "resource.Render.bootstrap" from the file "%sresourse.ini" was not transmitted in class "%s"', INI_PATH,get_class($this)));
+			throw Dadiweb_Throw_ErrorException::showThrow(
+				sprintf('Critical error. Variable "resource.Render.bootstrap" from the file "%sresourse.ini" was not transmitted in class "%s"', INI_PATH,get_class($this))
+			);
 		}
 		$bootstrap=ucfirst($options);
 		$options='Dadiweb_Render_'.$bootstrap;
-		//Dadiweb_Aides_Debug::show($options,true);
-		$options=new $options($bootstrap);
+		Dadiweb_Configuration_Kernel::getInstance()->setRendered(new $options($bootstrap));
 		return;
 	}
 /***************************************************************/

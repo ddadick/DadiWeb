@@ -64,6 +64,26 @@ class Dadiweb_Configuration_Kernel
      */
     protected $_ob_buffer = NULL;
     
+    /**
+     * Rendered (current)
+     *
+     * @return Object
+     */
+    protected $_rendered = NULL;
+    
+    /**
+     * Pattern (current)
+     *
+     * @return Object
+     */
+    protected $_pattern = NULL;
+    
+    /**
+     * Settings (current)
+     *
+     * @return Object
+     */
+    protected $_settings = NULL;
     
 /***************************************************************/
 	/**
@@ -71,9 +91,7 @@ class Dadiweb_Configuration_Kernel
      *
      * @return void
      */
-	protected function __construct(){
-		self::buildKernel();
-	}
+	protected function __construct(){}
 /***************************************************************/
 	/**
      * Singleton pattern implementation makes "clone" unavailable
@@ -101,29 +119,45 @@ class Dadiweb_Configuration_Kernel
      *
      * @return stdClass
      */
-    protected function buildKernel()
+    public function buildKernel()
     {
-    	$GLOBALS['SUPERVISOR_PATTERN']=Dadiweb_Configuration_Pattern::getInstance();
-    	Dadiweb_Configuration_Pattern::resetInstance();
-    	$GLOBALS['SUPERVISOR_INI']=Dadiweb_Aides_Array::getInstance()->arr2obj(Dadiweb_Configuration_Settings::getInstance()->getGeneric());
-    	Dadiweb_Configuration_Settings::resetInstance();
+    	self::setPattern(Dadiweb_Configuration_Pattern::getInstance());
+    	self::setSettings(Dadiweb_Aides_Array::getInstance()->arr2obj(Dadiweb_Configuration_Settings::getInstance()->getGeneric()));
     	Dadiweb_Configuration_Render::getInstance()->getGeneric();
-    	Dadiweb_Configuration_Render::resetInstance();
-    	Dadiweb_Aides_Debug::show($GLOBALS['SUPERVISOR_RENDER'],true);
-		if(!isset($GLOBALS['SUPERVISOR_INI']->resource->Master->path) || !strlen(trim($GLOBALS['SUPERVISOR_INI']->resource->Master->path)) || 
-				self::setPath($GLOBALS['SUPERVISOR_INI']->resource->Master->path)===NULL || false===realpath(self::getPath())){
-			throw Dadiweb_Throw_ErrorException::showThrow(sprintf('Path into "resource.Master.path" in the file "%sresourse.ini" is not valid', INI_PATH));
+    	Dadiweb_Aides_Debug::show($this->_rendered);
+		if(
+			!isset(self::getSettings()->resource->Master->path) ||
+			!strlen(trim(self::getSettings()->resource->Master->path)) || 
+			self::setPath(self::getSettings()->resource->Master->path)===NULL ||
+			false===realpath(self::getPath())
+		){
+			throw Dadiweb_Throw_ErrorException::showThrow(
+					sprintf('Path into "resource.Master.path" in the file "%sresourse.ini" is not valid', INI_PATH)
+			);
 		}
-		if(NULL===$GLOBALS['SUPERVISOR_PATTERN']->getApplication() && NULL===$GLOBALS['SUPERVISOR_PATTERN']->getController() && 
-				NULL===$GLOBALS['SUPERVISOR_PATTERN']->getView()){
-			if(!isset($GLOBALS['SUPERVISOR_INI']->resource->Master->prog) || 
-					!strlen(trim(self::setProgram($GLOBALS['SUPERVISOR_INI']->resource->Master->prog)))){
-				throw Dadiweb_Throw_ErrorException::showThrow(sprintf('Value into "resource.Master.prog" in the file "%sresourse.ini" is not valid or empty', INI_PATH));
-			}elseif(!isset($GLOBALS['SUPERVISOR_INI']->resource->Master->ctrl) || 
-					!strlen(trim(self::setController($GLOBALS['SUPERVISOR_INI']->resource->Master->ctrl)))){
-				throw Dadiweb_Throw_ErrorException::showThrow(sprintf('Value into "resource.Master.ctrl" in the file "%sresourse.ini" is not valid or empty', INI_PATH));
-			}elseif(!isset($GLOBALS['SUPERVISOR_INI']->resource->Master->method) || 
-					!strlen(trim(self::setMethod(ucfirst($GLOBALS['SUPERVISOR_INI']->resource->Master->method).'Method')))){
+		if(
+			NULL===self::getPattern()->getApplication() &&
+			NULL===self::getPattern()->getController() && 
+			NULL===self::getPattern()->getView()
+		){
+			if(
+				!isset(self::getSettings()->resource->Master->prog) || 
+				!strlen(trim(self::setProgram(self::getSettings()->resource->Master->prog)))
+			){
+				throw Dadiweb_Throw_ErrorException::showThrow(
+						sprintf('Value into "resource.Master.prog" in the file "%sresourse.ini" is not valid or empty', INI_PATH)
+				);
+			}elseif(
+				!isset(self::getSettings()->resource->Master->ctrl) || 
+				!strlen(trim(self::setController(self::getSettings()->resource->Master->ctrl)))
+			){
+				throw Dadiweb_Throw_ErrorException::showThrow(
+						sprintf('Value into "resource.Master.ctrl" in the file "%sresourse.ini" is not valid or empty', INI_PATH)
+				);
+			}elseif(
+				!isset(self::getSettings()->resource->Master->method) || 
+				!strlen(trim(self::setMethod(ucfirst(self::getSettings()->resource->Master->method).'Method')))
+			){
 				self::setMethod('IndexMethod');
 			}elseif(false===realpath(self::setPathCtrl(self::getPath().DIRECTORY_SEPARATOR.self::getProgram()))){
 				throw Dadiweb_Throw_ErrorException::showThrow(sprintf('Directory "%s" does not exist', self::getPathCtrl()));
@@ -135,6 +169,12 @@ class Dadiweb_Configuration_Kernel
 		}
 		self::ob_class(self::getPath(),self::getClass(), self::getMethod());
 		
+		/**
+		 * End of Kernel
+		 */
+		Dadiweb_Configuration_Render::resetInstance();
+		Dadiweb_Configuration_Pattern::resetInstance();
+		Dadiweb_Configuration_Settings::resetInstance();
     }
 /***************************************************************/
     /**
@@ -339,7 +379,7 @@ class Dadiweb_Configuration_Kernel
      */
     
     protected function ob_buffer($content){
-    	return $GLOBALS['SUPERVISOR_RENDER']->_echo($content);
+    	return self::getRendered()->_echo($content);
     }
 /***************************************************************/
     /**
@@ -399,7 +439,98 @@ class Dadiweb_Configuration_Kernel
     		)
     	);
     	return;
-    }    
+    }
+
+/***************************************************************/
+    /**
+     *
+     * Set Rendered
+     *
+     * @return Object rendered
+     *
+     */
+    public function setRendered($options=NULL)
+    {
+    	if($options===NULL){
+			throw Dadiweb_Throw_ErrorException::showThrow('Critical error. Rendered undefined.');
+		}
+		$this->_rendered=$options;
+    }
+/***************************************************************/
+    /**
+     *
+     * Get Rendered
+     *
+     * @return Object rendered
+     *
+     */
+    protected function getRendered()
+    {
+    	if($this->_rendered===NULL){
+    		throw Dadiweb_Throw_ErrorException::showThrow('Critical error. Rendered undefined.');
+    	}
+    	return $this->_rendered;
+    }
+/***************************************************************/
+    /**
+     *
+     * Set Pattern
+     *
+     * @return Object pattern
+     *
+     */
+    protected function setPattern($options=NULL)
+    {
+    	if($options===NULL){
+			throw Dadiweb_Throw_ErrorException::showThrow('Critical error. Pattern undefined.');
+		}
+		$this->_pattern=$options;
+    }
+/***************************************************************/
+    /**
+     *
+     * Get Pattern
+     *
+     * @return Object pattern
+     *
+     */
+    public function getPattern()
+    {
+    	if($this->_pattern===NULL){
+    		throw Dadiweb_Throw_ErrorException::showThrow('Critical error. Pattern undefined.');
+    	}
+    	return $this->_pattern;
+    }
+/***************************************************************/
+    /**
+     *
+     * Set Settings
+     *
+     * @return Object settings
+     *
+     */
+    protected function setSettings($options=NULL)
+    {
+    	if($options===NULL){
+			throw Dadiweb_Throw_ErrorException::showThrow('Critical error. Settings undefined.');
+		}
+		$this->_settings=$options;
+    }
+/***************************************************************/
+    /**
+     *
+     * Get Settings
+     *
+     * @return Object settings
+     *
+     */
+    public function getSettings()
+    {
+    	if($this->_settings===NULL){
+    		throw Dadiweb_Throw_ErrorException::showThrow('Critical error. Settings undefined.');
+    	}
+    	return $this->_settings;
+    }
 /***************************************************************/
 	/**
      * 

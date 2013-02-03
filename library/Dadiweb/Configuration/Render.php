@@ -78,37 +78,17 @@ class Dadiweb_Configuration_Render
      */
     protected function setGeneric()
     {
-    	/**
-    	 * resource.Render.filename = "smarty.class.php"
-resource.Render.class = "smarty"
-resource.Render.charset = "UTF-8"
-resource.Render.compile_dir = APPS_PATH "/../cache/render_compile"
-resource.Render.cache_dir = APPS_PATH "/../cache/render_cache"
-    	 */
-    	
-    	if(!isset($GLOBALS['SUPERVISOR_INI']->resource->Render->bootstrap) || !strlen(trim($GLOBALS['SUPERVISOR_INI']->resource->Render->bootstrap))){
-    		throw Dadiweb_Throw_ErrorException::showThrow(sprintf('Variable into "resource.Render.bootstrap" in the file "%sresourse.ini" is not valid', INI_PATH));
+    	if(
+    		!isset(Dadiweb_Configuration_Kernel::getInstance()->getSettings()->resource->Render->bootstrap) ||
+    		!strlen(trim(Dadiweb_Configuration_Kernel::getInstance()->getSettings()->resource->Render->bootstrap))
+    	){
+    		throw Dadiweb_Throw_ErrorException::showThrow(
+    				sprintf('Variable into "resource.Render.bootstrap" in the file "%sresourse.ini" is not valid', INI_PATH)
+    		);
     	}
-    	Dadiweb_Render_Bootstrap::getInstance($GLOBALS['SUPERVISOR_INI']->resource->Render->bootstrap);
-    	//Dadiweb_Aides_Debug::show($bootstrap,true);
+    	Dadiweb_Render_Bootstrap::getInstance(Dadiweb_Configuration_Kernel::getInstance()->getSettings()->resource->Render->bootstrap);
+    	Dadiweb_Render_Bootstrap::resetInstance();
     	return;
-    	/**
-    	if(!isset($GLOBALS['SUPERVISOR_INI']->resource->Render->filename) || !strlen(trim($GLOBALS['SUPERVISOR_INI']->resource->Render->filename))){
-    		throw Dadiweb_Throw_ErrorException::showThrow(sprintf('Variable into "resource.Render.filename" in the file "%sresourse.ini" is not valid', INI_PATH));
-    	}
-    	if(!isset($GLOBALS['SUPERVISOR_INI']->resource->Render->class) || !strlen(trim($GLOBALS['SUPERVISOR_INI']->resource->Render->class))){
-    		throw Dadiweb_Throw_ErrorException::showThrow(sprintf('Variable into "resource.Render.class" in the file "%sresourse.ini" is not valid', INI_PATH));
-    	}
-    	if(!isset($GLOBALS['SUPERVISOR_INI']->resource->Render->charset) || !strlen(trim($GLOBALS['SUPERVISOR_INI']->resource->Render->charset))){
-    		throw Dadiweb_Throw_ErrorException::showThrow(sprintf('Variable into "resource.Render.charset" in the file "%sresourse.ini" is not valid', INI_PATH));
-    	}
-    	if(!isset($GLOBALS['SUPERVISOR_INI']->resource->Render->compile_dir) || !strlen(trim($GLOBALS['SUPERVISOR_INI']->resource->Render->compile_dir))){
-    		throw Dadiweb_Throw_ErrorException::showThrow(sprintf('Variable into "resource.Render.compile_dir" in the file "%sresourse.ini" is not valid', INI_PATH));
-    	}
-    	if(!isset($GLOBALS['SUPERVISOR_INI']->resource->Render->cache_dir) || !strlen(trim($GLOBALS['SUPERVISOR_INI']->resource->Render->cache_dir))){
-    		throw Dadiweb_Throw_ErrorException::showThrow(sprintf('Variable into "resource.Render.cache_dir" in the file "%sresourse.ini" is not valid', INI_PATH));
-    	}
-    	*/
     }
     
 /***************************************************************/

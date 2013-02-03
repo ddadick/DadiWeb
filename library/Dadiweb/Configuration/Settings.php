@@ -96,7 +96,9 @@ class Dadiweb_Configuration_Settings
     				}
     				$ini=parse_ini_file($file,true);
     				if(!$ini){
-    					throw Dadiweb_Throw_ErrorException::showThrow(sprintf('The general configuration ini-file "%s" does not exist or empty', $file));
+    					throw Dadiweb_Throw_ErrorException::showThrow(
+    						sprintf('The general configuration ini-file "%s" does not exist or empty', $file)
+    					);
     				}
     				foreach($ini as $key=>$item){
     					$this->_settings=array_merge_recursive(
@@ -152,7 +154,9 @@ class Dadiweb_Configuration_Settings
 	public function __call($method, $args) 
     {
     	if(!method_exists($this, $method)) { 
-         	throw Dadiweb_Configuration_Exception::getInstance()->getMessage(sprintf('The required method "%s" does not exist for %s', $method, get_class($this))); 
+         	throw Dadiweb_Configuration_Exception::getInstance()->getMessage(
+         		sprintf('The required method "%s" does not exist for %s', $method, get_class($this))
+         	); 
        	} 	
     }
 /***************************************************************/

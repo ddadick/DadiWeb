@@ -35,7 +35,7 @@ class Dadiweb_Bootstrap_Bootstrap extends Dadiweb_Throw_ErrorException
 	public function __construct($mode=NULL, $option=array()){
 		parent::__construct();
 		$this->autoload();
-		Dadiweb_Configuration_Kernel::getInstance();
+		Dadiweb_Configuration_Kernel::getInstance()->buildKernel();
 	}
 /***************************************************************/
 	/**
