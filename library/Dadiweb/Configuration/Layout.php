@@ -1,19 +1,19 @@
 <?php
-class Dadiweb_Configuration_Render
+class Dadiweb_Configuration_Layout
 {
 	/**
      * Singleton instance
      * 
-     * @var Dadiweb_Configuration_Render
+     * @var Dadiweb_Configuration_Layout
      */
     protected static $_instance = null;
     
     /**
-     * Render object
+     * Dir of layout
      *
-     * @var Dadiweb_Configuration_Render
+     * @var String()
      */
-    protected $_render = null;
+    protected $_path = null;
     
 /***************************************************************/
 	/**
@@ -21,7 +21,9 @@ class Dadiweb_Configuration_Render
      *
      * @return void
      */
-	protected function __construct(){}
+	protected function __construct(){
+		self::setGeneric();
+	}
 /***************************************************************/
 	/**
      * Singleton pattern implementation makes "clone" unavailable
@@ -31,10 +33,10 @@ class Dadiweb_Configuration_Render
     protected function __clone(){}
 /***************************************************************/
     /**
-     * Returns an instance of Dadiweb_Configuration_Render
+     * Returns an instance of Dadiweb_Configuration_Layout
      * Singleton pattern implementation
      *
-     * @return Dadiweb_Configuration_Render Provides a fluent interface
+     * @return Dadiweb_Configuration_Layout Provides a fluent interface
      */
     public static function getInstance()
     {
@@ -45,49 +47,32 @@ class Dadiweb_Configuration_Render
     }
 /***************************************************************/
     /**
-     * Reset instance of Dadiweb_Configuration_Render
+     * Reset instance of Dadiweb_Configuration_Layout
      * Singleton pattern implementation
      *
-     * @return Dadiweb_Configuration_Render Provides a fluent interface
+     * @return Dadiweb_Configuration_Layout Provides a fluent interface
      */
     public static function resetInstance()
     {
-    	Dadiweb_Render_Bootstrap::resetInstance();
     	return self::$_instance=NULL;
     }
 /***************************************************************/
     /**
-     * Returns Configuration Render
-     *
-     * @return stdClass
-     */
-    public function getGeneric()
-    {
-    	
-    	if($this->_render===NULL){
-    		self::setGeneric();
-    	}
-    	
-    	return $this->_render;
-    }
-/***************************************************************/
-    /**
-     * Setup Configuration Render
+     * Setup Configuration Layout
      *
      * @return stdClass
      */
     protected function setGeneric()
     {
     	if(
-    		!isset(Dadiweb_Configuration_Kernel::getInstance()->getSettings()->resource->Render->bootstrap) ||
-    		!strlen(trim(Dadiweb_Configuration_Kernel::getInstance()->getSettings()->resource->Render->bootstrap))
+    		!isset(Dadiweb_Configuration_Kernel::getInstance()->getSettings()->resource->Layout->path) ||
+    		!strlen($this->_path=trim(Dadiweb_Configuration_Kernel::getInstance()->getSettings()->resource->Layout->path))
     	){
     		throw Dadiweb_Throw_ErrorException::showThrow(
-    				sprintf('Variable into "resource.Render.bootstrap" in the file "%sresourse.ini" is not valid', INI_PATH)
+    				sprintf('Variable into "resource.Layout.path" in the file "%sresourse.ini" is not valid', INI_PATH)
     		);
     	}
-    	Dadiweb_Render_Bootstrap::getInstance(Dadiweb_Configuration_Kernel::getInstance()->getSettings()->resource->Render->bootstrap);
-    	Dadiweb_Render_Bootstrap::resetInstance();
+    	$this->_path=Dadiweb_Aides_Filesystem::pathCreate($this->_path);
     	return;
     }
     
@@ -102,7 +87,9 @@ class Dadiweb_Configuration_Render
 	public function __call($method, $args) 
     {
     	if(!method_exists($this, $method)) { 
-         	throw Dadiweb_Configuration_Exception::getInstance()->getMessage(sprintf('The required method "%s" does not exist for %s', $method, get_class($this))); 
+         	throw Dadiweb_Configuration_Exception::getInstance()->getMessage(
+         		sprintf('The required method "%s" does not exist for %s', $method, get_class($this))
+         	); 
        	} 	
     }
 /***************************************************************/

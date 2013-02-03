@@ -71,6 +71,7 @@ class Dadiweb_Configuration_Kernel
      */
     protected $_rendered = NULL;
     
+    
     /**
      * Pattern (current)
      *
@@ -84,6 +85,13 @@ class Dadiweb_Configuration_Kernel
      * @return Object
      */
     protected $_settings = NULL;
+    
+    /**
+     * Layout (current)
+     *
+     * @return Object
+     */
+    protected $_layout = NULL;
     
 /***************************************************************/
 	/**
@@ -123,6 +131,7 @@ class Dadiweb_Configuration_Kernel
     {
     	self::setPattern(Dadiweb_Configuration_Pattern::getInstance());
     	self::setSettings(Dadiweb_Aides_Array::getInstance()->arr2obj(Dadiweb_Configuration_Settings::getInstance()->getGeneric()));
+    	Dadiweb_Configuration_Layout::getInstance();
     	Dadiweb_Configuration_Render::getInstance()->getGeneric();
     	
 		if(
@@ -178,6 +187,7 @@ class Dadiweb_Configuration_Kernel
 		Dadiweb_Configuration_Render::resetInstance();
 		Dadiweb_Configuration_Pattern::resetInstance();
 		Dadiweb_Configuration_Settings::resetInstance();
+		Dadiweb_Configuration_Layout::resetInstance();
     }
 /***************************************************************/
     /**
@@ -453,7 +463,7 @@ class Dadiweb_Configuration_Kernel
      *
      * Set Rendered
      *
-     * @return Object rendered
+     * @return Nothing
      *
      */
     public function setRendered($options=NULL)
@@ -481,9 +491,39 @@ class Dadiweb_Configuration_Kernel
 /***************************************************************/
     /**
      *
+     * Set Settings
+     *
+     * @return Nothing
+     *
+     */
+    protected function setSettings($options=NULL)
+    {
+    	if($options===NULL){
+			throw Dadiweb_Throw_ErrorException::showThrow('Critical error. Settings undefined.');
+		}
+		$this->_settings=$options;
+    }
+/***************************************************************/
+    /**
+     *
+     * Get Settings
+     *
+     * @return Object settings
+     *
+     */
+    public function getSettings()
+    {
+    	if($this->_settings===NULL){
+    		throw Dadiweb_Throw_ErrorException::showThrow('Critical error. Settings undefined.');
+    	}
+    	return $this->_settings;
+    }
+/***************************************************************/
+    /**
+     *
      * Set Pattern
      *
-     * @return Object pattern
+     * @return Nothing
      *
      */
     protected function setPattern($options=NULL)
@@ -511,32 +551,32 @@ class Dadiweb_Configuration_Kernel
 /***************************************************************/
     /**
      *
-     * Set Settings
+     * Set Layout
      *
-     * @return Object settings
+     * @return Nothing
      *
      */
-    protected function setSettings($options=NULL)
+    protected function setLayout($options=NULL)
     {
     	if($options===NULL){
-			throw Dadiweb_Throw_ErrorException::showThrow('Critical error. Settings undefined.');
+			throw Dadiweb_Throw_ErrorException::showThrow('Critical error. Layout undefined.');
 		}
-		$this->_settings=$options;
+		$this->_layout=$options;
     }
 /***************************************************************/
     /**
      *
-     * Get Settings
+     * Get Layout
      *
-     * @return Object settings
+     * @return Object layout
      *
      */
-    public function getSettings()
+    public function getLayout()
     {
-    	if($this->_settings===NULL){
-    		throw Dadiweb_Throw_ErrorException::showThrow('Critical error. Settings undefined.');
+    	if($this->_layout===NULL){
+    		throw Dadiweb_Throw_ErrorException::showThrow('Critical error. Layout undefined.');
     	}
-    	return $this->_settings;
+    	return $this->_layout;
     }
 /***************************************************************/
 	/**

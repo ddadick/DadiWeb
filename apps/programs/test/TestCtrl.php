@@ -7,5 +7,4 @@ class Test_TestCtrl extends Apps_Programs_Kernel
 		$this->rendered->ad=array('ad');
 		Dadiweb_Aides_Debug::show($this->rendered->ad);
 	}
-
 }
