@@ -10,6 +10,14 @@ class Dadiweb_Render_Smarty
 	protected $_bootstrap = null;
 	
 	/**
+	 * Default set variables
+	 *
+	 * @var Object
+	 */
+	
+	protected $_variables = array();
+	
+	/**
 	 * Filename of rendered class
 	 *
 	 * @var string
@@ -67,7 +75,6 @@ class Dadiweb_Render_Smarty
 			throw Dadiweb_Throw_ErrorException::showThrow(sprintf('Critical error. Variable "resource.Render.bootstrap" from the file "%sresourse.ini" was not transmitted in class "%s"', INI_PATH,get_class($this)));
 		}
 		$this->_bootstrap=$options;
-		//$GLOBALS['SUPERVISOR_RENDER']=self::$options($options);
 		self::$options($options);
 		unset($this);
 		return;
@@ -80,6 +87,7 @@ class Dadiweb_Render_Smarty
 	 */
 	public function _echo($options=NULL)
 	{
+
 		return $options;
 		 
 	}
@@ -142,6 +150,34 @@ class Dadiweb_Render_Smarty
     	$this->_rendered->setCacheDir($this->_cache_dir);
     	return $this;
     	
+    }
+/***************************************************************/
+    /**
+     *
+     * Handler variables that do not exist (input)
+     *
+     * @return Nothing
+     *
+     */
+    public function __set($name, $value)
+    {
+    	$this->_variables[$name] = $value;
+    	$this->_rendered->assign($name,$value);
+    }
+/***************************************************************/
+    /**
+     *
+     * Handler variables that do not exist (output)
+     *
+     * @return $this->_variables
+     *
+     */
+    public function __get($name)
+    {
+    	if (array_key_exists($name, $this->_variables)) {
+    		return $this->_variables[$name];
+    	}
+    	return NULL;
     }
 /***************************************************************/
 	/**

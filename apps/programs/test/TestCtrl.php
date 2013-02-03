@@ -1,16 +1,11 @@
 <?php
-
-class Test_TestCtrl extends test_Test
+class Test_TestCtrl extends Apps_Programs_Kernel
 {
-	
-
 	public function TestMethod(){
 		echo '1';
 		echo 'asdasd';
-		Dadiweb_Aides_Debug::show('asdasdasd');
-		Dadiweb_Aides_Debug::show('asd');
-		
-		parent::testtest();
+		$this->rendered->ad=array('ad');
+		Dadiweb_Aides_Debug::show($this->rendered->ad);
 	}
 
 }

@@ -1,84 +1,16 @@
 <?php
 class Dadiweb_Apps_Programs
 {
-	/**
-     * Singleton instance
-     * 
-     * @var Dadiweb_Apps_Programs
-     */
-    protected static $_instance = null;
-    
 /***************************************************************/
 	/**
      * Singleton pattern implementation makes "new" unavailable
      *
      * @return void
      */
-	protected function __construct(){}
-/***************************************************************/
-	/**
-     * Singleton pattern implementation makes "clone" unavailable
-     *
-     * @return void
-     */
-    protected function __clone(){}
-/***************************************************************/
-    /**
-     * Returns an instance of Dadiweb_Apps_Programs
-     * Singleton pattern implementation
-     *
-     * @return Dadiweb_Apps_Programs Provides a fluent interface
-     */
-    public static function getInstance()
-    {
-    	if (null === self::$_instance) {
-            self::$_instance = new self();
-        }
-        return self::$_instance;
-    }
-/***************************************************************/
-    /**
-     * Reset instance of Dadiweb_Apps_Programs
-     * Singleton pattern implementation
-     *
-     * @return unset Dadiweb_Apps_Programs
-     */
-    public static function resetInstance()
-    {
-    	return self::$_instance=NULL;
-    }
-/***************************************************************/
-    public function loadClass($class=NULL,$path=NULL)
-    {
-    	if($class===NULL){
-    		throw Dadiweb_Throw_ErrorException::showThrow(sprintf('Variable $class is not specified in the file ', __FILE__));
-    	}
-    	if($path===NULL){
-    		throw Dadiweb_Throw_ErrorException::showThrow(sprintf('Variable $path is not specified in the file ', __FILE__));
-    	}
-    	$return=get_include_path();
-    	set_include_path(
-	    	implode(PATH_SEPARATOR,
-    		array(
-    			realpath($path)
-    	)
-    	)
-    	);
-    	//ob_start(array($this,'test'));
-    	$d=$class;
-    	$d=new $d;
-    	set_include_path(
-    	implode(PATH_SEPARATOR,
-    	array(
-    	$return
-    	)
-    	)
-    	);
-    	return $d;
-    }
-    public function test($content){
-    	return (str_replace("as", "oranges", $content));
-    }
+	public function __construct(){
+		
+		
+	}
 /***************************************************************/
 	/**
      * 

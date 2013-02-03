@@ -124,7 +124,7 @@ class Dadiweb_Configuration_Kernel
     	self::setPattern(Dadiweb_Configuration_Pattern::getInstance());
     	self::setSettings(Dadiweb_Aides_Array::getInstance()->arr2obj(Dadiweb_Configuration_Settings::getInstance()->getGeneric()));
     	Dadiweb_Configuration_Render::getInstance()->getGeneric();
-    	Dadiweb_Aides_Debug::show($this->_rendered);
+    	
 		if(
 			!isset(self::getSettings()->resource->Master->path) ||
 			!strlen(trim(self::getSettings()->resource->Master->path)) || 
@@ -172,6 +172,9 @@ class Dadiweb_Configuration_Kernel
 		/**
 		 * End of Kernel
 		 */
+		
+		Dadiweb_Aides_Debug::show(Dadiweb_Configuration_Kernel::getInstance()->getRendered());
+		
 		Dadiweb_Configuration_Render::resetInstance();
 		Dadiweb_Configuration_Pattern::resetInstance();
 		Dadiweb_Configuration_Settings::resetInstance();
@@ -408,7 +411,10 @@ class Dadiweb_Configuration_Kernel
     		}
     		set_include_path(
 	    		implode(PATH_SEPARATOR,
-    				$path
+    				array_merge(
+    					$path,
+    					$return
+    				)
     			)
     		);
     	}else{
@@ -418,7 +424,8 @@ class Dadiweb_Configuration_Kernel
 	    	set_include_path(
     			implode(PATH_SEPARATOR,
 			    	array(
-    					realpath($path)
+    					realpath($path),
+    					$return
 			    	)
     			)
     		);
@@ -464,7 +471,7 @@ class Dadiweb_Configuration_Kernel
      * @return Object rendered
      *
      */
-    protected function getRendered()
+    public function getRendered()
     {
     	if($this->_rendered===NULL){
     		throw Dadiweb_Throw_ErrorException::showThrow('Critical error. Rendered undefined.');
