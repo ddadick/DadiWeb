@@ -63,7 +63,7 @@ class Apps_Programs_Kernel
 	public function __call($method, $args) 
     {
     	if(!method_exists($this, $method)) { 
-         	throw Apps_Programs_Exception::getInstance()->getMessage(sprintf('The required method "%s" does not exist for %s', $method, get_class($this))); 
+    		throw Dadiweb_Throw_ErrorException::showThrow(sprintf('The required method "%s" does not exist for %s', $method, get_class($this))); 
        	} 	
     }
 /***************************************************************/
