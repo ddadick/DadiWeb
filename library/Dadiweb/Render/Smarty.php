@@ -87,8 +87,26 @@ class Dadiweb_Render_Smarty
 	 */
 	public function _echo($options=NULL)
 	{
-
-		return $options;
+		$return=get_include_path();
+		set_include_path(
+			implode(PATH_SEPARATOR,
+				array(
+					dirname(__FILE__).DIRECTORY_SEPARATOR,
+					$return
+				)
+			)
+		);
+		$this->content=$options;
+		$this->_rendered->setTemplateDir(Dadiweb_Configuration_Layout::getInstance()->getPathGeneric());
+		$this->content=$this->_rendered->display('index.tpl');
+		set_include_path(
+			implode(PATH_SEPARATOR,
+				array(
+					$return
+				)
+			)
+		);
+		return $this->content; 
 		 
 	}
 /***************************************************************/
@@ -148,6 +166,7 @@ class Dadiweb_Render_Smarty
     	 */
     	$this->_rendered->setCompileDir($this->_compile_dir);
     	$this->_rendered->setCacheDir($this->_cache_dir);
+    	//$this->_rendered->caching=true;
     	return $this;
     	
     }

@@ -181,8 +181,9 @@ class Dadiweb_Configuration_Kernel
 		/**
 		 * End of Kernel
 		 */
-		
-		Dadiweb_Aides_Debug::show(Dadiweb_Configuration_Kernel::getInstance()->getRendered());
+		//self::getRendered()->setTemplateDir(Dadiweb_Configuration_Layout::getInstance()->getPathGeneric());
+		//Dadiweb_Aides_Debug::show(Dadiweb_Configuration_Kernel::getInstance()->getRendered());
+		//Dadiweb_Aides_Debug::show(Dadiweb_Configuration_Kernel::getInstance()->getRendered());
 		
 		Dadiweb_Configuration_Render::resetInstance();
 		Dadiweb_Configuration_Pattern::resetInstance();
@@ -385,18 +386,6 @@ class Dadiweb_Configuration_Kernel
 /***************************************************************/
     /**
      *
-     * Output buffer (current)
-     *
-     * @return Object
-     *
-     */
-    
-    protected function ob_buffer($content){
-    	return self::getRendered()->_echo($content);
-    }
-/***************************************************************/
-    /**
-     *
      * Init external Class
      *
      * @return Object
@@ -442,9 +431,8 @@ class Dadiweb_Configuration_Kernel
     	}
     	$GLOBALS['SUPERVISOR_STOP']=NULL;
     	$class=new $class;
-    	ob_start(array($this,'ob_buffer'));
     	$class->$method();
-    	ob_end_flush();
+    	self::getRendered()->_echo();
     	if($GLOBALS['SUPERVISOR_STOP']!==NULL){
     		exit;
     	}
@@ -589,7 +577,9 @@ class Dadiweb_Configuration_Kernel
 	public function __call($method, $args) 
     {
     	if(!method_exists($this, $method)) { 
-         	throw Dadiweb_Configuration_Exception::getInstance()->getMessage(sprintf('The required method "%s" does not exist for %s', $method, get_class($this))); 
+         	throw Dadiweb_Configuration_Exception::getInstance()->getMessage(
+         		sprintf('The required method "%s" does not exist for %s', $method, get_class($this))
+         	); 
        	} 	
     }
 /***************************************************************/

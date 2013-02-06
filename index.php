@@ -4,7 +4,7 @@
 date_default_timezone_set('Europe/Helsinki');
 
 //Error List for interrupt handling
-error_reporting(E_ALL | E_STRICT);
+//error_reporting(E_ALL | E_STRICT);
 
 //Set output options for PHP errors
 ini_set('display_errors','On');

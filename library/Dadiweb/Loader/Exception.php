@@ -48,13 +48,13 @@ class Dadiweb_Loader_Exception
 		$trace_log=array_reverse(debug_backtrace());
 		$trace_result=array();
 		foreach ($trace_log as $trace){
-			if(false===array_search('Dadiweb_Loader_Exception',$trace['args']) && $trace['class']!='Dadiweb_Loader_Exception' && $trace['function']!='__call'){
+			if(isset($trace['args']) && count($trace['args']) && false===array_search('Dadiweb_Loader_Exception',$trace['args']) && $trace['class']!='Dadiweb_Loader_Exception' && $trace['function']!='__call'){
 				array_push($trace_result,
 				(isset($trace['file'])?' file "'.$trace['file'].'","':'')
 				.(isset($trace['line'])?' line "'.$trace['line'].'" :"':'')
 				.(isset($trace['class'])?' class - "'.$trace['class'].'";"':'')
 				.(isset($trace['function'])?' method - "'.$trace['function'].'";"':'')
-				.((count($trace['args'])>0)?' argumnets - \''.implode("','", $trace['args']).'\';':'')
+				//.((count($trace['args'])>0)?' argumnets - \''.implode("','", $trace['args']).'\';':'')
 				);
 			}
 			$i=$i+1;

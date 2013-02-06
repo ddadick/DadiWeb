@@ -183,6 +183,7 @@ abstract class Smarty_Internal_TemplateBase extends Smarty_Internal_Data {
                             $_template->capture_error();
                         }
                         array_shift($_template->_capture_stack);
+                        
                     } catch (Exception $e) {
                         ob_get_clean();
                         throw $e;

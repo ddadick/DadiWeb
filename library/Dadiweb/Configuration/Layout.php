@@ -13,7 +13,7 @@ class Dadiweb_Configuration_Layout
      *
      * @var String()
      */
-    protected $_path = null;
+    protected $_path_generic = null;
     
 /***************************************************************/
 	/**
@@ -66,16 +66,26 @@ class Dadiweb_Configuration_Layout
     {
     	if(
     		!isset(Dadiweb_Configuration_Kernel::getInstance()->getSettings()->resource->Layout->path) ||
-    		!strlen($this->_path=trim(Dadiweb_Configuration_Kernel::getInstance()->getSettings()->resource->Layout->path))
+    		!strlen($this->_path_generic=trim(Dadiweb_Configuration_Kernel::getInstance()->getSettings()->resource->Layout->path))
     	){
     		throw Dadiweb_Throw_ErrorException::showThrow(
-    				sprintf('Variable into "resource.Layout.path" in the file "%sresourse.ini" is not valid', INI_PATH)
+    			sprintf('Variable into "resource.Layout.path" in the file "%sresourse.ini" is not valid', INI_PATH)
     		);
     	}
-    	$this->_path=Dadiweb_Aides_Filesystem::pathCreate($this->_path);
+    	$this->_path_generic=Dadiweb_Aides_Filesystem::pathCreate($this->_path_generic);
     	return;
     }
     
+/***************************************************************/
+    /**
+     * Get Path generic layout
+     *
+     * @return String()
+     */
+    public function getPathGeneric()
+    {
+    	return $this->_path_generic;
+    }
 /***************************************************************/
 	/**
      * 
