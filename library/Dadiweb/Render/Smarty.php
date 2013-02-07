@@ -166,7 +166,6 @@ class Dadiweb_Render_Smarty
     	 */
     	$this->_rendered->setCompileDir($this->_compile_dir);
     	$this->_rendered->setCacheDir($this->_cache_dir);
-    	//$this->_rendered->caching=true;
     	return $this;
     	
     }
