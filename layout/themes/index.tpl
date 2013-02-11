@@ -1,3 +1,4 @@
+{$content}
 {$ad}<br />
 {foreach $array as $item}
 {$item}<br />

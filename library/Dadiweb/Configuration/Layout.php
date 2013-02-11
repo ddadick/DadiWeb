@@ -15,6 +15,13 @@ class Dadiweb_Configuration_Layout
      */
     protected $_path_generic = null;
     
+    /**
+     * Name of template
+     *
+     * @var String()
+     */
+    protected $_template = null;
+    
 /***************************************************************/
 	/**
      * Singleton pattern implementation makes "new" unavailable
@@ -64,6 +71,7 @@ class Dadiweb_Configuration_Layout
      */
     protected function setGeneric()
     {
+    	
     	if(
     		!isset(Dadiweb_Configuration_Kernel::getInstance()->getSettings()->resource->Layout->path) ||
     		!strlen($this->_path_generic=trim(Dadiweb_Configuration_Kernel::getInstance()->getSettings()->resource->Layout->path))
@@ -75,16 +83,58 @@ class Dadiweb_Configuration_Layout
     	$this->_path_generic=Dadiweb_Aides_Filesystem::pathCreate($this->_path_generic);
     	return;
     }
-    
 /***************************************************************/
     /**
      * Get Path generic layout
      *
      * @return String()
      */
-    public function getPathGeneric()
+    protected function getPathGeneric()
     {
     	return $this->_path_generic;
+    }
+/***************************************************************/
+    /**
+     * Set name of template
+     *
+     * @return Nothing
+     */
+    protected function setTemplate($options=NULL)
+    {
+    	if($options===NULL && !is_string($options) && !strlen(trim($options))){
+    		throw Dadiweb_Throw_ErrorException::showThrow(
+    				sprintf('Template in the class "%s" is not specified', get_class($this))
+    		);
+    	}
+    	$this->_template=$options;
+    }
+/***************************************************************/
+    /**
+     * Get name of template
+     *
+     * @return String()
+     */
+    public function getTemplate()
+    {
+    	if($this->_template===NULL && !is_string($this->_template) && !strlen(trim($this->_template))){
+    		throw Dadiweb_Throw_ErrorException::showThrow(
+    				sprintf('Template in the class "%s" is not specified', get_class($this))
+    		);
+    	}
+    	return $this->_template;
+    }
+/***************************************************************/
+    /**
+     * Return HTML
+     *
+     * @return String()
+     * 
+     */
+    public function getRendered()
+    {
+    	self::setTemplate('index.tpl');
+    	Dadiweb_Configuration_Kernel::getInstance()->getRendered()->getRender()->setTemplateDir(self::getPathGeneric());
+    	return Dadiweb_Configuration_Kernel::getInstance()->getRendered()->_echo();
     }
 /***************************************************************/
 	/**

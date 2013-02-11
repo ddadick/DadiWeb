@@ -131,8 +131,9 @@ class Dadiweb_Configuration_Kernel
     {
     	self::setPattern(Dadiweb_Configuration_Pattern::getInstance());
     	self::setSettings(Dadiweb_Aides_Array::getInstance()->arr2obj(Dadiweb_Configuration_Settings::getInstance()->getGeneric()));
-    	Dadiweb_Configuration_Layout::getInstance();
+    	self::setLayout(Dadiweb_Configuration_Layout::getInstance());
     	Dadiweb_Configuration_Render::getInstance()->getGeneric();
+    	//Dadiweb_Aides_Debug::show(self::getLayout(),true);
     	
 		if(
 			!isset(self::getSettings()->resource->Master->path) ||
@@ -179,12 +180,12 @@ class Dadiweb_Configuration_Kernel
 		self::ob_class(self::getPath(),self::getClass(), self::getMethod());
 		
 		/**
+		 * Rendered
+		 */
+		echo self::getLayout()->getRendered();
+		/**
 		 * End of Kernel
 		 */
-		//self::getRendered()->setTemplateDir(Dadiweb_Configuration_Layout::getInstance()->getPathGeneric());
-		//Dadiweb_Aides_Debug::show(Dadiweb_Configuration_Kernel::getInstance()->getRendered());
-		//Dadiweb_Aides_Debug::show(Dadiweb_Configuration_Kernel::getInstance()->getRendered());
-		
 		Dadiweb_Configuration_Render::resetInstance();
 		Dadiweb_Configuration_Pattern::resetInstance();
 		Dadiweb_Configuration_Settings::resetInstance();
@@ -432,7 +433,6 @@ class Dadiweb_Configuration_Kernel
     	$GLOBALS['SUPERVISOR_STOP']=NULL;
     	$class=new $class;
     	$class->$method();
-    	self::getRendered()->_echo();
     	if($GLOBALS['SUPERVISOR_STOP']!==NULL){
     		exit;
     	}
