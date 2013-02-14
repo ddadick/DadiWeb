@@ -133,7 +133,7 @@ class Dadiweb_Configuration_Kernel
     	self::setSettings(Dadiweb_Aides_Array::getInstance()->arr2obj(Dadiweb_Configuration_Settings::getInstance()->getGeneric()));
     	self::setLayout(Dadiweb_Configuration_Layout::getInstance());
     	Dadiweb_Configuration_Render::getInstance()->getGeneric();
-    	//Dadiweb_Aides_Debug::show(self::getLayout(),true);
+    	//Dadiweb_Aides_Debug::show(APPS_PATH,true);
     	
 		if(
 			!isset(self::getSettings()->resource->Master->path) ||
@@ -169,7 +169,21 @@ class Dadiweb_Configuration_Kernel
 				!strlen(trim(self::setMethod(ucfirst(self::getSettings()->resource->Master->method).'Method')))
 			){
 				self::setMethod('IndexMethod');
-			}elseif(false===realpath(self::setPathCtrl(self::getPath().DIRECTORY_SEPARATOR.self::getProgram()))){
+			}elseif(false===realpath(
+						self::setPathCtrl(
+							self::getPath().DIRECTORY_SEPARATOR.self::getProgram().DIRECTORY_SEPARATOR.
+							(
+								(isset(self::getSettings()->resource->App->ctrl))
+								?(
+									(strlen(trim(self::setPathCtrl(self::getSettings()->resource->App->ctrl))))
+									?self::getPathCtrl()
+									:'ctrl'
+								)
+								:'ctrl'
+							)
+						)
+					)
+			){
 				throw Dadiweb_Throw_ErrorException::showThrow(sprintf('Directory "%s" does not exist', self::getPathCtrl()));
 			}elseif(false===is_file(self::setFileCtrl(self::getPathCtrl().DIRECTORY_SEPARATOR.ucfirst(self::getController()).'Ctrl.php'))){
 				throw Dadiweb_Throw_ErrorException::showThrow(sprintf('File "%s" does not exist', self::getFileCtrl()));
@@ -177,7 +191,8 @@ class Dadiweb_Configuration_Kernel
 			self::setClass(self::getProgram()."_".ucfirst(self::getController()).'Ctrl');
 			
 		}
-		self::ob_class(self::getPath(),self::getClass(), self::getMethod());
+		//Dadiweb_Aides_Debug::show(self::getPathCtrl(),true);
+		self::ob_class(self::getPathCtrl(),self::getClass(), self::getMethod());
 		
 		/**
 		 * Rendered
@@ -410,10 +425,12 @@ class Dadiweb_Configuration_Kernel
     			}
     		}
     		set_include_path(
-	    		implode(PATH_SEPARATOR,
+    			implode(PATH_SEPARATOR,
     				array_merge(
     					$path,
-    					$return
+	    				explode(PATH_SEPARATOR,
+    						$return
+    					)
     				)
     			)
     		);
