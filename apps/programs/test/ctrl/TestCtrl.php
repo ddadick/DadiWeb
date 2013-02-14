@@ -1,6 +1,9 @@
 <?php
 class Test_TestCtrl extends Apps_Programs_Kernel
 {
+	public function IndexMethod(){
+
+	}
 	public function TestMethod(){
 		echo '1';
 		//echo 'asdasd';

@@ -30,6 +30,13 @@ class Dadiweb_Configuration_Kernel
     protected $_method = NULL;
     
     /**
+     * Default method
+     *
+     * @return String()
+     */
+    protected $_method_default = NULL;
+    
+    /**
      * Current model
      *
      * @return String()
@@ -165,17 +172,59 @@ class Dadiweb_Configuration_Kernel
 						sprintf('Value into "resource.Master.ctrl" in the file "%sresourse.ini" is not valid or empty', INI_PATH)
 				);
 			}elseif(
-				!isset(self::getSettings()->resource->Master->method) || 
-				!strlen(trim(self::setMethod(ucfirst(self::getSettings()->resource->Master->method).'Method')))
+				!isset(self::getSettings()->resource->Master->method) 
+				|| !strlen(
+					trim(
+						self::setMethod(
+							ucfirst(self::getSettings()->resource->Master->method).
+							(
+								(isset(self::getSettings()->resource->App->method))
+								?(
+									(strlen(trim(self::setMethod(self::getSettings()->resource->App->method))))
+									?ucfirst(self::getMethod())
+									:'Method'
+								)
+								:'Method'
+							)
+						)
+					)	
+				)
+				|| !strlen(
+					trim(
+						self::setMethodDefault(
+							ucfirst(
+								(
+									(isset(self::getSettings()->resource->App->method_default))
+									?(
+										(strlen(trim(self::setMethodDefault(self::getSettings()->resource->App->method_default))))
+										?ucfirst(self::getMethodDefault())
+										:ucfirst('Index')
+									)
+									:ucfirst('Index')
+								)
+							)
+							.(
+								(isset(self::getSettings()->resource->App->method))
+								?(
+									(strlen(trim(self::getSettings()->resource->App->method)))
+									?ucfirst(self::getSettings()->resource->App->method)
+									:ucfirst('Method')
+								)
+								:ucfirst('Method')
+							)
+						)
+					)	
+				)
 			){
+				self::setMethodDefault('IndexMethod');
 				self::setMethod('IndexMethod');
 			}elseif(false===realpath(
 						self::setPathCtrl(
 							self::getPath().DIRECTORY_SEPARATOR.self::getProgram().DIRECTORY_SEPARATOR.
 							(
-								(isset(self::getSettings()->resource->App->ctrl))
+								(isset(self::getSettings()->resource->App->ctrl_path))
 								?(
-									(strlen(trim(self::setPathCtrl(self::getSettings()->resource->App->ctrl))))
+									(strlen(trim(self::setPathCtrl(self::getSettings()->resource->App->ctrl_path))))
 									?self::getPathCtrl()
 									:'ctrl'
 								)
@@ -313,6 +362,30 @@ class Dadiweb_Configuration_Kernel
     protected function getMethod()
     {
     	return $this->_method;
+    }
+/***************************************************************/
+    /**
+     *
+     * Set default method
+     *
+     * @var String()
+     *
+     */
+    protected function setMethodDefault($method_default=NULL)
+    {
+    	return $this->_method_default=$method_default;
+    }
+/***************************************************************/
+    /**
+     *
+     * Get default method
+     *
+     * @return String()
+     *
+     */
+    protected function getMethodDefault()
+    {
+    	return $this->_method_default;
     }
 /***************************************************************/
     /**
@@ -460,7 +533,12 @@ class Dadiweb_Configuration_Kernel
     	}
     	$GLOBALS['SUPERVISOR_STOP']=NULL;
     	$class=new $class;
-    	$class->$method();
+    	if (method_exists($class, self::getMethodDefault())) {
+    		$class->$method();
+    	}else{
+    		$method=self::getMethodDefault();
+    		$class->$method();
+    	}
     	if($GLOBALS['SUPERVISOR_STOP']!==NULL){
     		exit;
     	}
