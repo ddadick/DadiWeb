@@ -185,7 +185,18 @@ class Dadiweb_Configuration_Kernel
 					)
 			){
 				throw Dadiweb_Throw_ErrorException::showThrow(sprintf('Directory "%s" does not exist', self::getPathCtrl()));
-			}elseif(false===is_file(self::setFileCtrl(self::getPathCtrl().DIRECTORY_SEPARATOR.ucfirst(self::getController()).'Ctrl.php'))){
+			}elseif(false===is_file(
+						(isset(self::getSettings()->resource->App->ctrl_class))
+						?(
+							(strlen(trim(self::setFileCtrl(self::getSettings()->resource->App->ctrl_class))))
+							?(
+								self::setFileCtrl(self::getPathCtrl().DIRECTORY_SEPARATOR.ucfirst(self::getController()).ucfirst(self::getFileCtrl().'.php'))
+							)
+							:(self::setFileCtrl(self::getPathCtrl().DIRECTORY_SEPARATOR.ucfirst(self::getController()).'Ctrl.php'))
+						)
+						:self::setFileCtrl(self::getPathCtrl().DIRECTORY_SEPARATOR.ucfirst(self::getController()).'Ctrl.php')
+					)
+			){
 				throw Dadiweb_Throw_ErrorException::showThrow(sprintf('File "%s" does not exist', self::getFileCtrl()));
 			}
 			self::setClass(self::getProgram()."_".ucfirst(self::getController()).'Ctrl');
