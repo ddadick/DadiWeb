@@ -165,7 +165,7 @@ class Dadiweb_Configuration_Layout
      * @return String()
      * 
      */
-    public function getRendered()
+    public function getRendered($content='')
     {
     	self::setTemplate('index.tpl');
     	/**
@@ -183,7 +183,7 @@ class Dadiweb_Configuration_Layout
     	);
     	*/
     	Dadiweb_Configuration_Kernel::getInstance()->getRendered()->getRender()->setTemplateDir(self::getPathGeneric());
-    	return Dadiweb_Configuration_Kernel::getInstance()->getRendered()->_echo();
+    	return Dadiweb_Configuration_Kernel::getInstance()->getRendered()->_echo($content);
     }
 /***************************************************************/
 	/**

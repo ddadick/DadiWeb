@@ -57,12 +57,8 @@ class Dadiweb_Throw_ErrorException extends ErrorException
 	foreach ($trace_result as $key=>$trace){
 		echo '#'.($key+1).' '.$trace.'<br />';
 	}
-	$p=ob_get_contents();
-	$GLOBALS['SUPERVISOR_THROW']=ob_get_contents();
-	$GLOBALS['SUPERVISOR_STOP']=true;
-	ob_end_clean();
+	ob_end_flush();
 	exit;
-   	//return;
    }
 /***************************************************************/
 }

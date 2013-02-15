@@ -251,13 +251,12 @@ class Dadiweb_Configuration_Kernel
 			self::setClass(self::getProgram()."_".ucfirst(self::getController()).'Ctrl');
 			
 		}
-		//Dadiweb_Aides_Debug::show(self::getPathCtrl(),true);
-		self::ob_class(self::getPathCtrl(),self::getClass(), self::getMethod());
-		
 		/**
 		 * Rendered
 		 */
-		echo self::getLayout()->getRendered();
+		echo self::getLayout()->getRendered(
+				self::ob_class(self::getPathCtrl(),self::getClass(), self::getMethod())
+		);
 		/**
 		 * End of Kernel
 		 */
@@ -531,16 +530,13 @@ class Dadiweb_Configuration_Kernel
     			)
     		);
     	}
-    	$GLOBALS['SUPERVISOR_STOP']=NULL;
+    	ob_start();
     	$class=new $class;
     	if (method_exists($class, self::getMethodDefault())) {
     		$class->$method();
     	}else{
     		$method=self::getMethodDefault();
     		$class->$method();
-    	}
-    	if($GLOBALS['SUPERVISOR_STOP']!==NULL){
-    		exit;
     	}
     	set_include_path(
 	    	implode(PATH_SEPARATOR,
@@ -549,7 +545,7 @@ class Dadiweb_Configuration_Kernel
 		    	)
     		)
     	);
-    	return;
+    	return ob_get_clean();
     }
 
 /***************************************************************/
