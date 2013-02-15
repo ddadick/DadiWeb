@@ -97,8 +97,7 @@ class Dadiweb_Render_Smarty
 			)
 		);
 		$this->content=$options;
-		$this->_rendered->setTemplateDir(Dadiweb_Configuration_Layout::getInstance()->getPathGeneric());
-		$this->content=$this->_rendered->display('index.tpl');
+		$this->content=$this->_rendered->fetch(Dadiweb_Configuration_Kernel::getInstance()->getLayout()->getTemplate());
 		set_include_path(
 			implode(PATH_SEPARATOR,
 				array(
@@ -168,6 +167,23 @@ class Dadiweb_Render_Smarty
     	$this->_rendered->setCacheDir($this->_cache_dir);
     	return $this;
     	
+    }
+/***************************************************************/
+    /**
+     *
+     * Handler $this
+     *
+     * @return Rendered
+     *
+     */
+    public function getRender()
+    {
+    	if($this->_rendered===NULL){
+    		throw Dadiweb_Throw_ErrorException::showThrow(
+    				sprintf('Variable $_rendered in the class "%s" does not exist', get_class($this))
+    		);
+    	}
+    	return $this->_rendered;
     }
 /***************************************************************/
     /**

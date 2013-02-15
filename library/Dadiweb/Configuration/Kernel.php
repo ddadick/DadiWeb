@@ -30,6 +30,13 @@ class Dadiweb_Configuration_Kernel
     protected $_method = NULL;
     
     /**
+     * Default method
+     *
+     * @return String()
+     */
+    protected $_method_default = NULL;
+    
+    /**
      * Current model
      *
      * @return String()
@@ -131,8 +138,9 @@ class Dadiweb_Configuration_Kernel
     {
     	self::setPattern(Dadiweb_Configuration_Pattern::getInstance());
     	self::setSettings(Dadiweb_Aides_Array::getInstance()->arr2obj(Dadiweb_Configuration_Settings::getInstance()->getGeneric()));
-    	Dadiweb_Configuration_Layout::getInstance();
+    	self::setLayout(Dadiweb_Configuration_Layout::getInstance());
     	Dadiweb_Configuration_Render::getInstance()->getGeneric();
+    	//Dadiweb_Aides_Debug::show(APPS_PATH,true);
     	
 		if(
 			!isset(self::getSettings()->resource->Master->path) ||
@@ -164,27 +172,94 @@ class Dadiweb_Configuration_Kernel
 						sprintf('Value into "resource.Master.ctrl" in the file "%sresourse.ini" is not valid or empty', INI_PATH)
 				);
 			}elseif(
-				!isset(self::getSettings()->resource->Master->method) || 
-				!strlen(trim(self::setMethod(ucfirst(self::getSettings()->resource->Master->method).'Method')))
+				!isset(self::getSettings()->resource->Master->method) 
+				|| !strlen(
+					trim(
+						self::setMethod(
+							ucfirst(self::getSettings()->resource->Master->method).
+							(
+								(isset(self::getSettings()->resource->App->method))
+								?(
+									(strlen(trim(self::setMethod(self::getSettings()->resource->App->method))))
+									?ucfirst(self::getMethod())
+									:'Method'
+								)
+								:'Method'
+							)
+						)
+					)	
+				)
+				|| !strlen(
+					trim(
+						self::setMethodDefault(
+							ucfirst(
+								(
+									(isset(self::getSettings()->resource->App->method_default))
+									?(
+										(strlen(trim(self::setMethodDefault(self::getSettings()->resource->App->method_default))))
+										?ucfirst(self::getMethodDefault())
+										:ucfirst('Index')
+									)
+									:ucfirst('Index')
+								)
+							)
+							.(
+								(isset(self::getSettings()->resource->App->method))
+								?(
+									(strlen(trim(self::getSettings()->resource->App->method)))
+									?ucfirst(self::getSettings()->resource->App->method)
+									:ucfirst('Method')
+								)
+								:ucfirst('Method')
+							)
+						)
+					)	
+				)
 			){
+				self::setMethodDefault('IndexMethod');
 				self::setMethod('IndexMethod');
-			}elseif(false===realpath(self::setPathCtrl(self::getPath().DIRECTORY_SEPARATOR.self::getProgram()))){
+			}elseif(false===realpath(
+						self::setPathCtrl(
+							self::getPath().DIRECTORY_SEPARATOR.self::getProgram().DIRECTORY_SEPARATOR.
+							(
+								(isset(self::getSettings()->resource->App->ctrl_path))
+								?(
+									(strlen(trim(self::setPathCtrl(self::getSettings()->resource->App->ctrl_path))))
+									?self::getPathCtrl()
+									:'ctrl'
+								)
+								:'ctrl'
+							)
+						)
+					)
+			){
 				throw Dadiweb_Throw_ErrorException::showThrow(sprintf('Directory "%s" does not exist', self::getPathCtrl()));
-			}elseif(false===is_file(self::setFileCtrl(self::getPathCtrl().DIRECTORY_SEPARATOR.ucfirst(self::getController()).'Ctrl.php'))){
+			}elseif(false===is_file(
+						(isset(self::getSettings()->resource->App->ctrl_class))
+						?(
+							(strlen(trim(self::setFileCtrl(self::getSettings()->resource->App->ctrl_class))))
+							?(
+								self::setFileCtrl(self::getPathCtrl().DIRECTORY_SEPARATOR.ucfirst(self::getController()).ucfirst(self::getFileCtrl().'.php'))
+							)
+							:(self::setFileCtrl(self::getPathCtrl().DIRECTORY_SEPARATOR.ucfirst(self::getController()).'Ctrl.php'))
+						)
+						:self::setFileCtrl(self::getPathCtrl().DIRECTORY_SEPARATOR.ucfirst(self::getController()).'Ctrl.php')
+					)
+			){
 				throw Dadiweb_Throw_ErrorException::showThrow(sprintf('File "%s" does not exist', self::getFileCtrl()));
 			}
 			self::setClass(self::getProgram()."_".ucfirst(self::getController()).'Ctrl');
 			
 		}
-		self::ob_class(self::getPath(),self::getClass(), self::getMethod());
-		
+		/**
+		 * Rendered
+		 */
+		echo self::getLayout()->getRendered(
+				self::ob_class(self::getPathCtrl(),self::getClass(), self::getMethod())
+		);
 		/**
 		 * End of Kernel
 		 */
-		//self::getRendered()->setTemplateDir(Dadiweb_Configuration_Layout::getInstance()->getPathGeneric());
-		//Dadiweb_Aides_Debug::show(Dadiweb_Configuration_Kernel::getInstance()->getRendered());
-		//Dadiweb_Aides_Debug::show(Dadiweb_Configuration_Kernel::getInstance()->getRendered());
-		
 		Dadiweb_Configuration_Render::resetInstance();
 		Dadiweb_Configuration_Pattern::resetInstance();
 		Dadiweb_Configuration_Settings::resetInstance();
@@ -286,6 +361,30 @@ class Dadiweb_Configuration_Kernel
     protected function getMethod()
     {
     	return $this->_method;
+    }
+/***************************************************************/
+    /**
+     *
+     * Set default method
+     *
+     * @var String()
+     *
+     */
+    protected function setMethodDefault($method_default=NULL)
+    {
+    	return $this->_method_default=$method_default;
+    }
+/***************************************************************/
+    /**
+     *
+     * Get default method
+     *
+     * @return String()
+     *
+     */
+    protected function getMethodDefault()
+    {
+    	return $this->_method_default;
     }
 /***************************************************************/
     /**
@@ -409,10 +508,12 @@ class Dadiweb_Configuration_Kernel
     			}
     		}
     		set_include_path(
-	    		implode(PATH_SEPARATOR,
+    			implode(PATH_SEPARATOR,
     				array_merge(
     					$path,
-    					$return
+	    				explode(PATH_SEPARATOR,
+    						$return
+    					)
     				)
     			)
     		);
@@ -429,12 +530,13 @@ class Dadiweb_Configuration_Kernel
     			)
     		);
     	}
-    	$GLOBALS['SUPERVISOR_STOP']=NULL;
+    	ob_start();
     	$class=new $class;
-    	$class->$method();
-    	self::getRendered()->_echo();
-    	if($GLOBALS['SUPERVISOR_STOP']!==NULL){
-    		exit;
+    	if (method_exists($class, self::getMethodDefault())) {
+    		$class->$method();
+    	}else{
+    		$method=self::getMethodDefault();
+    		$class->$method();
     	}
     	set_include_path(
 	    	implode(PATH_SEPARATOR,
@@ -443,7 +545,7 @@ class Dadiweb_Configuration_Kernel
 		    	)
     		)
     	);
-    	return;
+    	return ob_get_clean();
     }
 
 /***************************************************************/
