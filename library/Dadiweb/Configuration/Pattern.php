@@ -50,6 +50,13 @@ class Dadiweb_Configuration_Pattern
    	 * @var Dadiweb_Configuration_Pattern
    	 */
    	protected static $_instance = null;
+   	
+   	/**
+   	 * Set administrative basic control
+   	 *
+   	 * @var ABC
+   	 */
+   	protected $_abc = NULL;
 /***************************************************************/   	
 	/**
      * Singleton pattern implementation makes "new" unavailable
@@ -100,8 +107,28 @@ class Dadiweb_Configuration_Pattern
      */
 	protected function setMVC(){
    		$this->uri=split('\/',substr(Dadiweb_Http_Client::getInstance()->getUri(), 1),4);
+   		/**
+   		 * Checking login administrative basic control
+   		 */
+   		if(
+   			strtolower($this->uri[0])==(
+   				(
+   					isset(Dadiweb_Configuration_Kernel::getInstance()->getSettings()->resource->Master->abc) 
+   					&& strlen(trim(self::setABC(strtolower(Dadiweb_Configuration_Kernel::getInstance()->getSettings()->resource->Master->abc))))
+   				)
+   				?self::getABC()
+   				:strtolower('abc')
+   			) && count($this->uri)>1
+   		){
+   			$this->uri=split('\/',implode('/',(array_shift($this->uri)?$this->uri:array('/'))),4);
+   		}elseif(strtolower($this->uri[0])==self::getABC() && count($this->uri)==1){
+   			$this->uri[0]='';
+   		}else{
+   			self::setABC();
+   		}
 		$i=0;
 		if(is_array($this->uri)){
+			
 			foreach($this->uri as $value){
 				if(($value==NULL or strlen(trim($value))<=0) and $i<4){
 					$this->uri[$i]=NULL;
@@ -244,6 +271,30 @@ class Dadiweb_Configuration_Pattern
    			return $this->variables[$name];
    		}
    		return $param;
+   	}
+/***************************************************************/    	
+    /**
+   	 * 
+   	 * Set administrative basic control
+   	 * 
+   	 * @return ABC
+   	 * 
+   	 */
+   	protected function setABC($_abc=NULL)
+   	{
+   		return $this->_abc=$_abc;
+   	}
+/***************************************************************/    	
+    /**
+   	 * 
+   	 * Get administrative basic control
+   	 * 
+   	 * @return ABC
+   	 * 
+   	 */
+   	public function getABC()
+   	{
+   		return $this->_abc;
    	}
 /***************************************************************/
    	/**
