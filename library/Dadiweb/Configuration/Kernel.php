@@ -137,21 +137,23 @@ class Dadiweb_Configuration_Kernel
     public function buildKernel()
     {
     	self::setSettings(Dadiweb_Aides_Array::getInstance()->arr2obj(Dadiweb_Configuration_Settings::getInstance()->getGeneric()));
+    	if(
+    			!isset(self::getSettings()->resource->Master->path) ||
+    			!strlen(trim(self::getSettings()->resource->Master->path)) ||
+    			self::setPath(self::getSettings()->resource->Master->path)===NULL ||
+    			false===realpath(self::getPath())
+    	){
+    		throw Dadiweb_Throw_ErrorException::showThrow(
+    				sprintf('Path into "resource.Master.path" in the file "%sresourse.ini" is not valid', INI_PATH)
+    		);
+    	}
+    	Dadiweb_Aides_Debug::show(Dadiweb_Configuration_Routes::getInstance()->getGeneric(),true);
     	self::setPattern(Dadiweb_Configuration_Pattern::getInstance());
     	self::setLayout(Dadiweb_Configuration_Layout::getInstance());
     	Dadiweb_Configuration_Render::getInstance()->getGeneric();
     	//Dadiweb_Aides_Debug::show(APPS_PATH,true);
     	
-		if(
-			!isset(self::getSettings()->resource->Master->path) ||
-			!strlen(trim(self::getSettings()->resource->Master->path)) || 
-			self::setPath(self::getSettings()->resource->Master->path)===NULL ||
-			false===realpath(self::getPath())
-		){
-			throw Dadiweb_Throw_ErrorException::showThrow(
-					sprintf('Path into "resource.Master.path" in the file "%sresourse.ini" is not valid', INI_PATH)
-			);
-		}
+		
 		if(
 			NULL===self::getPattern()->getApplication() &&
 			NULL===self::getPattern()->getController() && 
@@ -256,7 +258,7 @@ class Dadiweb_Configuration_Kernel
 				throw Dadiweb_Throw_ErrorException::showThrow(sprintf('File "%s" does not exist', self::getFileCtrl()));
 			}		
 		}
-		Dadiweb_Aides_Debug::show(array(self::getPattern()->getApplication(),self::getPattern()->getController(),self::getPattern()->getView()),true);
+		//Dadiweb_Aides_Debug::show(array(self::getPattern()->getApplication(),self::getPattern()->getController(),self::getPattern()->getView()),true);
 		/**
 		 * Setup bootsrap class of app
 		 */
@@ -416,7 +418,7 @@ class Dadiweb_Configuration_Kernel
      * @return String()
      *
      */
-    protected function getPath()
+    public function getPath()
     {
     	return $this->_path;
     }

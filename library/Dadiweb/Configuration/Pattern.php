@@ -275,7 +275,7 @@ class Dadiweb_Configuration_Pattern
 /***************************************************************/    	
     /**
    	 * 
-   	 * Set administrative basic control
+   	 * Set login administrative basic control
    	 * 
    	 * @return ABC
    	 * 
@@ -287,7 +287,7 @@ class Dadiweb_Configuration_Pattern
 /***************************************************************/    	
     /**
    	 * 
-   	 * Get administrative basic control
+   	 * Get login administrative basic control
    	 * 
    	 * @return ABC
    	 * 
