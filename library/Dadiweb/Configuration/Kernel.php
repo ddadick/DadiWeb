@@ -7,62 +7,6 @@ class Dadiweb_Configuration_Kernel
      * @var Dadiweb_Configuration_Kernel
      */
     protected static $_instance = null;
-
-    /**
-     * Current program
-     *
-     * @return String()
-     */
-    protected $_prog = NULL;
-    
-    /**
-     * Current contoller
-     *
-     * @return String()
-     */
-    protected $_ctrl = NULL;
-    
-    /**
-     * Current method
-     *
-     * @return String()
-     */
-    protected $_method = NULL;
-    
-    /**
-     * Default method
-     *
-     * @return String()
-     */
-    protected $_method_default = NULL;
-    
-    /**
-     * Current model
-     *
-     * @return String()
-     */
-    protected $_model = NULL;
- 
-    /**
-     * Path's controller (current)
-     *
-     * @return String()
-     */
-    protected $_path_ctrl = NULL;
-
-    /**
-     * File's controller (current)
-     *
-     * @return String()
-     */
-    protected $_file_ctrl = NULL;
-
-    /**
-     * External class (current)
-     *
-     * @return String()
-     */
-    protected $_class = NULL;
     
     /**
      * Output buffer (current)
@@ -143,123 +87,17 @@ class Dadiweb_Configuration_Kernel
     	self::setPattern(Dadiweb_Configuration_Pattern::getInstance());
     	self::setLayout(Dadiweb_Configuration_Layout::getInstance());
     	Dadiweb_Configuration_Render::getInstance()->getGeneric();
-    	//Dadiweb_Aides_Debug::show(self::getPattern(),true);
-    	
-		
-		if(
-			NULL===self::getPattern()->setModel() &&
-			NULL===self::getPattern()->getController() && 
-			NULL===self::getPattern()->getView()
-		){
-			if(
-				!isset(self::getSettings()->apps->Master->prog) || 
-				!strlen(trim(self::setProgram(strtolower(self::getSettings()->apps->Master->prog))))
-			){
-				throw Dadiweb_Throw_ErrorException::showThrow(
-						sprintf('Value into "apps.Master.prog" in the file "%sapps.ini" is not valid or empty', INI_PATH)
-				);
-			}elseif(
-				!isset(self::getSettings()->apps->Master->ctrl) || 
-				!strlen(trim(self::setController(strtolower(self::getSettings()->apps->Master->ctrl))))
-			){
-				throw Dadiweb_Throw_ErrorException::showThrow(
-						sprintf('Value into "apps.Master.ctrl" in the file "%sapps.ini" is not valid or empty', INI_PATH)
-				);
-			}elseif(
-				!isset(self::getSettings()->apps->Master->method) 
-				|| !strlen(
-					trim(
-						self::setMethod(
-							ucfirst(strtolower(self::getSettings()->apps->Master->method)).
-							(
-								(isset(self::getSettings()->generic->App->method))
-								?(
-									(strlen(trim(self::setMethod(strtolower(self::getSettings()->generic->App->method)))))
-									?ucfirst(self::getMethod())
-									:'Method'
-								)
-								:'Method'
-							)
-						)
-					)	
-				)
-				|| !strlen(
-					trim(
-						self::setMethodDefault(
-							ucfirst(
-								(
-									(isset(self::getSettings()->generic->App->method_default))
-									?(
-										(strlen(trim(self::setMethodDefault(strtolower(self::getSettings()->generic->App->method_default)))))
-										?ucfirst(self::getMethodDefault())
-										:ucfirst('Index')
-									)
-									:ucfirst('Index')
-								)
-							)
-							.(
-								(isset(self::getSettings()->generic->App->method))
-								?(
-									(strlen(trim(self::getSettings()->generic->App->method)))
-									?ucfirst(strtolower(self::getSettings()->generic->App->method))
-									:ucfirst('Method')
-								)
-								:ucfirst('Method')
-							)
-						)
-					)	
-				)
-			){
-				self::setMethodDefault('IndexMethod');
-				self::setMethod('IndexMethod');
-			}elseif(false===realpath(
-						self::setPathCtrl(
-							Dadiweb_Configuration_Settings::getInstance()->getPath().DIRECTORY_SEPARATOR.self::getProgram().DIRECTORY_SEPARATOR.
-							(
-								(isset(self::getSettings()->generic->App->ctrl_path))
-								?(
-									(strlen(trim(self::setPathCtrl(strtolower(self::getSettings()->generic->App->ctrl_path)))))
-									?self::getPathCtrl()
-									:strtolower('ctrl')
-								)
-								:strtolower('ctrl')
-							)
-						)
-					)
-			){
-				throw Dadiweb_Throw_ErrorException::showThrow(sprintf('Directory "%s" does not exist', self::getPathCtrl()));
-			}elseif(NULL===self::setClass(
-						(isset(self::getSettings()->generic->App->ctrl_class) && strlen(trim(self::setClass(strtolower(self::getSettings()->generic->App->ctrl_class)))))
-						?ucfirst(self::getClass())
-						:ucfirst('Ctrl')
-					)
-			){
-				throw Dadiweb_Throw_ErrorException::showThrow('Critical interrupt. The name of the default class is not established.');
-			}elseif(false===is_file(
-						(isset(self::getSettings()->generic->App->ctrl_class))
-						?(
-							(strlen(trim(self::setFileCtrl(strtolower(self::getSettings()->generic->App->ctrl_class)))))
-							?(
-								self::setFileCtrl(self::getPathCtrl().DIRECTORY_SEPARATOR.ucfirst(self::getController()).ucfirst(self::getFileCtrl().'.php'))
-							)
-							:(self::setFileCtrl(self::getPathCtrl().DIRECTORY_SEPARATOR.ucfirst(self::getController()).self::getClass().'.php'))
-						)
-						:self::setFileCtrl(self::getPathCtrl().DIRECTORY_SEPARATOR.ucfirst(self::getController()).self::getClass().'.php')
-					)
-			){
-				throw Dadiweb_Throw_ErrorException::showThrow(sprintf('File "%s" does not exist', self::getFileCtrl()));
-			}		
-		}
-		//Dadiweb_Aides_Debug::show(array(self::getPattern()->getApplication(),self::getPattern()->getController(),self::getPattern()->getView()),true);
-		/**
-		 * Setup bootsrap class of app
-		 */
-		self::setClass(self::getProgram()."_".ucfirst(self::getController()).self::getClass());
+    	//Dadiweb_Configuration_Apps::getInstance();
+    	Dadiweb_Configuration_Apps::getInstance();
 		/**
 		 * Rendered
 		 */
 		echo self::getLayout()->getRendered(
-				self::ob_class(self::getPathCtrl(),self::getClass(), self::getMethod())
+				self::ob_class(
+					Dadiweb_Configuration_Apps::getInstance()->getPathCtrl(),
+					Dadiweb_Configuration_Apps::getInstance()->getClass(), 
+					Dadiweb_Configuration_Apps::getInstance()->getMethod()
+				)
 		);
 		/**
 		 * End of Kernel
@@ -272,230 +110,13 @@ class Dadiweb_Configuration_Kernel
 /***************************************************************/
     /**
      *
-     * Set current program
-     *
-     * @var String()
-     *
-     */
-    protected function setProgram($prog=NULL)
-    {
-    	return $this->_prog=$prog;
-    }
-/***************************************************************/
-    /**
-     *
-     * Get current program
-     *
-     * @return String()
-     *
-     */
-    protected function getProgram()
-    {
-    	return $this->_prog;
-    
-    }
-/***************************************************************/
-    /**
-     *
-     * Set current controller
-     *
-     * @var String()
-     *
-     */
-    protected function setController($ctrl=NULL)
-    {
-    	return $this->_ctrl=$ctrl;
-    }
-/***************************************************************/
-    /**
-     *
-     * Get current controller
-     *
-     * @return String()
-     *
-     */
-    protected function getController()
-    {
-    	return $this->_ctrl;
-    }
-/***************************************************************/
-    /**
-     *
-     * Set current model
-     *
-     * @var String()
-     *
-     */
-    protected function setModel($model=NULL)
-    {
-    	return $this->_model=$model;
-    }
-/***************************************************************/
-    /**
-     *
-     * Get current model
-     *
-     * @return String()
-     *
-     */
-    protected function getModel()
-    {
-    	return $this->_model;
-    }
-/***************************************************************/
-    /**
-     *
-     * Set current method
-     *
-     * @var String()
-     *
-     */
-    protected function setMethod($method=NULL)
-    {
-    	return $this->_method=$method;
-    }
-/***************************************************************/
-    /**
-     *
-     * Get current method
-     *
-     * @return String()
-     *
-     */
-    protected function getMethod()
-    {
-    	return $this->_method;
-    }
-/***************************************************************/
-    /**
-     *
-     * Set default method
-     *
-     * @var String()
-     *
-     */
-    protected function setMethodDefault($method_default=NULL)
-    {
-    	return $this->_method_default=$method_default;
-    }
-/***************************************************************/
-    /**
-     *
-     * Get default method
-     *
-     * @return String()
-     *
-     */
-    protected function getMethodDefault()
-    {
-    	return $this->_method_default;
-    }
-/***************************************************************/
-    /**
-     *
-     * Set path's applications
-     *
-     * @var String()
-     *
-     */
-    protected function setPath($path=NULL)
-    {
-    	return $this->_path=$path;
-    }
-/***************************************************************/
-    /**
-     *
-     * Get path's applications
-     *
-     * @return String()
-     *
-     */
-    public function getPath()
-    {
-    	return $this->_path;
-    }
-/***************************************************************/
-    /**
-     *
-     * Set path's controller (current)
-     *
-     * @var String()
-     *
-     */
-    protected function setPathCtrl($path_ctrl=NULL)
-    {
-    	return $this->_path_ctrl=$path_ctrl;
-    }
-/***************************************************************/
-    /**
-     *
-     * Get path's controller (current)
-     *
-     * @return String()
-     *
-     */
-    protected function getPathCtrl()
-    {
-    	return $this->_path_ctrl;
-    }
-/***************************************************************/
-    /**
-     *
-     * Set external class (current)
-     *
-     * @var String()
-     *
-     */
-    protected function setFileCtrl($file_ctrl=NULL)
-    {
-    	return $this->_file_ctrl=$file_ctrl;
-    }
-/***************************************************************/
-    /**
-     *
-     * Get file's controller (current)
-     *
-     * @return String()
-     *
-     */
-    protected function getFileCtrl()
-    {
-    	return $this->_file_ctrl;
-    }
-/***************************************************************/
-    /**
-     *
-     * Set external class (current)
-     *
-     * @var String()
-     *
-     */
-    protected function setClass($class=NULL)
-    {
-    	return $this->_class=$class;
-    }
-/***************************************************************/
-    /**
-     *
-     * Get external class (current)
-     *
-     * @return String()
-     *
-     */
-    protected function getClass()
-    {
-    	return $this->_class;
-    }
-/***************************************************************/
-    /**
-     *
      * Init external Class
      *
      * @return Object
      *
      */
     
-    public function ob_class($path=NULL,$class=NULL,$method=NULL){
+    protected function ob_class($path=NULL,$class=NULL,$method=NULL){
     	if($class===NULL || (is_string($class) && !strlen(trim($class)))){
     		throw Dadiweb_Throw_ErrorException::showThrow(sprintf('Variable $class is empty', $class));
     	}
@@ -536,10 +157,10 @@ class Dadiweb_Configuration_Kernel
     	}
     	ob_start();
     	$class=new $class;
-    	if (method_exists($class, self::getMethodDefault())) {
+    	if (method_exists($class, Dadiweb_Configuration_Apps::getInstance()->getMethodDefault())) {
     		$class->$method();
     	}else{
-    		$method=self::getMethodDefault();
+    		$method=Dadiweb_Configuration_Apps::getInstance()->getMethodDefault();
     		$class->$method();
     	}
     	set_include_path(

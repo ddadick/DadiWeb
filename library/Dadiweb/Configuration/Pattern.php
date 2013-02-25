@@ -144,7 +144,6 @@ class Dadiweb_Configuration_Pattern
 				}
 			}
 		}
-		Dadiweb_Aides_Debug::show($this,true);
 		return $this;
    	}
 /***************************************************************/   	
