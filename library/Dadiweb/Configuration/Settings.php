@@ -199,7 +199,7 @@ class Dadiweb_Configuration_Settings
     										:strtolower('settings')
     								)
     						)
-    				)
+    					)
     				){
     					if(!is_array($this->_abc_apps_path)){
     						$this->_abc_apps_path=array();

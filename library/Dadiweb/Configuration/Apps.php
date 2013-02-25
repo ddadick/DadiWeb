@@ -58,11 +58,13 @@ class Dadiweb_Configuration_Apps
     protected $_class = NULL;
     
     /**
-     * Output buffer (current)
      *
-     * @return Object
+     * Generic path for Application
+     *
+     * @var String()
+     *
      */
-    protected $_ob_buffer = NULL;
+    protected $_path = NULL;
     
 /***************************************************************/
 	/**
@@ -102,25 +104,21 @@ class Dadiweb_Configuration_Apps
      */
     protected function setGeneric()
     {
-		/**
-    	if(
-			NULL===Dadiweb_Configuration_Kernel::getInstance()->getPattern()->setModel() &&
-			NULL===Dadiweb_Configuration_Kernel::getInstance()->getPattern()->getController() && 
-			NULL===Dadiweb_Configuration_Kernel::getInstance()->getPattern()->getView()
-		){
-		*/
-    	if(NULL!==Dadiweb_Configuration_Kernel::getInstance()->getPattern()->setModel()){
-    		self::setProgram(strtolower(Dadiweb_Configuration_Kernel::getInstance()->getPattern()->setModel()));
-    	}elseif(
-    		NULL===self::getProgram() && (
+		if(NULL!==Dadiweb_Configuration_Kernel::getInstance()->getPattern()->getModel()){
+    		self::setProgram(strtolower(Dadiweb_Configuration_Kernel::getInstance()->getPattern()->getModel()));
+    	}
+    	if(NULL===self::getProgram()){
+    		if(
 				!isset(Dadiweb_Configuration_Kernel::getInstance()->getSettings()->apps->Master->prog) || 
 				!strlen(trim(self::setProgram(strtolower(Dadiweb_Configuration_Kernel::getInstance()->getSettings()->apps->Master->prog))))
-    		)
-		){
-			throw Dadiweb_Throw_ErrorException::showThrow(
+    		
+			){
+				throw Dadiweb_Throw_ErrorException::showThrow(
 					sprintf('Value into "apps.Master.prog" in the file "%sapps.ini" is not valid or empty', INI_PATH)
-			);
-		}elseif(NULL!==Dadiweb_Configuration_Kernel::getInstance()->getPattern()->getController()){
+				);
+			}
+    	}    	 
+		if(NULL!==Dadiweb_Configuration_Kernel::getInstance()->getPattern()->getController()){
 			self::setController(strtolower(Dadiweb_Configuration_Kernel::getInstance()->getPattern()->getController()));
 		}elseif(
 			NULL===self::getController() && (
@@ -131,7 +129,8 @@ class Dadiweb_Configuration_Apps
 			throw Dadiweb_Throw_ErrorException::showThrow(
 					sprintf('Value into "apps.Master.ctrl" in the file "%sapps.ini" is not valid or empty', INI_PATH)
 			);
-		}elseif(NULL!==Dadiweb_Configuration_Kernel::getInstance()->getPattern()->getView()){
+		}
+		if(NULL!==Dadiweb_Configuration_Kernel::getInstance()->getPattern()->getView()){
 			self::setMethod(
 				ucfirst(strtolower(Dadiweb_Configuration_Kernel::getInstance()->getPattern()->getView())).
 				(
@@ -145,7 +144,8 @@ class Dadiweb_Configuration_Apps
 				)
 			);
 			
-		}elseif(NULL===self::setMethodDefault()){
+		}
+		if(NULL===self::setMethodDefault()){
 			self::setMethodDefault(
 				ucfirst(
 						(
@@ -215,14 +215,20 @@ class Dadiweb_Configuration_Apps
 				)
 		){
 			throw Dadiweb_Throw_ErrorException::showThrow(sprintf('Directory "%s" does not exist', self::getPathCtrl()));
-		}elseif(NULL===self::setClass(
+		}
+		if(NULL===self::setClass(
 					(isset(Dadiweb_Configuration_Kernel::getInstance()->getSettings()->generic->App->ctrl_class) && strlen(trim(self::setClass(strtolower(Dadiweb_Configuration_Kernel::getInstance()->getSettings()->generic->App->ctrl_class)))))
 					?ucfirst(self::getClass())
 					:ucfirst('Ctrl')
 				)
 		){
 			throw Dadiweb_Throw_ErrorException::showThrow('Critical interrupt. The name of the default class is not established.');
-		}elseif(false===is_file(
+		}
+		
+		self::setFileCtrl(self::getPathCtrl().DIRECTORY_SEPARATOR.ucfirst(self::getController()).self::getClass().'.php',true);
+		//Dadiweb_Aides_Debug::show(self::getFileCtrl(),true);
+		if(NULL===self::setFileCtrl()){
+			if(false===is_file(
 				(isset(Dadiweb_Configuration_Kernel::getInstance()->getSettings()->generic->App->ctrl_class))
 					?(
 						(strlen(trim(self::setFileCtrl(strtolower(Dadiweb_Configuration_Kernel::getInstance()->getSettings()->generic->App->ctrl_class)))))
@@ -233,17 +239,23 @@ class Dadiweb_Configuration_Apps
 					)
 					:self::setFileCtrl(self::getPathCtrl().DIRECTORY_SEPARATOR.ucfirst(self::getController()).self::getClass().'.php')
 				)
-		){
-			throw Dadiweb_Throw_ErrorException::showThrow(sprintf('File "%s" does not exist', self::getFileCtrl()));
+			){
+				throw Dadiweb_Throw_ErrorException::showThrow(sprintf('File "%s" does not exist', self::getFileCtrl()));
+			}
 		}
-		Dadiweb_Aides_Debug::show($this,true);		
-		/**
-    	}
-    	*/
+		self::setPath(
+			Dadiweb_Configuration_Settings::getInstance()->getPath().DIRECTORY_SEPARATOR.self::getProgram()
+			.(
+				(NULL!==Dadiweb_Configuration_Routes::getInstance()->getABC())
+				?(DIRECTORY_SEPARATOR.Dadiweb_Configuration_Routes::getInstance()->getABC())
+				:''
+			)
+		);
+		//Dadiweb_Aides_Debug::show($this,true);
 		/**
 		 * Setup bootsrap class of app
 		 */
-		self::setClass(self::getProgram()."_".ucfirst(self::getController()).self::getClass());
+		self::setClass(ucfirst(self::getProgram())."_".ucfirst(self::getController()).self::getClass());
     }
 /***************************************************************/
     /**

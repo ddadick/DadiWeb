@@ -44,6 +44,15 @@ class Dadiweb_Configuration_Kernel
      */
     protected $_layout = NULL;
     
+    /**
+     *
+     * Generic path's for Apps
+     *
+     * @var String()
+     *
+     */
+    protected $_path = NULL;
+    
 /***************************************************************/
 	/**
      * Singleton pattern implementation makes "new" unavailable
@@ -89,6 +98,8 @@ class Dadiweb_Configuration_Kernel
     	Dadiweb_Configuration_Render::getInstance()->getGeneric();
     	//Dadiweb_Configuration_Apps::getInstance();
     	Dadiweb_Configuration_Apps::getInstance();
+    	//Dadiweb_Aides_Debug::show(Dadiweb_Configuration_Settings::getInstance()->getPath().DIRECTORY_SEPARATOR.Dadiweb_Configuration_Apps::getInstance()->getProgram().((NULL!==Dadiweb_Configuration_Routes::getInstance()->getABC())?(DIRECTORY_SEPARATOR.Dadiweb_Configuration_Routes::getInstance()->getABC()):''),true);
+    	//Dadiweb_Aides_Debug::show(Dadiweb_Configuration_Apps::getInstance()->getPath(),true);
 		/**
 		 * Rendered
 		 */
@@ -155,6 +166,7 @@ class Dadiweb_Configuration_Kernel
     			)
     		);
     	}
+    	//Dadiweb_Aides_Debug::show(Dadiweb_Configuration_Apps::getInstance()->getMethodDefault(),true);
     	ob_start();
     	$class=new $class;
     	if (method_exists($class, Dadiweb_Configuration_Apps::getInstance()->getMethodDefault())) {
@@ -292,6 +304,30 @@ class Dadiweb_Configuration_Kernel
     		throw Dadiweb_Throw_ErrorException::showThrow('Critical error. Layout undefined.');
     	}
     	return $this->_layout;
+    }
+/***************************************************************/
+    /**
+     *
+     * Set path's applications
+     *
+     * @var String()
+     *
+     */
+    protected function setPath($path=NULL)
+    {
+    	return $this->_path=$path;
+    }
+/***************************************************************/
+    /**
+     *
+     * Get path's applications
+     *
+     * @return String()
+     *
+     */
+    public function getPath()
+    {
+    	return $this->_path;
     }
 /***************************************************************/
 	/**
