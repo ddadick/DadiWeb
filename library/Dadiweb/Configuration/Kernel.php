@@ -147,34 +147,34 @@ class Dadiweb_Configuration_Kernel
     	
 		
 		if(
-			NULL===self::getPattern()->getApplication() &&
+			NULL===self::getPattern()->setModel() &&
 			NULL===self::getPattern()->getController() && 
 			NULL===self::getPattern()->getView()
 		){
 			if(
-				!isset(self::getSettings()->resource->Master->prog) || 
-				!strlen(trim(self::setProgram(strtolower(self::getSettings()->resource->Master->prog))))
+				!isset(self::getSettings()->apps->Master->prog) || 
+				!strlen(trim(self::setProgram(strtolower(self::getSettings()->apps->Master->prog))))
 			){
 				throw Dadiweb_Throw_ErrorException::showThrow(
-						sprintf('Value into "resource.Master.prog" in the file "%sresourse.ini" is not valid or empty', INI_PATH)
+						sprintf('Value into "apps.Master.prog" in the file "%sapps.ini" is not valid or empty', INI_PATH)
 				);
 			}elseif(
-				!isset(self::getSettings()->resource->Master->ctrl) || 
-				!strlen(trim(self::setController(strtolower(self::getSettings()->resource->Master->ctrl))))
+				!isset(self::getSettings()->apps->Master->ctrl) || 
+				!strlen(trim(self::setController(strtolower(self::getSettings()->apps->Master->ctrl))))
 			){
 				throw Dadiweb_Throw_ErrorException::showThrow(
-						sprintf('Value into "resource.Master.ctrl" in the file "%sresourse.ini" is not valid or empty', INI_PATH)
+						sprintf('Value into "apps.Master.ctrl" in the file "%sapps.ini" is not valid or empty', INI_PATH)
 				);
 			}elseif(
-				!isset(self::getSettings()->resource->Master->method) 
+				!isset(self::getSettings()->apps->Master->method) 
 				|| !strlen(
 					trim(
 						self::setMethod(
-							ucfirst(strtolower(self::getSettings()->resource->Master->method)).
+							ucfirst(strtolower(self::getSettings()->apps->Master->method)).
 							(
-								(isset(self::getSettings()->resource->App->method))
+								(isset(self::getSettings()->generic->App->method))
 								?(
-									(strlen(trim(self::setMethod(strtolower(self::getSettings()->resource->App->method)))))
+									(strlen(trim(self::setMethod(strtolower(self::getSettings()->generic->App->method)))))
 									?ucfirst(self::getMethod())
 									:'Method'
 								)
@@ -188,9 +188,9 @@ class Dadiweb_Configuration_Kernel
 						self::setMethodDefault(
 							ucfirst(
 								(
-									(isset(self::getSettings()->resource->App->method_default))
+									(isset(self::getSettings()->generic->App->method_default))
 									?(
-										(strlen(trim(self::setMethodDefault(strtolower(self::getSettings()->resource->App->method_default)))))
+										(strlen(trim(self::setMethodDefault(strtolower(self::getSettings()->generic->App->method_default)))))
 										?ucfirst(self::getMethodDefault())
 										:ucfirst('Index')
 									)
@@ -198,10 +198,10 @@ class Dadiweb_Configuration_Kernel
 								)
 							)
 							.(
-								(isset(self::getSettings()->resource->App->method))
+								(isset(self::getSettings()->generic->App->method))
 								?(
-									(strlen(trim(self::getSettings()->resource->App->method)))
-									?ucfirst(strtolower(self::getSettings()->resource->App->method))
+									(strlen(trim(self::getSettings()->generic->App->method)))
+									?ucfirst(strtolower(self::getSettings()->generic->App->method))
 									:ucfirst('Method')
 								)
 								:ucfirst('Method')
@@ -216,9 +216,9 @@ class Dadiweb_Configuration_Kernel
 						self::setPathCtrl(
 							Dadiweb_Configuration_Settings::getInstance()->getPath().DIRECTORY_SEPARATOR.self::getProgram().DIRECTORY_SEPARATOR.
 							(
-								(isset(self::getSettings()->resource->App->ctrl_path))
+								(isset(self::getSettings()->generic->App->ctrl_path))
 								?(
-									(strlen(trim(self::setPathCtrl(strtolower(self::getSettings()->resource->App->ctrl_path)))))
+									(strlen(trim(self::setPathCtrl(strtolower(self::getSettings()->generic->App->ctrl_path)))))
 									?self::getPathCtrl()
 									:strtolower('ctrl')
 								)
@@ -229,16 +229,16 @@ class Dadiweb_Configuration_Kernel
 			){
 				throw Dadiweb_Throw_ErrorException::showThrow(sprintf('Directory "%s" does not exist', self::getPathCtrl()));
 			}elseif(NULL===self::setClass(
-						(isset(self::getSettings()->resource->App->ctrl_class) && strlen(trim(self::setClass(strtolower(self::getSettings()->resource->App->ctrl_class)))))
+						(isset(self::getSettings()->generic->App->ctrl_class) && strlen(trim(self::setClass(strtolower(self::getSettings()->generic->App->ctrl_class)))))
 						?ucfirst(self::getClass())
 						:ucfirst('Ctrl')
 					)
 			){
 				throw Dadiweb_Throw_ErrorException::showThrow('Critical interrupt. The name of the default class is not established.');
 			}elseif(false===is_file(
-						(isset(self::getSettings()->resource->App->ctrl_class))
+						(isset(self::getSettings()->generic->App->ctrl_class))
 						?(
-							(strlen(trim(self::setFileCtrl(strtolower(self::getSettings()->resource->App->ctrl_class)))))
+							(strlen(trim(self::setFileCtrl(strtolower(self::getSettings()->generic->App->ctrl_class)))))
 							?(
 								self::setFileCtrl(self::getPathCtrl().DIRECTORY_SEPARATOR.ucfirst(self::getController()).ucfirst(self::getFileCtrl().'.php'))
 							)

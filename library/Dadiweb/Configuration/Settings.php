@@ -141,8 +141,8 @@ class Dadiweb_Configuration_Settings
     	 */
     	self::setABC(
     			(
-    					isset($this->_settings['resource']['Master']['abc'])
-    					&& strlen(trim(self::setABC(strtolower($this->_settings['resource']['Master']['abc']))))
+    					isset($this->_settings['apps']['Master']['abc'])
+    					&& strlen(trim(self::setABC(strtolower($this->_settings['apps']['Master']['abc']))))
     			)
     			?self::getABC()
     			:strtolower('abc')
@@ -151,13 +151,13 @@ class Dadiweb_Configuration_Settings
     	 * Setup default path for Apps
     	 */
     	if(
-    			!isset($this->_settings['resource']['Master']['path']) ||
-    			!strlen(trim($this->_settings['resource']['Master']['path'])) ||
-    			self::setPath($this->_settings['resource']['Master']['path'])===NULL ||
+    			!isset($this->_settings['apps']['Master']['path']) ||
+    			!strlen(trim($this->_settings['apps']['Master']['path'])) ||
+    			self::setPath($this->_settings['apps']['Master']['path'])===NULL ||
     			false===realpath(self::getPath())
     	){
     		throw Dadiweb_Throw_ErrorException::showThrow(
-    				sprintf('Path into "resource.Master.path" in the file "%sresourse.ini" is not valid', INI_PATH)
+    				sprintf('Path into "apps.Master.path" in the file "%sapps.ini" is not valid', INI_PATH)
     		);
     	}
     	/**

@@ -79,14 +79,14 @@ class Dadiweb_Configuration_Render
     protected function setGeneric()
     {
     	if(
-    		!isset(Dadiweb_Configuration_Kernel::getInstance()->getSettings()->resource->Render->bootstrap) ||
-    		!strlen(trim(Dadiweb_Configuration_Kernel::getInstance()->getSettings()->resource->Render->bootstrap))
+    		!isset(Dadiweb_Configuration_Kernel::getInstance()->getSettings()->apps->Render->bootstrap) ||
+    		!strlen(trim(Dadiweb_Configuration_Kernel::getInstance()->getSettings()->apps->Render->bootstrap))
     	){
     		throw Dadiweb_Throw_ErrorException::showThrow(
-    				sprintf('Variable into "resource.Render.bootstrap" in the file "%sresourse.ini" is not valid', INI_PATH)
+    				sprintf('Variable into "apps.Render.bootstrap" in the file "%sapps.ini" is not valid', INI_PATH)
     		);
     	}
-    	Dadiweb_Render_Bootstrap::getInstance(Dadiweb_Configuration_Kernel::getInstance()->getSettings()->resource->Render->bootstrap);
+    	Dadiweb_Render_Bootstrap::getInstance(Dadiweb_Configuration_Kernel::getInstance()->getSettings()->apps->Render->bootstrap);
     	Dadiweb_Render_Bootstrap::resetInstance();
     	return;
     }

@@ -72,7 +72,7 @@ class Dadiweb_Render_Smarty
      */
 	public function __construct($options=NULL){
 		if($options===NULL || !is_string($options)){
-			throw Dadiweb_Throw_ErrorException::showThrow(sprintf('Critical error. Variable "resource.Render.bootstrap" from the file "%sresourse.ini" was not transmitted in class "%s"', INI_PATH,get_class($this)));
+			throw Dadiweb_Throw_ErrorException::showThrow(sprintf('Critical error. Variable "apps.Render.bootstrap" from the file "%sapps.ini" was not transmitted in class "%s"', INI_PATH,get_class($this)));
 		}
 		$this->_bootstrap=$options;
 		self::$options($options);
@@ -118,45 +118,45 @@ class Dadiweb_Render_Smarty
     {
     	$options=$this->_bootstrap;
     	if(
-    		!isset(Dadiweb_Configuration_Kernel::getInstance()->getSettings()->resource->$options->filename) ||
-    		!strlen($this->_filename=trim(ucfirst(Dadiweb_Configuration_Kernel::getInstance()->getSettings()->resource->$options->filename)))
+    		!isset(Dadiweb_Configuration_Kernel::getInstance()->getSettings()->apps->$options->filename) ||
+    		!strlen($this->_filename=trim(ucfirst(Dadiweb_Configuration_Kernel::getInstance()->getSettings()->apps->$options->filename)))
     	){
     		throw Dadiweb_Throw_ErrorException::showThrow(
-    			sprintf('Variable into "resource.'.$options.'.filename" in the file "%sresourse.ini" is not valid', INI_PATH));
+    			sprintf('Variable into "apps.'.$options.'.filename" in the file "%sapps.ini" is not valid', INI_PATH));
     	}   	
     	if(
     		!is_file($this->_filename) &&
     		!is_file($this->_filename=dirname(__FILE__).DIRECTORY_SEPARATOR.$this->_bootstrap.DIRECTORY_SEPARATOR.$this->_filename)
     	){
     		throw Dadiweb_Throw_ErrorException::showThrow(
-    			sprintf('Filename "%s" into "resource.'.$options.'.filename" in the file "%sresourse.ini" does not exist', $this->_filename,INI_PATH)
+    			sprintf('Filename "%s" into "apps.'.$options.'.filename" in the file "%sapps.ini" does not exist', $this->_filename,INI_PATH)
     		);
     	}
     	require_once $this->_filename;
     	if(
-    		!isset(Dadiweb_Configuration_Kernel::getInstance()->getSettings()->resource->$options->class) ||
-    		!strlen($this->_classname=trim(ucfirst(Dadiweb_Configuration_Kernel::getInstance()->getSettings()->resource->$options->class)))
+    		!isset(Dadiweb_Configuration_Kernel::getInstance()->getSettings()->apps->$options->class) ||
+    		!strlen($this->_classname=trim(ucfirst(Dadiweb_Configuration_Kernel::getInstance()->getSettings()->apps->$options->class)))
     	){
     		throw Dadiweb_Throw_ErrorException::showThrow(
-    			sprintf('Variable into "resource.'.$options.'.class" in the file "%sresourse.ini" is not valid', INI_PATH)
+    			sprintf('Variable into "apps.'.$options.'.class" in the file "%sapps.ini" is not valid', INI_PATH)
     		);
     	}
     	$this->_rendered=new $this->_classname();
     	if(
-    		!isset(Dadiweb_Configuration_Kernel::getInstance()->getSettings()->resource->$options->compile_dir) ||
-    		!strlen($this->_compile_dir=trim(Dadiweb_Configuration_Kernel::getInstance()->getSettings()->resource->$options->compile_dir))
+    		!isset(Dadiweb_Configuration_Kernel::getInstance()->getSettings()->apps->$options->compile_dir) ||
+    		!strlen($this->_compile_dir=trim(Dadiweb_Configuration_Kernel::getInstance()->getSettings()->apps->$options->compile_dir))
     	){
     		throw Dadiweb_Throw_ErrorException::showThrow(
-    			sprintf('Variable into "resource.'.$options.'.compile_dir" in the file "%sresourse.ini" is not valid', INI_PATH)
+    			sprintf('Variable into "apps.'.$options.'.compile_dir" in the file "%sapps.ini" is not valid', INI_PATH)
     		);
     	}
     	$this->_compile_dir=Dadiweb_Aides_Filesystem::pathCreate($this->_compile_dir);
     	if(
-    		!isset(Dadiweb_Configuration_Kernel::getInstance()->getSettings()->resource->$options->cache_dir) ||
-    		!strlen($this->_cache_dir=trim(Dadiweb_Configuration_Kernel::getInstance()->getSettings()->resource->$options->cache_dir))
+    		!isset(Dadiweb_Configuration_Kernel::getInstance()->getSettings()->apps->$options->cache_dir) ||
+    		!strlen($this->_cache_dir=trim(Dadiweb_Configuration_Kernel::getInstance()->getSettings()->apps->$options->cache_dir))
     	){
     		throw Dadiweb_Throw_ErrorException::showThrow(
-    			sprintf('Variable into "resource.'.$options.'.cache_dir" in the file "%sresourse.ini" is not valid', INI_PATH)
+    			sprintf('Variable into "apps.'.$options.'.cache_dir" in the file "%sapps.ini" is not valid', INI_PATH)
     		);
     	}
     	$this->_cache_dir=Dadiweb_Aides_Filesystem::pathCreate($this->_cache_dir);

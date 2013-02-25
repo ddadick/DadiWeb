@@ -81,31 +81,14 @@ class Dadiweb_Configuration_Layout
     {
     	
     	if(
-    		!isset(Dadiweb_Configuration_Kernel::getInstance()->getSettings()->resource->Layout->path) ||
-    		!strlen($this->_path_generic=trim(Dadiweb_Configuration_Kernel::getInstance()->getSettings()->resource->Layout->path))
+    		!isset(Dadiweb_Configuration_Kernel::getInstance()->getSettings()->apps->Layout->path) ||
+    		!strlen($this->_path_generic=trim(Dadiweb_Configuration_Kernel::getInstance()->getSettings()->apps->Layout->path))
     	){
     		throw Dadiweb_Throw_ErrorException::showThrow(
-    			sprintf('Variable into "resource.Layout.path" in the file "%sresourse.ini" is not valid', INI_PATH)
+    			sprintf('Variable into "apps.Layout.path" in the file "%sapps.ini" is not valid', INI_PATH)
     		);
     	}
     	$this->_path_generic=Dadiweb_Aides_Filesystem::pathCreate($this->_path_generic);
-    	/**
-    	if(
-    			!isset(Dadiweb_Configuration_Kernel::getInstance()->getSettings()->resource->Layout->app_path) ||
-    			!strlen($this->_path_app=trim(Dadiweb_Configuration_Kernel::getInstance()->getSettings()->resource->Layout->app_path))
-    	){
-    		throw Dadiweb_Throw_ErrorException::showThrow(
-    				sprintf('Variable into "resource.Layout.app_path" in the file "%sresourse.ini" is not valid', INI_PATH)
-    		);
-    	}
-    	//Dadiweb_Aides_Debug::show(APPS_PATH.Dadiweb_Configuration_Kernel::getInstance()->getProgram(),true);
-    	$this->_path_app=Dadiweb_Aides_Filesystem::pathValidator(
-    		Dadiweb_Aides_Filesystem::pathValidator(APPS_PATH).
-    		Dadiweb_Configuration_Kernel::getInstance()->getProgram().DIRECTORY_SEPARATOR.
-    		$this->_path_app.DIRECTORY_SEPARATOR.Dadiweb_Configuration_Kernel::getInstance()->getController()
-    	);
-    	Dadiweb_Aides_Debug::show($this->_path_app,true);
-    	*/
     	return;
     }
 /***************************************************************/
@@ -168,20 +151,6 @@ class Dadiweb_Configuration_Layout
     public function getRendered($content='')
     {
     	self::setTemplate('index.tpl');
-    	/**
-    	Dadiweb_Aides_Debug::show(APPS_PATH,true);
-    	
-    	if(
-    			!isset(Dadiweb_Configuration_Kernel::getInstance()->getSettings()->resource->layout->class) ||
-    			!strlen($this->_classname=trim(ucfirst(Dadiweb_Configuration_Kernel::getInstance()->getSettings()->resource->$options->class)))
-    	){
-    	/**
-    	Dadiweb_Aides_Filesystem::pathCreate(
-    		Dadiweb_Aides_Filesystem::pathValidator(APPS_PATH).
-    		Dadiweb_Configuration_Kernel::getInstance()->getProgram().DIRECTORY_SEPARATOR.
-    		
-    	);
-    	*/
     	Dadiweb_Configuration_Kernel::getInstance()->getRendered()->getRender()->setTemplateDir(self::getPathGeneric());
     	return Dadiweb_Configuration_Kernel::getInstance()->getRendered()->_echo($content);
     }

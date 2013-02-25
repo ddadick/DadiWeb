@@ -9,11 +9,11 @@ class Dadiweb_Configuration_Pattern
 	protected $uri=NULL;
 	
 	/**
-	 * MVC - default Application
-	 * 
+	 * MVC - default Model
+	 *
 	 * @return object
 	 */
-	protected $application = NULL;
+	protected $model = NULL;
 	
 	/**
 	 * MVC - default Contoller
@@ -28,13 +28,6 @@ class Dadiweb_Configuration_Pattern
 	 * @return object
 	 */
 	protected $view = NULL;
-
-	/**
-	 * MVC - default Model
-	 *
-	 * @return object
-	 */
-	protected $model = NULL;
 	
 
 	/**
@@ -140,7 +133,7 @@ class Dadiweb_Configuration_Pattern
 				}
 				$i=$i+1;
 			}
-			if(isset($this->uri[0])){$this->setApplication($this->uri[0]);}
+			if(isset($this->uri[0])){$this->setModel($this->uri[0]);}
 			if(isset($this->uri[1])){$this->setController($this->uri[1]);}
 			if(isset($this->uri[2])){$this->setView($this->uri[2]);}
 			if(isset($this->uri[3])){
@@ -151,32 +144,8 @@ class Dadiweb_Configuration_Pattern
 				}
 			}
 		}
+		Dadiweb_Aides_Debug::show($this,true);
 		return $this;
-   	}
-/***************************************************************/   	
-	/**
-   	 * 
-   	 * Set application
-   	 * 
-   	 * @var Application
-   	 * 
-   	 */
-   	protected function setApplication($application=NULL)
-   	{
-   		$this->application=$application;
-   	}
-/***************************************************************/    	
-    /**
-   	 * 
-   	 * Get application
-   	 * 
-   	 * @return Application
-   	 * 
-   	 */
-   	public function getApplication()
-   	{
-   		return $this->application;
-   	
    	}
 /***************************************************************/   	
    	/**
