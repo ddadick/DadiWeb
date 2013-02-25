@@ -14,6 +14,37 @@ class Dadiweb_Configuration_Settings
      * @var Array()
      */
     protected $_settings = NULL;
+    
+    /**
+     *
+     * Generic path's for Apps
+     *
+     * @var String()
+     *
+     */
+    protected $_path = NULL;
+    
+    /**
+     * Paths of settings for Apps
+     *
+     * @var Array()
+     */
+    protected $_apps_path = NULL;
+    
+    /**
+     * Paths of settings for Apps
+     * (administrative basic control)
+     *
+     * @var Array()
+     */
+    protected $_abc_apps_path = NULL;
+    
+    /**
+     * Set administrative basic control
+     *
+     * @var ABC
+     */
+    protected $_abc = NULL;
 /***************************************************************/
 	/**
      * Singleton pattern implementation makes "new" unavailable
@@ -105,11 +136,196 @@ class Dadiweb_Configuration_Settings
     			}
     		}
     	}
+    	/**
+    	 * Setup variable for administrative basic control
+    	 */
+    	self::setABC(
+    			(
+    					isset($this->_settings['resource']['Master']['abc'])
+    					&& strlen(trim(self::setABC(strtolower($this->_settings['resource']['Master']['abc']))))
+    			)
+    			?self::getABC()
+    			:strtolower('abc')
+    	);
+    	/**
+    	 * Setup default path for Apps
+    	 */
+    	if(
+    			!isset($this->_settings['resource']['Master']['path']) ||
+    			!strlen(trim($this->_settings['resource']['Master']['path'])) ||
+    			self::setPath($this->_settings['resource']['Master']['path'])===NULL ||
+    			false===realpath(self::getPath())
+    	){
+    		throw Dadiweb_Throw_ErrorException::showThrow(
+    				sprintf('Path into "resource.Master.path" in the file "%sresourse.ini" is not valid', INI_PATH)
+    		);
+    	}
+    	/**
+    	 * Setup default path of settings for Apps
+    	 */
+    	$generic=Dadiweb_Aides_Filesystem::getInstance()->getScanDir(self::getPath());
+    	if($generic!=NULL && is_array($generic)){
+    		foreach($generic as $items){
+    			if(!$items['type']){
+    				if(is_dir(
+    						$path=Dadiweb_Aides_Filesystem::getInstance()->pathValidator(
+    							self::getPath().DIRECTORY_SEPARATOR.$items['item'].DIRECTORY_SEPARATOR
+    							.(
+    								(
+    									isset($this->_settings['resource']['App']['settings_path'])
+    									&& strlen(trim($path=strtolower($this->_settings['resource']['App']['settings_path'])))
+    								)
+    								?$path
+    								:strtolower('settings')
+    							)
+    						)
+    					)
+    				){
+    					if(!is_array($this->_apps_path)){
+    						$this->_apps_path=array();
+    					}
+    					self::setAppsPath($path);
+    				}
+    				if(is_dir(
+    						$path=Dadiweb_Aides_Filesystem::getInstance()->pathValidator(
+    								self::getPath().DIRECTORY_SEPARATOR.$items['item'].DIRECTORY_SEPARATOR
+    								.self::getABC().DIRECTORY_SEPARATOR
+    								.(
+    										(
+    												isset($this->_settings['resource']['App']['settings_path'])
+    												&& strlen(trim($path=strtolower($this->_settings['resource']['App']['settings_path'])))
+    										)
+    										?$path
+    										:strtolower('settings')
+    								)
+    						)
+    				)
+    				){
+    					if(!is_array($this->_abc_apps_path)){
+    						$this->_abc_apps_path=array();
+    					}
+    					self::setABCAppsPath($path);
+    				}
+    			}
+    		}
+    	}
     	unset($generic);
     	unset($items);
     	unset($item);
     	unset($key);
     }
+/***************************************************************/
+    /**
+     *
+     * Set path's applications
+     *
+     * @var String()
+     *
+     */
+    protected function setPath($path=NULL)
+    {
+    	return $this->_path=$path;
+    }
+/***************************************************************/
+    /**
+     *
+     * Get path's applications
+     *
+     * @return String()
+     *
+     */
+    public function getPath()
+    {
+    	return $this->_path;
+    }
+/***************************************************************/
+    /**
+     *
+     * Set paths of settings for Apps
+     *
+     * @var String()
+     *
+     */
+    protected function setAppsPath($apps_path=NULL)
+    {
+    	return (
+    				NULL!==$apps_path
+    				&& strlen(trim($apps_path=strtolower($apps_path)))
+    				&& array_push($this->_apps_path,$apps_path)
+    			)
+    			?$apps_path
+    			:NULL;
+    }
+/***************************************************************/
+    /**
+     *
+     * Get paths of settings for Apps
+     *
+     * @return Array()
+     *
+     */
+    public function getAppsPath()
+    {
+    	return $this->_apps_path;
+    }
+    
+/***************************************************************/
+    /**
+     *
+     * Set paths of settings for Apps
+     * (administrative basic control)
+     *
+     * @var String()
+     *
+     */
+    protected function setABCAppsPath($abc_apps_path=NULL)
+    {
+    	return (
+    				NULL!==$abc_apps_path
+    				&& strlen(trim($abc_apps_path=strtolower($abc_apps_path)))
+    				&& array_push($this->_abc_apps_path,$abc_apps_path)
+    			)
+    			?$abc_apps_path
+    			:NULL;
+    }
+/***************************************************************/
+    /**
+     *
+     * Get paths of settings for Apps
+     * (administrative basic control)
+     *
+     * @return Array()
+     *
+     */
+    public function getABCAppsPath()
+    {
+    	return $this->_abc_apps_path;
+    }
+    
+/***************************************************************/    	
+    /**
+   	 * 
+   	 * Set login administrative basic control
+   	 * 
+   	 * @return ABC
+   	 * 
+   	 */
+   	protected function setABC($_abc=NULL)
+   	{
+   		return $this->_abc=$_abc;
+   	}
+/***************************************************************/    	
+    /**
+   	 * 
+   	 * Get login administrative basic control
+   	 * 
+   	 * @return ABC
+   	 * 
+   	 */
+   	public function getABC()
+   	{
+   		return $this->_abc;
+   	}
 /***************************************************************/
 	/**
      * 

@@ -9,6 +9,13 @@ class Dadiweb_Configuration_Routes
     protected static $_instance = null;
     
     /**
+     * Get search router
+     *
+     * @var Array()
+     */
+    protected $_search_router = NULL;
+    
+    /**
      * General variable
      *
      * @var Array()
@@ -16,12 +23,18 @@ class Dadiweb_Configuration_Routes
     protected $_routes = NULL;
 
     /**
-     * Paths of routes
+     * General variable for abc
      *
      * @var Array()
      */
-    protected $_routes_path = NULL;
-    
+    protected $_abc_routes = NULL;
+
+   	/**
+   	 * Set administrative basic control
+   	 *
+   	 * @var ABC
+   	 */
+   	protected $_abc = NULL;
 /***************************************************************/
 	/**
      * Singleton pattern implementation makes "new" unavailable
@@ -65,91 +78,117 @@ class Dadiweb_Configuration_Routes
     }
 /***************************************************************/
     /**
-     * Returns Configuration Routes
-     *
-     * @return stdClass
-     */
-    public function getGeneric()
-    {
-    	if(!is_array($this->_routes)){
-    		self::setGeneric();
-    	}
-    	return $this->_routes;
-    }
-/***************************************************************/
-    /**
      * Setup Configuration Object
      *
      * @return stdClass
      */
     protected function setGeneric()
     {
-    	$generic=Dadiweb_Aides_Filesystem::getInstance()->getScanDir(Dadiweb_Configuration_Kernel::getInstance()->getPath());
-    	if($generic!=NULL && is_array($generic)){
-	    	foreach($generic as $items){
-    			if(!$items['type']){
-    				if(!is_array($this->_routes)){
-    					$this->_routes=array();
-    				}
-    				$file=Dadiweb_Aides_Filesystem::getInstance()->pathValidator(
-    					Dadiweb_Configuration_Kernel::getInstance()->getPath().DIRECTORY_SEPARATOR.$items['item'].DIRECTORY_SEPARATOR
+    	if(Dadiweb_Configuration_Settings::getInstance()->getAppsPath()!=NULL && is_array(Dadiweb_Configuration_Settings::getInstance()->getAppsPath())){
+	    	foreach(Dadiweb_Configuration_Settings::getInstance()->getAppsPath() as $items){
+    			if(!is_array($this->_routes)){
+    				$this->_routes=array();
+    			}
+    			$file=$items
+    				.(
+    					(
+    						isset(Dadiweb_Configuration_Kernel::getInstance()->getSettings()->resource->App->routes_file_name)
+    						&& strlen(trim($routes_file_name=strtolower(Dadiweb_Configuration_Kernel::getInstance()->getSettings()->resource->App->routes_file_name)))
+						)
+						?$routes_file_name.'.'
     						.(
     							(
-    								isset(Dadiweb_Configuration_Kernel::getInstance()->getSettings()->resource->App->settings_path)
-    								&& strlen(trim($routes_path=strtolower(Dadiweb_Configuration_Kernel::getInstance()->getSettings()->resource->App->settings_path)))
-								)
-								?$routes_path
-    							:strtolower('settings')
-    						)
-    					)
-    					.(
-    						(
-    							isset(Dadiweb_Configuration_Kernel::getInstance()->getSettings()->resource->App->routes_file_name)
-    							&& strlen(trim($routes_file_name=strtolower(Dadiweb_Configuration_Kernel::getInstance()->getSettings()->resource->App->routes_file_name)))
+    								isset(Dadiweb_Configuration_Kernel::getInstance()->getSettings()->resource->App->routes_file_exe)
+    								&& strlen(trim($routes_file_exe=strtolower(Dadiweb_Configuration_Kernel::getInstance()->getSettings()->resource->App->routes_file_exe)))
+    							)
+    							?strtolower($routes_file_exe)
+    							:strtolower('ini')
 							)
-							?$routes_file_name.'.'
-    							.(
-    								(
-    									isset(Dadiweb_Configuration_Kernel::getInstance()->getSettings()->resource->App->routes_file_exe)
-    									&& strlen(trim($routes_file_exe=strtolower(Dadiweb_Configuration_Kernel::getInstance()->getSettings()->resource->App->routes_file_exe)))
-    								)
-    								?strtolower($routes_file_exe)
-    								:strtolower('ini')
-								)
-    						:strtolower(
-    							'routes.'
-    							.(
-    								(
-    									isset(Dadiweb_Configuration_Kernel::getInstance()->getSettings()->resource->App->routes_file_exe)
-    									&& strlen(trim($routes_file_exe=strtolower(Dadiweb_Configuration_Kernel::getInstance()->getSettings()->resource->App->routes_file_exe)))
-    								)
-    								?$routes_file_exe
-    								:'ini'
-								)
-    						)
+    					:strtolower(
+    						'routes.'
+    						.(
+    							(
+    								isset(Dadiweb_Configuration_Kernel::getInstance()->getSettings()->resource->App->routes_file_exe)
+    								&& strlen(trim($routes_file_exe=strtolower(Dadiweb_Configuration_Kernel::getInstance()->getSettings()->resource->App->routes_file_exe)))
+    							)
+    							?$routes_file_exe
+    							:'ini'
+							)
     					)
-    				;
-    				if(is_file($file)){
-    					if(!is_array($this->_routes_path)){
-    						$this->_routes_path=array();
-    					}
-    					self::setRoutesPath($routes_path);
-    					$ini=parse_ini_file($file,true);
-    					if(!$ini){
-    						throw Dadiweb_Throw_ErrorException::showThrow(
-    								sprintf('The configuration ini-file "%s" does not exist or empty', $file)
-    						);
-    					}
+    				)
+    			;
+    			if(is_file($file)){
+    				$ini=parse_ini_file($file,true);
+    				if($ini){
     					foreach($ini as $key=>$item){
     						$this->_routes=array_merge_recursive(
-    								$this->_routes,
-    								Dadiweb_Aides_Array::getInstance()->items_2_MultiDimensionalKeys(
-    										Dadiweb_Aides_Array::getInstance()->explode($key,'.'),
-    										$item
-    								)
+    							$this->_routes,
+    							Dadiweb_Aides_Array::getInstance()->items_2_MultiDimensionalKeys(
+    									Dadiweb_Aides_Array::getInstance()->explode($key,'.'),
+    									$item
+    							)
     						);
     					}
-    				}
+    				}	
+    			}
+    		}
+    	}
+    	/**
+    	 * ABC
+    	 */
+    	self::setABC(
+    		(
+    			isset(Dadiweb_Configuration_Kernel::getInstance()->getSettings()->resource->Master->abc)
+    			&& strlen(trim(self::setABC(strtolower(Dadiweb_Configuration_Kernel::getInstance()->getSettings()->resource->Master->abc))))
+    		)
+    		?self::getABC()
+    		:strtolower('abc')
+    	);
+    	if(Dadiweb_Configuration_Settings::getInstance()->getABCAppsPath()!=NULL && is_array(Dadiweb_Configuration_Settings::getInstance()->getABCAppsPath())){
+    		foreach(Dadiweb_Configuration_Settings::getInstance()->getABCAppsPath() as $items){
+    			if(!is_array($this->_abc_routes)){
+    				$this->_abc_routes=array();
+    			}
+    			$file=$items
+    			.(
+    					(
+    							isset(Dadiweb_Configuration_Kernel::getInstance()->getSettings()->resource->App->routes_file_name)
+    							&& strlen(trim($routes_file_name=strtolower(Dadiweb_Configuration_Kernel::getInstance()->getSettings()->resource->App->routes_file_name)))
+    					)
+    					?$routes_file_name.'.'
+    					.(
+    							(
+    									isset(Dadiweb_Configuration_Kernel::getInstance()->getSettings()->resource->App->routes_file_exe)
+    									&& strlen(trim($routes_file_exe=strtolower(Dadiweb_Configuration_Kernel::getInstance()->getSettings()->resource->App->routes_file_exe)))
+    							)
+    							?strtolower($routes_file_exe)
+    							:strtolower('ini')
+    					)
+    					:strtolower(
+    							'routes.'
+    							.(
+    									(
+    											isset(Dadiweb_Configuration_Kernel::getInstance()->getSettings()->resource->App->routes_file_exe)
+    											&& strlen(trim($routes_file_exe=strtolower(Dadiweb_Configuration_Kernel::getInstance()->getSettings()->resource->App->routes_file_exe)))
+    									)
+    									?$routes_file_exe
+    									:'ini'
+    							)
+    					)
+    			);
+    			if(is_file($file)){
+    				$ini=parse_ini_file($file,true);
+    				if($ini){
+    					foreach($ini as $key=>$item){
+    						$this->_abc_routes=array_merge_recursive(
+    							$this->_abc_routes,
+    							Dadiweb_Aides_Array::getInstance()->items_2_MultiDimensionalKeys(
+    									Dadiweb_Aides_Array::getInstance()->explode($key,'.'),
+    									$item
+    							)
+    						);
+    					}
+    				}	
     			}
     		}
     	}
@@ -158,37 +197,142 @@ class Dadiweb_Configuration_Routes
     	unset($item);
     	unset($key);
     }
-/***************************************************************/
+/***************************************************************/    	
     /**
-     *
-     * Set paths of routes
-     *
-     * @var String()
-     *
-     */
-    protected function setRoutesPath($routes_path=NULL)
-    {
-    	return (
-    				NULL!==$routes_path
-    				&& strlen(trim($routes_path=strtolower($routes_path)))
-    				&& array_push($this->_routes_path,$routes_path)
-    			)
-    			?$routes_path
-    			:NULL;
-    }
-/***************************************************************/
+   	 * 
+   	 * Search routes for Apps
+   	 * 
+   	 * @return Array()
+   	 * 
+   	 */
+   	public function searchRouter($uri=NULL)
+   	{
+   		if($uri==NULL){return NULL;}
+   		$uri='/'.implode('/',$uri);
+   		if(NULL===self::getABC()){
+   			foreach(self::getRoutes() as $item){
+   				if($item['type']=='generic'){
+   					if(false!==strpos($uri, '/'.$item['alias']) && false!==strpos($uri.'/', '/'.$item['alias'].'/')){
+   						$this->_search_router = str_replace (
+   								'/'.$item['alias'],
+   								'/'.implode('/',array($item['prog'],$item['ctrl'],$item['method'])),
+   								$uri
+   						);
+   					}
+   				}elseif($item['type']=='regexp'){
+   					preg_match('/'.str_replace('/','\/',$item['alias']).'/i', $uri, $matches);
+   					if(count($matches)){
+   						$this->_search_router=array();
+   						array_push(
+   						$this->_search_router,str_replace (
+   						'/'.$matches[0],
+   						'/'.implode('/',array($item['prog'],$item['ctrl'],$item['method'])),
+   						$uri
+   						)
+   						);
+   						$variable=array();
+   						$regexp='';
+   						if(isset($item['var'])){
+   							foreach($item['var'] as $key=>$var){
+   								if(isset($matches[(int)$key])){
+   									$variable[$var]=$matches[(int)$key];
+   									$regexp.=$variable[$var];
+   								}
+   							}
+   						}
+   						array_push($this->_search_router,$variable);
+   						array_push($this->_search_router,sprintf($item['regexp'], $regexp));
+   					}
+   				}
+   			}
+   		}else{
+   			foreach(self::getABCRoutes() as $item){
+   				if($item['type']=='generic'){
+   					if(false!==strpos($uri, '/'.$item['alias']) && false!==strpos($uri.'/', '/'.$item['alias'].'/')){
+   						$this->_search_router = str_replace (
+   							'/'.$item['alias'],
+   							'/'.implode('/',array($item['prog'],$item['ctrl'],$item['method'])),
+   							$uri
+   						);
+   					}
+   				}elseif($item['type']=='regexp'){
+   					preg_match('/'.str_replace('/','\/',$item['alias']).'/i', $uri, $matches);
+   					if(count($matches)){
+   						$this->_search_router=array();
+   						array_push(
+   							$this->_search_router,str_replace (
+   								'/'.$matches[0],
+   								'/'.implode('/',array($item['prog'],$item['ctrl'],$item['method'])),
+   								$uri
+   							)
+   						);
+   						$variable=array();
+   						$regexp='';
+   						if(isset($item['var'])){
+   							foreach($item['var'] as $key=>$var){
+   								if(isset($matches[(int)$key])){
+   									$variable[$var]=$matches[(int)$key];
+   									$regexp.=$variable[$var];
+   								}
+   							}
+   						}
+   						array_push($this->_search_router,$variable);
+   						array_push($this->_search_router,sprintf($item['regexp'], $regexp));
+   					}
+   				}
+   			}
+   		}
+   		return $this->_search_router;
+   	}
+/***************************************************************/    	
     /**
-     *
-     * Get paths of routes
-     *
-     * @return Array()
-     *
-     */
-    protected function getRoutesPath()
-    {
-    	return $this->_routes_path;
-    }
-    
+   	 * 
+   	 * Set login administrative basic control
+   	 * 
+   	 * @return ABC
+   	 * 
+   	 */
+   	public function setABC($_abc=NULL)
+   	{
+   		return $this->_abc=$_abc;
+   	}
+/***************************************************************/    	
+    /**
+   	 * 
+   	 * Get login administrative basic control
+   	 * 
+   	 * @return ABC
+   	 * 
+   	 */
+   	public function getABC()
+   	{
+   		return $this->_abc;
+   	}
+/***************************************************************/    	
+    /**
+   	 * 
+   	 * Get routes for Apps
+   	 * 
+   	 * @return Array()
+   	 * 
+   	 */
+   	public function getRoutes()
+   	{
+   		return (isset($this->_routes['routes']))?$this->_routes['routes']:NULL;
+   	}
+/***************************************************************/    	
+    /**
+   	 * 
+   	 * Get routes for Apps
+   	 * (administrative basic control)
+   	 * 
+   	 * @return Array()
+   	 * 
+   	 */
+   	public function getABCRoutes()
+   	{
+   		return (isset($this->_abc_routes['routes']))?$this->_abc_routes['routes']:NULL;
+   	}
 /***************************************************************/
 	/**
      * 

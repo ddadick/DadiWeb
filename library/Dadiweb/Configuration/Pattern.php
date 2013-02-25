@@ -51,12 +51,6 @@ class Dadiweb_Configuration_Pattern
    	 */
    	protected static $_instance = null;
    	
-   	/**
-   	 * Set administrative basic control
-   	 *
-   	 * @var ABC
-   	 */
-   	protected $_abc = NULL;
 /***************************************************************/   	
 	/**
      * Singleton pattern implementation makes "new" unavailable
@@ -106,29 +100,40 @@ class Dadiweb_Configuration_Pattern
    	 * @return Dadiweb_Configuration_Pattern Provides a fluent interface
      */
 	protected function setMVC(){
-   		$this->uri=split('\/',substr(Dadiweb_Http_Client::getInstance()->getUri(), 1),4);
-   		/**
-   		 * Checking login administrative basic control
-   		 */
+		$this->uri=split('\?',Dadiweb_Http_Client::getInstance()->getUri(),2);
+		if(is_array($this->uri) && isset($this->uri[1]) && is_array($array=split('\&',$this->uri[1]))){
+			foreach($array as $value){
+				$value=split('=',$value);
+				if(is_array($value) && isset($value[0]) && isset($value[1]) && $value[1]!=NULL && strlen(trim($value[1]))>0){
+					$this->variables[$value[0]]=$value[1];
+				}
+			}
+		}
+		$this->uri=$this->uri[0];
+   		$this->uri=split('\/',substr($this->uri, 1),4);
    		if(
-   			strtolower($this->uri[0])==(
-   				(
-   					isset(Dadiweb_Configuration_Kernel::getInstance()->getSettings()->resource->Master->abc) 
-   					&& strlen(trim(self::setABC(strtolower(Dadiweb_Configuration_Kernel::getInstance()->getSettings()->resource->Master->abc))))
-   				)
-   				?self::getABC()
-   				:strtolower('abc')
-   			) && count($this->uri)>1
+   			strtolower($this->uri[0])==Dadiweb_Configuration_Routes::getInstance()->getABC() && count($this->uri)>1
    		){
    			$this->uri=split('\/',implode('/',(array_shift($this->uri)?$this->uri:array('/'))),4);
-   		}elseif(strtolower($this->uri[0])==self::getABC() && count($this->uri)==1){
+   			
+   		}elseif(strtolower($this->uri[0])==Dadiweb_Configuration_Routes::getInstance()->getABC() && count($this->uri)==2 && !strlen(trim($this->uri[1]))){
+   			$this->uri[0]='';
+   			unset($this->uri[1]);
+   		}elseif(strtolower($this->uri[0])==Dadiweb_Configuration_Routes::getInstance()->getABC() && count($this->uri)==1){
    			$this->uri[0]='';
    		}else{
-   			self::setABC();
+   			Dadiweb_Configuration_Routes::getInstance()->setABC();
+   		}
+   		if(($router=Dadiweb_Configuration_Routes::getInstance()->searchRouter($this->uri))!==NULL && is_string($router)){
+   			$this->uri=split('\/',substr($router, 1),4);
+   		}elseif($router!==NULL && is_array($router)){
+   			$this->uri=split('\/',substr($router[0], 1),4);   			
+   			foreach($router[1] as $key=>$value){
+   				$this->variables[$key]=$value;
+   			}
    		}
 		$i=0;
 		if(is_array($this->uri)){
-			
 			foreach($this->uri as $value){
 				if(($value==NULL or strlen(trim($value))<=0) and $i<4){
 					$this->uri[$i]=NULL;
@@ -139,21 +144,9 @@ class Dadiweb_Configuration_Pattern
 			if(isset($this->uri[1])){$this->setController($this->uri[1]);}
 			if(isset($this->uri[2])){$this->setView($this->uri[2]);}
 			if(isset($this->uri[3])){
-				$this->uri=split('\?',$this->uri[3],2);
-				foreach(array_chunk(split('\/',$this->uri[0]), 2) as $value){
-					if(is_array($value) && isset($value[0]) && isset($value[1]) && $value[1]!=NULL && strlen(trim($value[1]))>0){
+				foreach(array_chunk(split('\/',$this->uri[3]), 2) as $value){
+					if(is_array($value) && isset($value[0]) && isset($value[1]) && $value[1]!==NULL && strlen(trim($value[1]))){
 						$this->variables[$value[0]]=$value[1];
-					}
-				}
-			}
-			if(isset($this->uri[1])){
-				$this->uri=split('\&',$this->uri[1]);
-				if(is_array($this->uri)){
-					foreach($this->uri as $value){
-						$value=split('=',$value);
-						if(is_array($value) && isset($value[0]) && isset($value[1]) && $value[1]!=NULL && strlen(trim($value[1]))>0){
-							$this->variables[$value[0]]=$value[1];
-						}
 					}
 				}
 			}
@@ -271,30 +264,6 @@ class Dadiweb_Configuration_Pattern
    			return $this->variables[$name];
    		}
    		return $param;
-   	}
-/***************************************************************/    	
-    /**
-   	 * 
-   	 * Set login administrative basic control
-   	 * 
-   	 * @return ABC
-   	 * 
-   	 */
-   	protected function setABC($_abc=NULL)
-   	{
-   		return $this->_abc=$_abc;
-   	}
-/***************************************************************/    	
-    /**
-   	 * 
-   	 * Get login administrative basic control
-   	 * 
-   	 * @return ABC
-   	 * 
-   	 */
-   	public function getABC()
-   	{
-   		return $this->_abc;
    	}
 /***************************************************************/
    	/**

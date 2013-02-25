@@ -137,21 +137,13 @@ class Dadiweb_Configuration_Kernel
     public function buildKernel()
     {
     	self::setSettings(Dadiweb_Aides_Array::getInstance()->arr2obj(Dadiweb_Configuration_Settings::getInstance()->getGeneric()));
-    	if(
-    			!isset(self::getSettings()->resource->Master->path) ||
-    			!strlen(trim(self::getSettings()->resource->Master->path)) ||
-    			self::setPath(self::getSettings()->resource->Master->path)===NULL ||
-    			false===realpath(self::getPath())
-    	){
-    		throw Dadiweb_Throw_ErrorException::showThrow(
-    				sprintf('Path into "resource.Master.path" in the file "%sresourse.ini" is not valid', INI_PATH)
-    		);
-    	}
-    	Dadiweb_Aides_Debug::show(Dadiweb_Configuration_Routes::getInstance()->getGeneric(),true);
+    	//Dadiweb_Aides_Debug::show(Dadiweb_Configuration_Settings::getInstance()->getABCAppsPath(),true);
+    	Dadiweb_Configuration_Routes::getInstance();
+    	//Dadiweb_Aides_Debug::show(Dadiweb_Configuration_Routes::getInstance()->getABCRoutes(),true);
     	self::setPattern(Dadiweb_Configuration_Pattern::getInstance());
     	self::setLayout(Dadiweb_Configuration_Layout::getInstance());
     	Dadiweb_Configuration_Render::getInstance()->getGeneric();
-    	//Dadiweb_Aides_Debug::show(APPS_PATH,true);
+    	//Dadiweb_Aides_Debug::show(self::getPattern(),true);
     	
 		
 		if(
@@ -222,7 +214,7 @@ class Dadiweb_Configuration_Kernel
 				self::setMethod('IndexMethod');
 			}elseif(false===realpath(
 						self::setPathCtrl(
-							self::getPath().DIRECTORY_SEPARATOR.self::getProgram().DIRECTORY_SEPARATOR.
+							Dadiweb_Configuration_Settings::getInstance()->getPath().DIRECTORY_SEPARATOR.self::getProgram().DIRECTORY_SEPARATOR.
 							(
 								(isset(self::getSettings()->resource->App->ctrl_path))
 								?(
