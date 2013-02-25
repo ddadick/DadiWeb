@@ -210,74 +210,78 @@ class Dadiweb_Configuration_Routes
    		if($uri==NULL){return NULL;}
    		$uri='/'.implode('/',$uri);
    		if(NULL===self::getABC()){
-   			foreach(self::getRoutes() as $item){
-   				if($item['type']=='generic'){
-   					if(false!==strpos($uri, '/'.$item['alias']) && false!==strpos($uri.'/', '/'.$item['alias'].'/')){
-   						$this->_search_router = str_replace (
-   								'/'.$item['alias'],
-   								'/'.implode('/',array($item['prog'],$item['ctrl'],$item['method'])),
-   								$uri
-   						);
-   					}
-   				}elseif($item['type']=='regexp'){
-   					preg_match('/'.str_replace('/','\/',$item['alias']).'/i', $uri, $matches);
-   					if(count($matches)){
-   						$this->_search_router=array();
-   						array_push(
-   						$this->_search_router,str_replace (
-   						'/'.$matches[0],
-   						'/'.implode('/',array($item['prog'],$item['ctrl'],$item['method'])),
-   						$uri
-   						)
-   						);
-   						$variable=array();
-   						$regexp='';
-   						if(isset($item['var'])){
-   							foreach($item['var'] as $key=>$var){
-   								if(isset($matches[(int)$key])){
-   									$variable[$var]=$matches[(int)$key];
-   									$regexp.=$variable[$var];
-   								}
-   							}
+   			if(is_array(self::getRoutes()) && count(is_array(self::getRoutes()))){
+   				foreach(self::getRoutes() as $item){
+   					if($item['type']=='generic'){
+   						if(false!==strpos($uri, '/'.$item['alias']) && false!==strpos($uri.'/', '/'.$item['alias'].'/')){
+   							$this->_search_router = str_replace (
+   									'/'.$item['alias'],
+   									'/'.implode('/',array($item['prog'],$item['ctrl'],$item['method'])),
+	   								$uri
+   							);
    						}
-   						array_push($this->_search_router,$variable);
-   						array_push($this->_search_router,sprintf($item['regexp'], $regexp));
+   					}elseif($item['type']=='regexp'){
+   						preg_match('/'.str_replace('/','\/',$item['alias']).'/i', $uri, $matches);
+   						if(count($matches)){
+   							$this->_search_router=array();
+	   						array_push(
+   								$this->_search_router,str_replace (
+   									'/'.$matches[0],
+   									'/'.implode('/',array($item['prog'],$item['ctrl'],$item['method'])),
+   									$uri
+   								)
+   							);
+   							$variable=array();
+	   						$regexp='';
+   							if(isset($item['var'])){
+   								foreach($item['var'] as $key=>$var){
+   									if(isset($matches[(int)$key])){
+   										$variable[$var]=$matches[(int)$key];
+   										$regexp.=$variable[$var];
+   									}
+   								}
+	   						}
+   							array_push($this->_search_router,$variable);
+   							array_push($this->_search_router,sprintf($item['regexp'], $regexp));
+   						}
    					}
    				}
    			}
    		}else{
-   			foreach(self::getABCRoutes() as $item){
-   				if($item['type']=='generic'){
-   					if(false!==strpos($uri, '/'.$item['alias']) && false!==strpos($uri.'/', '/'.$item['alias'].'/')){
-   						$this->_search_router = str_replace (
-   							'/'.$item['alias'],
-   							'/'.implode('/',array($item['prog'],$item['ctrl'],$item['method'])),
-   							$uri
-   						);
-   					}
-   				}elseif($item['type']=='regexp'){
-   					preg_match('/'.str_replace('/','\/',$item['alias']).'/i', $uri, $matches);
-   					if(count($matches)){
-   						$this->_search_router=array();
-   						array_push(
-   							$this->_search_router,str_replace (
-   								'/'.$matches[0],
-   								'/'.implode('/',array($item['prog'],$item['ctrl'],$item['method'])),
+   			if(is_array(self::getABCRoutes()) && count(is_array(self::getABCRoutes()))){  
+   				foreach(self::getABCRoutes() as $item){
+   					if($item['type']=='generic'){
+   						if(false!==strpos($uri, '/'.$item['alias']) && false!==strpos($uri.'/', '/'.$item['alias'].'/')){
+   							$this->_search_router = str_replace (
+   								'/'.$item['alias'],
+	   							'/'.implode('/',array($item['prog'],$item['ctrl'],$item['method'])),
    								$uri
-   							)
-   						);
-   						$variable=array();
-   						$regexp='';
-   						if(isset($item['var'])){
-   							foreach($item['var'] as $key=>$var){
-   								if(isset($matches[(int)$key])){
-   									$variable[$var]=$matches[(int)$key];
-   									$regexp.=$variable[$var];
-   								}
-   							}
+   							);
    						}
-   						array_push($this->_search_router,$variable);
-   						array_push($this->_search_router,sprintf($item['regexp'], $regexp));
+   					}elseif($item['type']=='regexp'){
+   						preg_match('/'.str_replace('/','\/',$item['alias']).'/i', $uri, $matches);
+	   					if(count($matches)){
+   							$this->_search_router=array();
+   							array_push(
+   								$this->_search_router,str_replace (
+   									'/'.$matches[0],
+   									'/'.implode('/',array($item['prog'],$item['ctrl'],$item['method'])),
+   									$uri
+   								)
+	   						);
+   							$variable=array();
+   							$regexp='';
+   							if(isset($item['var'])){
+   								foreach($item['var'] as $key=>$var){
+   									if(isset($matches[(int)$key])){
+   										$variable[$var]=$matches[(int)$key];
+   										$regexp.=$variable[$var];
+   									}
+	   							}
+   							}
+   							array_push($this->_search_router,$variable);
+   							array_push($this->_search_router,sprintf($item['regexp'], $regexp));
+   						}
    					}
    				}
    			}
