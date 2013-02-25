@@ -193,7 +193,6 @@ class Dadiweb_Configuration_Apps
 		){
 			self::setMethod('IndexMethod');
 		}
-		//Dadiweb_Aides_Debug::show(Dadiweb_Configuration_Routes::getInstance()->getABC(),true);
 		if(false===realpath(
 					self::setPathCtrl(
 						Dadiweb_Configuration_Settings::getInstance()->getPath().DIRECTORY_SEPARATOR.self::getProgram().DIRECTORY_SEPARATOR.
@@ -223,10 +222,8 @@ class Dadiweb_Configuration_Apps
 				)
 		){
 			throw Dadiweb_Throw_ErrorException::showThrow('Critical interrupt. The name of the default class is not established.');
-		}
-		
+		}		
 		self::setFileCtrl(self::getPathCtrl().DIRECTORY_SEPARATOR.ucfirst(self::getController()).self::getClass().'.php',true);
-		//Dadiweb_Aides_Debug::show(self::getFileCtrl(),true);
 		if(NULL===self::setFileCtrl()){
 			if(false===is_file(
 				(isset(Dadiweb_Configuration_Kernel::getInstance()->getSettings()->generic->App->ctrl_class))
@@ -251,7 +248,6 @@ class Dadiweb_Configuration_Apps
 				:''
 			)
 		);
-		//Dadiweb_Aides_Debug::show($this,true);
 		/**
 		 * Setup bootsrap class of app
 		 */
