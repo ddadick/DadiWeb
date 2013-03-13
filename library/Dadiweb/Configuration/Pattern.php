@@ -106,19 +106,22 @@ class Dadiweb_Configuration_Pattern
 		$this->uri=$this->uri[0];
    		$this->uri=split('\/',substr($this->uri, 1),4);
    		if(
-   			strtolower($this->uri[0])==Dadiweb_Configuration_Routes::getInstance()->getABC() && count($this->uri)>1
+   			strtolower($this->uri[0])==Dadiweb_Configuration_Kernel::getInstance()->getRoutes()->getABC() && count($this->uri)>1
    		){
    			$this->uri=split('\/',implode('/',(array_shift($this->uri)?$this->uri:array('/'))),4);
    			
-   		}elseif(strtolower($this->uri[0])==Dadiweb_Configuration_Routes::getInstance()->getABC() && count($this->uri)==2 && !strlen(trim($this->uri[1]))){
+   		}elseif(
+   			strtolower($this->uri[0])==Dadiweb_Configuration_Kernel::getInstance()->getRoutes()->getABC() && count($this->uri)==2
+   			&& !strlen(trim($this->uri[1]))
+   		){
    			$this->uri[0]='';
    			unset($this->uri[1]);
-   		}elseif(strtolower($this->uri[0])==Dadiweb_Configuration_Routes::getInstance()->getABC() && count($this->uri)==1){
+   		}elseif(strtolower($this->uri[0])==Dadiweb_Configuration_Kernel::getInstance()->getRoutes()->getABC() && count($this->uri)==1){
    			$this->uri[0]='';
    		}else{
-   			Dadiweb_Configuration_Routes::getInstance()->setABC();
+   			Dadiweb_Configuration_Kernel::getInstance()->getRoutes()->setABC();
    		}
-   		if(($router=Dadiweb_Configuration_Routes::getInstance()->searchRouter($this->uri))!==NULL && is_string($router)){
+   		if(($router=Dadiweb_Configuration_Kernel::getInstance()->getRoutes()->searchRouter($this->uri))!==NULL && is_string($router)){
    			$this->uri=split('\/',substr($router, 1),4);
    		}elseif($router!==NULL && is_array($router)){
    			$this->uri=split('\/',substr($router[0], 1),4);   			

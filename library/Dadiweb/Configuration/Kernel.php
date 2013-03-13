@@ -45,6 +45,20 @@ class Dadiweb_Configuration_Kernel
     protected $_layout = NULL;
     
     /**
+     * Apps (current)
+     *
+     * @return Object
+     */
+    protected $_apps = NULL;
+    
+    /**
+     * Routes (current)
+     *
+     * @return Object
+     */
+    protected $_routes = NULL;
+    
+    /**
      *
      * Generic path's for Apps
      *
@@ -90,24 +104,19 @@ class Dadiweb_Configuration_Kernel
     public function buildKernel()
     {
     	self::setSettings(Dadiweb_Aides_Array::getInstance()->arr2obj(Dadiweb_Configuration_Settings::getInstance()->getGeneric()));
-    	//Dadiweb_Aides_Debug::show(Dadiweb_Configuration_Settings::getInstance()->getABCAppsPath(),true);
-    	Dadiweb_Configuration_Routes::getInstance();
-    	//Dadiweb_Aides_Debug::show(Dadiweb_Configuration_Routes::getInstance()->getABCRoutes(),true);
+    	self::setRoutes(Dadiweb_Configuration_Routes::getInstance());
     	self::setPattern(Dadiweb_Configuration_Pattern::getInstance());
     	self::setLayout(Dadiweb_Configuration_Layout::getInstance());
     	Dadiweb_Configuration_Render::getInstance()->getGeneric();
-    	//Dadiweb_Configuration_Apps::getInstance();
-    	Dadiweb_Configuration_Apps::getInstance();
-    	//Dadiweb_Aides_Debug::show(Dadiweb_Configuration_Settings::getInstance()->getPath().DIRECTORY_SEPARATOR.Dadiweb_Configuration_Apps::getInstance()->getProgram().((NULL!==Dadiweb_Configuration_Routes::getInstance()->getABC())?(DIRECTORY_SEPARATOR.Dadiweb_Configuration_Routes::getInstance()->getABC()):''),true);
-    	//Dadiweb_Aides_Debug::show(Dadiweb_Configuration_Apps::getInstance()->getPath(),true);
+    	self::setApps(Dadiweb_Configuration_Apps::getInstance());
 		/**
 		 * Rendered
 		 */
 		echo self::getLayout()->getRendered(
 				self::ob_class(
-					Dadiweb_Configuration_Apps::getInstance()->getPathCtrl(),
-					Dadiweb_Configuration_Apps::getInstance()->getClass(), 
-					Dadiweb_Configuration_Apps::getInstance()->getMethod()
+					self::getApps()->getPathCtrl(),
+					self::getApps()->getClass(), 
+					self::getApps()->getMethod()
 				)
 		);
 		/**
@@ -304,6 +313,66 @@ class Dadiweb_Configuration_Kernel
     		throw Dadiweb_Throw_ErrorException::showThrow('Critical error. Layout undefined.');
     	}
     	return $this->_layout;
+    }
+/***************************************************************/
+    /**
+     *
+     * Set Apps
+     *
+     * @return Nothing
+     *
+     */
+    protected function setApps($options=NULL)
+    {
+    	if($options===NULL){
+			throw Dadiweb_Throw_ErrorException::showThrow('Critical error. Apps undefined.');
+		}
+		$this->_apps=$options;
+    }
+/***************************************************************/
+    /**
+     *
+     * Get Apps
+     *
+     * @return Object apps
+     *
+     */
+    public function getApps()
+    {
+    	if($this->_apps===NULL){
+    		throw Dadiweb_Throw_ErrorException::showThrow('Critical error. Apps undefined.');
+    	}
+    	return $this->_apps;
+    }
+/***************************************************************/
+    /**
+     *
+     * Set Routes
+     *
+     * @return Nothing
+     *
+     */
+    protected function setRoutes($options=NULL)
+    {
+    	if($options===NULL){
+			throw Dadiweb_Throw_ErrorException::showThrow('Critical error. Routes undefined.');
+		}
+		$this->_routes=$options;
+    }
+/***************************************************************/
+    /**
+     *
+     * Get Routes
+     *
+     * @return Object routes
+     *
+     */
+    public function getRoutes()
+    {
+    	if($this->_routes===NULL){
+    		throw Dadiweb_Throw_ErrorException::showThrow('Critical error. Routes undefined.');
+    	}
+    	return $this->_routes;
     }
 /***************************************************************/
     /**

@@ -131,7 +131,6 @@ class Dadiweb_Configuration_Apps
 			if(NULL!==Dadiweb_Configuration_Kernel::getInstance()->getPattern()->getModel()){
 				self::setController(
 					strtolower(
-						
 						(isset(Dadiweb_Configuration_Kernel::getInstance()->getSettings()->generic->App->ctrl_default))
 						?Dadiweb_Configuration_Kernel::getInstance()->getSettings()->generic->App->ctrl_default
 						:'index'
