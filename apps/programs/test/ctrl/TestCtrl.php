@@ -2,10 +2,14 @@
 class Test_TestCtrl extends Apps_Programs_Kernel
 {
 	public function IndexMethod(){
-
+		echo 'popal Test_TestCtrl IndexMethod';
+		$this->rendered->ad='TEST';
+		$this->rendered->array=array('crrr','sadasd','wrwerwer');
+		$this->rendered->array2=array('vvv','xxx','cccc');
+		$this->rendered->array3=array('1','2','3');
 	}
 	public function TestMethod(){
-		echo 'popal';
+		echo 'popal ddd';
 		$this->rendered->ad='TEST';
 		$this->rendered->array=array('crrr','sadasd','wrwerwer');
 		$this->rendered->array2=array('vvv','xxx','cccc');

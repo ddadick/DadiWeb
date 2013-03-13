@@ -93,6 +93,7 @@ class Dadiweb_Configuration_Pattern
    	 * @return Dadiweb_Configuration_Pattern Provides a fluent interface
      */
 	protected function setMVC(){
+		
 		$this->uri=split('\?',Dadiweb_Http_Client::getInstance()->getUri(),2);
 		if(is_array($this->uri) && isset($this->uri[1]) && is_array($array=split('\&',$this->uri[1]))){
 			foreach($array as $value){

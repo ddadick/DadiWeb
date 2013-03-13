@@ -26,6 +26,19 @@ class Apps_Programs_Kernel
 		$this->rendered=Dadiweb_Configuration_Kernel::getInstance()->getRendered();
 	}
 /***************************************************************/
+	/**
+	 *
+	 * Return variables from Dadiweb_Configuration_Pattern (variables url)
+	 *
+	 * @return Void
+	 *
+	 */
+	public function getParam($name=NULL, $value=NULL)
+	{
+		return Dadiweb_Configuration_Kernel::getInstance()->getPattern()->getParam($name, $value);
+	}
+	
+/***************************************************************/
     /**
      *
      * Handler variables that do not exist (input)
