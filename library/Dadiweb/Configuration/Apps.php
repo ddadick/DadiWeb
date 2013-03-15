@@ -66,6 +66,42 @@ class Dadiweb_Configuration_Apps
      */
     protected $_path = NULL;
     
+    /**
+     *
+     * Name program for Layout
+     *
+     * @var String()
+     *
+     */
+    protected $_layout_program = NULL;
+    
+    /**
+     *
+     * Name controller for Layout
+     *
+     * @var String()
+     *
+     */
+    protected $_layout_controller = NULL;
+
+    /**
+     *
+     * Name method for Layout
+     *
+     * @var String()
+     *
+     */
+    protected $_layout_method = NULL;
+    
+    /**
+     *
+     * Name default method for Layout
+     *
+     * @var String()
+     *
+     */
+    protected $_layout_default_method = NULL;
+    
 /***************************************************************/
 	/**
      * Singleton pattern implementation makes "new" unavailable
@@ -121,7 +157,7 @@ class Dadiweb_Configuration_Apps
 				);
 			}
     	}
-    	
+    	self::setLayoutProgram(self::getProgram());
     	/**
     	 *  Set controller of apps
     	 */
@@ -148,13 +184,13 @@ class Dadiweb_Configuration_Apps
 				}
 			}
 		}
-		
+		self::setLayoutController(self::getController());
 		/**
 		 *  Set method of apps
 		 */
 		if(NULL!==Dadiweb_Configuration_Kernel::getInstance()->getPattern()->getView()){
 			self::setMethod(
-				ucfirst(strtolower(Dadiweb_Configuration_Kernel::getInstance()->getPattern()->getView())).
+				ucfirst(self::setLayoutMethod(strtolower(Dadiweb_Configuration_Kernel::getInstance()->getPattern()->getView()))).
 				(
 					(isset(Dadiweb_Configuration_Kernel::getInstance()->getSettings()->generic->App->method))
 					?(
@@ -169,7 +205,7 @@ class Dadiweb_Configuration_Apps
 		}else{
 			if(NULL!==Dadiweb_Configuration_Kernel::getInstance()->getPattern()->getModel()){
 				self::setMethod(
-					ucfirst(strtolower('Index')).
+					ucfirst(self::setLayoutMethod(strtolower('Index'))).
 					(
 						(isset(Dadiweb_Configuration_Kernel::getInstance()->getSettings()->generic->App->method))
 						?(
@@ -182,7 +218,7 @@ class Dadiweb_Configuration_Apps
 				);
 			}else{
 				self::setMethod(
-						ucfirst(strtolower(Dadiweb_Configuration_Kernel::getInstance()->getSettings()->apps->Master->method)).
+						ucfirst(self::setLayoutMethod(strtolower(Dadiweb_Configuration_Kernel::getInstance()->getSettings()->apps->Master->method))).
 						(
 								(isset(Dadiweb_Configuration_Kernel::getInstance()->getSettings()->generic->App->method))
 								?(
@@ -205,11 +241,11 @@ class Dadiweb_Configuration_Apps
 						(
 							(isset(Dadiweb_Configuration_Kernel::getInstance()->getSettings()->generic->App->method_default))
 							?(
-								(strlen(trim(self::setMethodDefault(strtolower(Dadiweb_Configuration_Kernel::getInstance()->getSettings()->generic->App->method_default)))))
-								?ucfirst(self::getMethodDefault())
-								:ucfirst('Index')
+								(strlen(self::setMethodDefault(trim(strtolower(Dadiweb_Configuration_Kernel::getInstance()->getSettings()->generic->App->method_default)))))
+								?ucfirst(self::setLayoutDefaultMethod(self::getMethodDefault()))
+								:ucfirst(self::setLayoutDefaultMethod('index'))
 							)
-							:ucfirst('Index')
+							:ucfirst(self::setLayoutDefaultMethod('index'))
 						)
 				)
 				.(
@@ -494,6 +530,102 @@ class Dadiweb_Configuration_Apps
     public function getClass()
     {
     	return $this->_class;
+    }
+/***************************************************************/
+    /**
+     *
+     * Set program (layout)
+     *
+     * @var String()
+     *
+     */
+    protected function setLayoutProgram($layout_program=NULL)
+    {
+    	return $this->_layout_program=$layout_program;
+    }
+/***************************************************************/
+    /**
+     *
+     * Get program (layout)
+     *
+     * @return String()
+     *
+     */
+    public function getLayoutProgram()
+    {
+    	return $this->_layout_program;
+    }
+/***************************************************************/
+    /**
+     *
+     * Set controller (layout)
+     *
+     * @var String()
+     *
+     */
+    protected function setLayoutController($layout_controller=NULL)
+    {
+    	return $this->_layout_controller=$layout_controller;
+    }
+/***************************************************************/
+    /**
+     *
+     * Get controller (layout)
+     *
+     * @return String()
+     *
+     */
+    public function getLayoutController()
+    {
+    	return $this->_layout_controller;
+    }
+/***************************************************************/
+    /**
+     *
+     * Set method (layout)
+     *
+     * @var String()
+     *
+     */
+    protected function setLayoutMethod($layout_method=NULL)
+    {
+    	return $this->_layout_method=$layout_method;
+    }
+/***************************************************************/
+    /**
+     *
+     * Get method (layout)
+     *
+     * @return String()
+     *
+     */
+    public function getLayoutMethod()
+    {
+    	return $this->_layout_method;
+    }
+/***************************************************************/
+    /**
+     *
+     * Set default method (layout)
+     *
+     * @var String()
+     *
+     */
+    protected function setLayoutDefaultMethod($layout_default_method=NULL)
+    {
+    	return $this->_layout_default_method=$layout_default_method;
+    }
+/***************************************************************/
+    /**
+     *
+     * Get default method (layout)
+     *
+     * @return String()
+     *
+     */
+    public function getLayoutDefaultMethod()
+    {
+    	return $this->_layout_default_method;
     }
 /***************************************************************/
 	/**
