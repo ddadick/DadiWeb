@@ -202,11 +202,9 @@ class Dadiweb_Configuration_Layout
     		if(self::getSwitchView()){
     			$content=self::getView($content);
     		}
-    		/**
     		if(self::getSwitchLayout()){
-    			$content=Dadiweb_Configuration_Kernel::getInstance()->getRendered()->_echo($content);
+    			$content=self::getLayout($content);
     		}
-    		*/
     		return $content;
     		
     	}
@@ -220,7 +218,7 @@ class Dadiweb_Configuration_Layout
     }
 /***************************************************************/
     /**
-     * Return HTML - View of app 
+     * Return HTML's view - View of app 
      *
      * @return String()
      *
@@ -238,16 +236,148 @@ class Dadiweb_Configuration_Layout
     			Dadiweb_Configuration_Kernel::getInstance()->getApps()->getLayoutDefaultController(),
     			false
     		);
-    		self::getViewFilename(
-    			Dadiweb_Configuration_Kernel::getInstance()->getApps()->getLayoutController(),
-    			NULL,
-    			true
-    		);
+    		if(self::getViewName()===NULL){
+	    		self::getViewFilename(
+    				Dadiweb_Configuration_Kernel::getInstance()->getApps()->getLayoutController(),
+    				NULL,
+    				true
+    			);
+    		}else{
+    			self::getViewFilename(
+    				Dadiweb_Configuration_Kernel::getInstance()->getApps()->getLayoutController(),
+    				self::getViewName(),
+    				true
+    			);
+    		}
     		Dadiweb_Configuration_Kernel::getInstance()->getRendered()->getRender()->setTemplateDir(
     			self::getViewPath(Dadiweb_Configuration_Kernel::getInstance()->getApps()->getLayoutController())
     		);
     		self::setTemplate(self::getViewName());
     		return Dadiweb_Configuration_Kernel::getInstance()->getRendered()->_echo($content);    		
+    	}
+    	return '';
+    }
+/***************************************************************/
+    /**
+     * Return HTML's layout - View of app 
+     *
+     * @return String()
+     *
+     */
+    protected function getLayout($content='')
+    {
+    	if(self::getSwitchLayout()){
+    		if(
+    			false == is_dir(
+    				$path=Dadiweb_Aides_Filesystem::pathValidator(
+    					self::getPathGeneric().DIRECTORY_SEPARATOR.
+	    				(
+    						(NULL!==Dadiweb_Configuration_Kernel::getInstance()->getRoutes()->getABC())
+    						?(
+    							(isset(Dadiweb_Configuration_Kernel::getInstance()->getSettings()->apps->Layout->path_theme_abc))
+    							?strtolower(Dadiweb_Configuration_Kernel::getInstance()->getSettings()->apps->Layout->path_theme_abc)
+    							:(
+    								(isset(Dadiweb_Configuration_Kernel::getInstance()->getSettings()->generic->Layout->path_theme_abc))
+    								?strtolower(Dadiweb_Configuration_Kernel::getInstance()->getSettings()->generic->Layout->path_theme_abc)
+    								:strtolower('abc')
+	    						)
+    						)
+    						:(
+    							(isset(Dadiweb_Configuration_Kernel::getInstance()->getSettings()->apps->Layout->path_theme))
+    							?strtolower(Dadiweb_Configuration_Kernel::getInstance()->getSettings()->apps->Layout->path_theme)
+    							:(
+    								(isset(Dadiweb_Configuration_Kernel::getInstance()->getSettings()->generic->Layout->path_theme))
+    								?strtolower(Dadiweb_Configuration_Kernel::getInstance()->getSettings()->generic->Layout->path_theme)
+    								:strtolower('generic')
+	    						)
+    						)
+    					)
+    				)
+    			)
+    		){
+    			throw Dadiweb_Throw_ErrorException::showThrow(
+    					sprintf('Path "%s" not found', $path)
+    			);
+    		}
+    		$extension=(isset(Dadiweb_Configuration_Kernel::getInstance()->getSettings()->apps->Smarty->extension))
+	    				?Dadiweb_Configuration_Kernel::getInstance()->getSettings()->apps->Smarty->extension
+	    				:'tpl'
+	    				;
+	    	$filename=(
+	    		(
+	    			false!==realpath(
+    					$path.($filename=
+    						Dadiweb_Configuration_Kernel::getInstance()->getApps()->getLayoutProgram().'_'.
+    						Dadiweb_Configuration_Kernel::getInstance()->getApps()->getLayoutController().'_'.
+    						Dadiweb_Configuration_Kernel::getInstance()->getApps()->getLayoutMethod().'.'.
+    						$extension
+    					)
+    				)
+	    		)
+	    		?$filename
+	    		:(
+	    			(
+	    				false!==realpath(
+	    					$path.($filename=
+	    						Dadiweb_Configuration_Kernel::getInstance()->getApps()->getLayoutProgram().'_'.
+	    						Dadiweb_Configuration_Kernel::getInstance()->getApps()->getLayoutController().'.'.
+	    						$extension
+	    					)
+	    				)
+	    			)
+	    			?$filename
+	    			:(
+	    				(
+	    					false!==realpath(
+	    						$path.($filename=
+	    							Dadiweb_Configuration_Kernel::getInstance()->getApps()->getLayoutProgram().'.'.
+	    							$extension
+	    						)
+	    					)
+	    				)
+	    				?$filename
+	    				:(
+	    					(
+	    						false!==realpath(
+	    							$path.($filename=
+	    								(
+	    									(isset(Dadiweb_Configuration_Kernel::getInstance()->getSettings()->apps->Layout->name))
+	    									?Dadiweb_Configuration_Kernel::getInstance()->getSettings()->apps->Layout->name
+	    									:(
+	    										(isset(Dadiweb_Configuration_Kernel::getInstance()->getSettings()->generic->Layout->name))
+	    										?Dadiweb_Configuration_Kernel::getInstance()->getSettings()->generic->Layout->name
+	    										:'generic'
+	    									)
+	    								).'.'.$extension
+	    							)
+	    						)
+	    					)
+	    					?$filename
+	    					:NULL
+	    				)
+	    			)
+	    		)
+    		);
+	    	if($filename==NULL){
+	    		$fp=fopen(
+	    			$path.($filename=
+	    				(
+	    					(isset(Dadiweb_Configuration_Kernel::getInstance()->getSettings()->apps->Layout->name))
+	    					?Dadiweb_Configuration_Kernel::getInstance()->getSettings()->apps->Layout->name
+				    		:(
+	    						(isset(Dadiweb_Configuration_Kernel::getInstance()->getSettings()->generic->Layout->name))
+					    		?Dadiweb_Configuration_Kernel::getInstance()->getSettings()->generic->Layout->name
+	    						:'generic'
+	    					)
+	    				).'.'.$extension
+	    			)
+	    		, "w");
+	    		fwrite($fp,'{$content}');
+				fclose($fp);
+	    	}
+    		Dadiweb_Configuration_Kernel::getInstance()->getRendered()->getRender()->setTemplateDir($path);
+    		self::setTemplate($filename);
+    		return Dadiweb_Configuration_Kernel::getInstance()->getRendered()->_echo($content);
     	}
     	return '';
     }
@@ -328,7 +458,7 @@ class Dadiweb_Configuration_Layout
     		);
     	}
     	if($set_view_name){
-    		self::setViewName($layout_method);
+    		self::setViewName($layout_method,true);
     	}
     	return $layout_method;
     }
@@ -412,8 +542,15 @@ class Dadiweb_Configuration_Layout
      * @var String()
      *
      */
-    public function setViewName($view_name=NULL)
+    public function setViewName($view_name=NULL,$used_as_is=false)
     {
+    	if($view_name!==NULL && $used_as_is=false){
+    		$view_name=pathinfo($view_name);
+    		$view_name=explode('_',$view_name['filename']);
+    		if(is_array($view_name)){
+    			$view_name=$view_name[0];
+    		}
+    	}
     	return $this->_view_name=$view_name;
     }
 /***************************************************************/

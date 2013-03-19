@@ -175,16 +175,15 @@ class Dadiweb_Configuration_Kernel
     			)
     		);
     	}
-    	//Dadiweb_Aides_Debug::show(Dadiweb_Configuration_Apps::getInstance()->getDefaultClass(),true);
-    	//Dadiweb_Aides_Debug::show(self::getApps()->getPathCtrl(),true);
-    	ob_start();
-    	
+    	ob_start();    	
     	$test=Dadiweb_Configuration_Apps::getInstance()->getDefaultClass();
     	$test=new $test;
     	$test_method=Dadiweb_Configuration_Apps::getInstance()->getMethodDefault();
     	if (!method_exists($test, $test_method)) {
     		$test->$test_method();
     	}
+    	unset($test);
+    	unset($test_method);
     	$class=new $class;
     	if (method_exists($class, Dadiweb_Configuration_Apps::getInstance()->getMethodDefault())) {
     		$class->$method();

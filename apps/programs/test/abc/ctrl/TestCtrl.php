@@ -5,6 +5,9 @@ class Test_TestCtrl extends Apps_Programs_Kernel
 
 	}
 	public function TestMethod(){
+		//$this->useView(false);
+		$this->useRendered(true);
+		//$this->setViewName('index');
 		echo 'abc test test test';
 		$this->rendered->ad='TEST';
 		$this->rendered->array=array('crrr','sadasd','wrwerwer');

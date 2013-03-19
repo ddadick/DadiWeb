@@ -39,6 +39,44 @@ class Apps_Programs_Kernel
 	}
 	
 /***************************************************************/
+	/**
+	 *
+	 * Set rendered switch
+	 *
+	 * @return Boolean()
+	 *
+	 */
+	public function useRendered($rendered_switch=true)
+	{
+		return Dadiweb_Configuration_Kernel::getInstance()->getLayout()->useRendered($rendered_switch);
+	}
+	
+/***************************************************************/
+	/**
+	 *
+	 * Set view switch
+	 *
+	 * @return Boolean()
+	 *
+	 */
+	public function useView($view_switch=true)
+	{
+		return Dadiweb_Configuration_Kernel::getInstance()->getLayout()->useView($view_switch);
+	}
+	
+/***************************************************************/
+	/**
+	 *
+	 * Set view name
+	 *
+	 * @return Boolean()
+	 *
+	 */
+	public function setViewName($view_name=NULL)
+	{
+		return Dadiweb_Configuration_Kernel::getInstance()->getLayout()->setViewName($view_name);
+	}
+/***************************************************************/
     /**
      *
      * Handler variables that do not exist (input)
