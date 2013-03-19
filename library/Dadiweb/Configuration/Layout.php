@@ -50,6 +50,13 @@ class Dadiweb_Configuration_Layout
      * @var Boolean()
      */
     protected $_view_switch = true;
+
+    /**
+     * Name of view (apps)
+     *
+     * @var String()
+     */
+    protected $_view_name = null;
     
 /***************************************************************/
 	/**
@@ -171,7 +178,8 @@ class Dadiweb_Configuration_Layout
      */
     public function getRendered($content='')
     {
-    	
+    	/**
+    	self::getView($content);
     	Dadiweb_Aides_Debug::show(
     	array(
     	self::getPathGeneric(),
@@ -188,15 +196,19 @@ class Dadiweb_Configuration_Layout
     	
     	
     	self::setTemplate('index.tpl');
+    	*/
     	Dadiweb_Configuration_Kernel::getInstance()->getRendered()->getRender()->setTemplateDir(self::getPathGeneric());
     	if(self::getSwitchRendered()){
     		if(self::getSwitchView()){
-    			$content=Dadiweb_Configuration_Kernel::getInstance()->getRendered()->_echo($content);
+    			$content=self::getView($content);
     		}
+    		/**
     		if(self::getSwitchLayout()){
     			$content=Dadiweb_Configuration_Kernel::getInstance()->getRendered()->_echo($content);
     		}
+    		*/
     		return $content;
+    		
     	}
     	return ;
     	//Dadiweb_Aides_Debug::show(Dadiweb_Configuration_Kernel::getInstance()->getApps()->getProgram(),true);
@@ -206,6 +218,72 @@ class Dadiweb_Configuration_Layout
     	Dadiweb_Configuration_Kernel::getInstance()->getRendered()->getRender()->setTemplateDir(self::getPathGeneric());
     	return Dadiweb_Configuration_Kernel::getInstance()->getRendered()->_echo($content);
     }
+/***************************************************************/
+    /**
+     * Return HTML - View of app 
+     *
+     * @return String()
+     *
+     */
+    
+    protected function getView($content='')
+    {
+    	if(self::getSwitchView()){
+    		if(
+    			false == is_dir(
+    				$path=Dadiweb_Aides_Filesystem::pathValidator(
+    					Dadiweb_Configuration_Settings::getInstance()->getPath().DIRECTORY_SEPARATOR.
+    					(
+    						(NULL!==Dadiweb_Configuration_Kernel::getInstance()->getRoutes()->getABC())
+    						?Dadiweb_Configuration_Kernel::getInstance()->getRoutes()->getABC().DIRECTORY_SEPARATOR
+    						:''
+    					).Dadiweb_Configuration_Kernel::getInstance()->getApps()->getLayoutProgram().DIRECTORY_SEPARATOR.
+    					($render=
+    						(isset(Dadiweb_Configuration_Kernel::getInstance()->getSettings()->apps->Render->app_path))
+    						?Dadiweb_Configuration_Kernel::getInstance()->getSettings()->apps->Render->app_path
+    						:'render'
+    					).
+    					DIRECTORY_SEPARATOR.Dadiweb_Configuration_Kernel::getInstance()->getApps()->getLayoutController()
+    				)
+    			)
+    		){
+    			throw Dadiweb_Throw_ErrorException::showThrow(
+    				sprintf('Path "%s" not found', $path)
+    			);
+    		}
+    		if(false===realpath(
+    				(
+    					(self::getViewName()===NULL)
+    					?(
+    						$path.self::setViewName(
+    							Dadiweb_Configuration_Kernel::getInstance()->getApps()->getLayoutMethod().'_'.
+    							(
+    								(isset(Dadiweb_Configuration_Kernel::getInstance()->getSettings()->generic->App->view_prefix))
+    								?Dadiweb_Configuration_Kernel::getInstance()->getSettings()->generic->App->view_prefix
+    								:'layout'
+    								).'.'.
+    							(
+    								(isset(Dadiweb_Configuration_Kernel::getInstance()->getSettings()->apps->Smarty->extension))
+    								?Dadiweb_Configuration_Kernel::getInstance()->getSettings()->apps->Smarty->extension
+    								:'tpl'
+    							)
+    						)
+    					)
+    					:self::getViewName()
+    				)
+    			)
+    		){
+    			throw Dadiweb_Throw_ErrorException::showThrow(
+    					sprintf('Template "%s" not found', $path.self::getViewName())
+    			);
+    		}
+    		Dadiweb_Configuration_Kernel::getInstance()->getRendered()->getRender()->setTemplateDir($path);
+    		self::setTemplate(self::getViewName());
+    		return Dadiweb_Configuration_Kernel::getInstance()->getRendered()->_echo($content);    		
+    	}
+    	return;
+    }
+    
 /***************************************************************/
     /**
      *
@@ -277,6 +355,30 @@ class Dadiweb_Configuration_Layout
     protected function getSwitchView()
     {
     	return $this->_view_switch;
+    }
+/***************************************************************/
+    /**
+     *
+     * Set name of view (apps)
+     *
+     * @var String()
+     *
+     */
+    public function setViewName($view_name=NULL)
+    {
+    	return $this->_view_name=$view_name;
+    }
+/***************************************************************/
+    /**
+     *
+     * Get name of view (apps)
+     *
+     * @return String()
+     *
+     */
+    protected function getViewName()
+    {
+    	return $this->_view_name;
     }
 /***************************************************************/
 	/**
