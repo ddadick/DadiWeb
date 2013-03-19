@@ -225,65 +225,113 @@ class Dadiweb_Configuration_Layout
      * @return String()
      *
      */
-    
     protected function getView($content='')
     {
     	if(self::getSwitchView()){
-    		if(
-    			false == is_dir(
-    				$path=Dadiweb_Aides_Filesystem::pathValidator(
-    					Dadiweb_Configuration_Settings::getInstance()->getPath().DIRECTORY_SEPARATOR.
-    					(
-    						(NULL!==Dadiweb_Configuration_Kernel::getInstance()->getRoutes()->getABC())
-    						?Dadiweb_Configuration_Kernel::getInstance()->getRoutes()->getABC().DIRECTORY_SEPARATOR
-    						:''
-    					).Dadiweb_Configuration_Kernel::getInstance()->getApps()->getLayoutProgram().DIRECTORY_SEPARATOR.
-    					($render=
-    						(isset(Dadiweb_Configuration_Kernel::getInstance()->getSettings()->apps->Render->app_path))
-    						?Dadiweb_Configuration_Kernel::getInstance()->getSettings()->apps->Render->app_path
-    						:'render'
-    					).
-    					DIRECTORY_SEPARATOR.Dadiweb_Configuration_Kernel::getInstance()->getApps()->getLayoutController()
-    				)
-    			)
-    		){
-    			throw Dadiweb_Throw_ErrorException::showThrow(
-    				sprintf('Path "%s" not found', $path)
-    			);
-    		}
-    		if(false===realpath(
-    				(
-    					(self::getViewName()===NULL)
-    					?(
-    						$path.self::setViewName(
-    							Dadiweb_Configuration_Kernel::getInstance()->getApps()->getLayoutMethod().'_'.
-    							(
-    								(isset(Dadiweb_Configuration_Kernel::getInstance()->getSettings()->generic->App->view_prefix))
-    								?Dadiweb_Configuration_Kernel::getInstance()->getSettings()->generic->App->view_prefix
-    								:'layout'
-    								).'.'.
-    							(
-    								(isset(Dadiweb_Configuration_Kernel::getInstance()->getSettings()->apps->Smarty->extension))
-    								?Dadiweb_Configuration_Kernel::getInstance()->getSettings()->apps->Smarty->extension
-    								:'tpl'
-    							)
-    						)
-    					)
-    					:self::getViewName()
-    				)
-    			)
-    		){
-    			throw Dadiweb_Throw_ErrorException::showThrow(
-    					sprintf('Template "%s" not found', $path.self::getViewName())
-    			);
-    		}
-    		Dadiweb_Configuration_Kernel::getInstance()->getRendered()->getRender()->setTemplateDir($path);
+    		self::getViewFilename(
+    			Dadiweb_Configuration_Kernel::getInstance()->getApps()->getLayoutDefaultController(),
+    			NULL,
+    			false
+    		);
+    		self::getViewFilename(
+    			Dadiweb_Configuration_Kernel::getInstance()->getApps()->getLayoutController(),
+    			Dadiweb_Configuration_Kernel::getInstance()->getApps()->getLayoutDefaultController(),
+    			false
+    		);
+    		self::getViewFilename(
+    			Dadiweb_Configuration_Kernel::getInstance()->getApps()->getLayoutController(),
+    			NULL,
+    			true
+    		);
+    		Dadiweb_Configuration_Kernel::getInstance()->getRendered()->getRender()->setTemplateDir(
+    			self::getViewPath(Dadiweb_Configuration_Kernel::getInstance()->getApps()->getLayoutController())
+    		);
     		self::setTemplate(self::getViewName());
     		return Dadiweb_Configuration_Kernel::getInstance()->getRendered()->_echo($content);    		
     	}
-    	return;
+    	return '';
     }
-    
+/***************************************************************/
+    /**
+     * Return path's view of app 
+     *
+     * @return String()
+     *
+     */
+    protected function getViewPath($layout_controller=NULL)
+    {
+    	if($layout_controller==NULL){
+    		throw Dadiweb_Throw_ErrorException::showThrow(
+    			sprintf('Critical error. Variable $layout_controller was not transmitted in method "getViewPath" of class "%s"',get_class($this))
+    		);
+    	}
+    	if(
+    		false == is_dir(
+    			$path=Dadiweb_Aides_Filesystem::pathValidator(
+    				Dadiweb_Configuration_Settings::getInstance()->getPath().DIRECTORY_SEPARATOR.
+    				Dadiweb_Configuration_Kernel::getInstance()->getApps()->getLayoutProgram().DIRECTORY_SEPARATOR.
+    				(
+    					(NULL!==Dadiweb_Configuration_Kernel::getInstance()->getRoutes()->getABC())
+    					?Dadiweb_Configuration_Kernel::getInstance()->getRoutes()->getABC().DIRECTORY_SEPARATOR
+    					:''
+    				).
+    				(
+    					(isset(Dadiweb_Configuration_Kernel::getInstance()->getSettings()->apps->Render->app_path))
+    					?Dadiweb_Configuration_Kernel::getInstance()->getSettings()->apps->Render->app_path
+    					:'render'
+    				).
+    				DIRECTORY_SEPARATOR.$layout_controller
+    			)
+    		)
+    	){
+    		throw Dadiweb_Throw_ErrorException::showThrow(
+    				sprintf('Path "%s" not found', $path)
+    		);
+    	}
+    	return $path;
+    }
+/***************************************************************/
+    /**
+     * Return filename's view of app 
+     *
+     * @return String()
+     *
+     */
+    protected function getViewFilename($layout_controller=NULL,$layout_method=NULL,$set_view_name=false)
+    {
+    	if($layout_controller==NULL){
+    		throw Dadiweb_Throw_ErrorException::showThrow(
+    				sprintf('Critical error. Variable $layout_controller was not transmitted in method "getViewFilename" of class "%s"',get_class($this))
+    		);
+    	}
+    	if($layout_method==NULL){
+    		$layout_method=$layout_controller;
+    	}
+    	if(false===realpath(
+    			($layout_controller=self::getViewPath($layout_controller)).(
+    				$layout_method=$layout_method.'_'.
+	    			(
+    					(isset(Dadiweb_Configuration_Kernel::getInstance()->getSettings()->generic->App->view_prefix))
+	    				?Dadiweb_Configuration_Kernel::getInstance()->getSettings()->generic->App->view_prefix
+    					:'layout'
+    				).'.'.
+    				(
+    					(isset(Dadiweb_Configuration_Kernel::getInstance()->getSettings()->apps->Smarty->extension))
+	    				?Dadiweb_Configuration_Kernel::getInstance()->getSettings()->apps->Smarty->extension
+	    				:'tpl'
+    				)
+    			)
+    		)
+    	){
+    		throw Dadiweb_Throw_ErrorException::showThrow(
+    			sprintf('Template "%s" not found', $layout_controller.$layout_method)
+    		);
+    	}
+    	if($set_view_name){
+    		self::setViewName($layout_method);
+    	}
+    	return $layout_method;
+    }
 /***************************************************************/
     /**
      *

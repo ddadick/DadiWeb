@@ -23,6 +23,13 @@ class Dadiweb_Configuration_Apps
     protected $_ctrl = NULL;
     
     /**
+     * Default contoller
+     *
+     * @return String()
+     */
+    protected $_ctrl_default = NULL;
+    
+    /**
      * Current method
      *
      * @return String()
@@ -56,6 +63,13 @@ class Dadiweb_Configuration_Apps
      * @return String()
      */
     protected $_class = NULL;
+
+    /**
+     * External class (default)
+     *
+     * @return String()
+     */
+    protected $_class_default = NULL;
     
     /**
      *
@@ -84,6 +98,16 @@ class Dadiweb_Configuration_Apps
      */
     protected $_layout_controller = NULL;
 
+    /**
+     *
+     * Name default controller for Layout
+     *
+     * @var String()
+     *
+     */
+    protected $_layout_default_controller = NULL;
+    
+    
     /**
      *
      * Name method for Layout
@@ -161,29 +185,39 @@ class Dadiweb_Configuration_Apps
     	/**
     	 *  Set controller of apps
     	 */
+    	if(NULL!==Dadiweb_Configuration_Kernel::getInstance()->getPattern()->getModel()){
+    		self::setDefaultController(
+    				strtolower(
+    						(isset(Dadiweb_Configuration_Kernel::getInstance()->getSettings()->generic->App->ctrl_default))
+    						?Dadiweb_Configuration_Kernel::getInstance()->getSettings()->generic->App->ctrl_default
+    						:'index'
+				
+    				)
+    		);
+    	}else{
+    		if(isset(Dadiweb_Configuration_Kernel::getInstance()->getSettings()->apps->Master->ctrl))
+    		{
+    			self::setDefaultController(strtolower(Dadiweb_Configuration_Kernel::getInstance()->getSettings()->apps->Master->ctrl));
+    		}else{
+    			throw Dadiweb_Throw_ErrorException::showThrow(
+    					sprintf('Value into "apps.Master.ctrl" in the file "%sapps.ini" is not valid or empty', INI_PATH)
+    			);
+    		}
+    	}
+    	self::setDefaultController(
+    			strtolower(
+    					(isset(Dadiweb_Configuration_Kernel::getInstance()->getSettings()->generic->App->ctrl_default))
+    					?Dadiweb_Configuration_Kernel::getInstance()->getSettings()->generic->App->ctrl_default
+    					:'index'
+				
+    			)
+    	);
 		if(NULL!==Dadiweb_Configuration_Kernel::getInstance()->getPattern()->getController()){
 			self::setController(strtolower(Dadiweb_Configuration_Kernel::getInstance()->getPattern()->getController()));
 		}else{
-			if(NULL!==Dadiweb_Configuration_Kernel::getInstance()->getPattern()->getModel()){
-				self::setController(
-					strtolower(
-						(isset(Dadiweb_Configuration_Kernel::getInstance()->getSettings()->generic->App->ctrl_default))
-						?Dadiweb_Configuration_Kernel::getInstance()->getSettings()->generic->App->ctrl_default
-						:'index'
-							
-					)
-				);
-			}else{
-				if(isset(Dadiweb_Configuration_Kernel::getInstance()->getSettings()->apps->Master->ctrl))
-				{
-					self::setController(strtolower(Dadiweb_Configuration_Kernel::getInstance()->getSettings()->apps->Master->ctrl));
-				}else{
-					throw Dadiweb_Throw_ErrorException::showThrow(
-							sprintf('Value into "apps.Master.ctrl" in the file "%sapps.ini" is not valid or empty', INI_PATH)
-					);
-				}
-			}
+			self::setController(self::getDefaultController());
 		}
+		self::setLayoutDefaultController(self::getDefaultController());
 		self::setLayoutController(self::getController());
 		/**
 		 *  Set method of apps
@@ -299,26 +333,36 @@ class Dadiweb_Configuration_Apps
 		){
 			throw Dadiweb_Throw_ErrorException::showThrow('Critical interrupt. The name of the default class is not established.');
 		}
-		
 		/**
 		 *  Set filename controller of apps
 		 */
-		self::setFileCtrl(self::getPathCtrl().DIRECTORY_SEPARATOR.ucfirst(self::getController()).self::getClass().'.php',true);
-		if(NULL===self::setFileCtrl()){
-			if(false===is_file(
+		if(false===is_file(
 				(isset(Dadiweb_Configuration_Kernel::getInstance()->getSettings()->generic->App->ctrl_class))
-					?(
+				?(
 						(strlen(trim(self::setFileCtrl(strtolower(Dadiweb_Configuration_Kernel::getInstance()->getSettings()->generic->App->ctrl_class)))))
 						?(
-							self::setFileCtrl(self::getPathCtrl().DIRECTORY_SEPARATOR.ucfirst(self::getController()).ucfirst(self::getFileCtrl().'.php'))
+								self::setFileCtrl(self::getPathCtrl().DIRECTORY_SEPARATOR.ucfirst(self::getDefaultController()).ucfirst(self::getFileCtrl().'.php'))
 						)
-						:(self::setFileCtrl(self::getPathCtrl().DIRECTORY_SEPARATOR.ucfirst(self::getController()).self::getClass().'.php'))
-					)
-					:self::setFileCtrl(self::getPathCtrl().DIRECTORY_SEPARATOR.ucfirst(self::getController()).self::getClass().'.php')
+						:(self::setFileCtrl(self::getPathCtrl().DIRECTORY_SEPARATOR.ucfirst(self::getgetDefaultController()).self::getClass().'.php'))
 				)
-			){
-				throw Dadiweb_Throw_ErrorException::showThrow(sprintf('File "%s" does not exist', self::getFileCtrl()));
-			}
+				:self::setFileCtrl(self::getPathCtrl().DIRECTORY_SEPARATOR.ucfirst(self::getgetDefaultController()).self::getClass().'.php')
+		)
+		){
+			throw Dadiweb_Throw_ErrorException::showThrow(sprintf('File "%s" does not exist', self::getFileCtrl()));
+		}
+		if(false===is_file(
+				(isset(Dadiweb_Configuration_Kernel::getInstance()->getSettings()->generic->App->ctrl_class))
+				?(
+					(strlen(trim(self::setFileCtrl(strtolower(Dadiweb_Configuration_Kernel::getInstance()->getSettings()->generic->App->ctrl_class)))))
+					?(
+						self::setFileCtrl(self::getPathCtrl().DIRECTORY_SEPARATOR.ucfirst(self::getController()).ucfirst(self::getFileCtrl().'.php'))
+					)
+					:(self::setFileCtrl(self::getPathCtrl().DIRECTORY_SEPARATOR.ucfirst(self::getController()).self::getClass().'.php'))
+				)
+				:self::setFileCtrl(self::getPathCtrl().DIRECTORY_SEPARATOR.ucfirst(self::getController()).self::getClass().'.php')
+			)
+		){
+			throw Dadiweb_Throw_ErrorException::showThrow(sprintf('File "%s" does not exist', self::getFileCtrl()));
 		}
 		
 		/**
@@ -336,6 +380,7 @@ class Dadiweb_Configuration_Apps
 		/**
 		 * Setup bootsrap class of apps
 		 */
+		self::setDefaultClass(ucfirst(self::getProgram())."_".ucfirst(self::getDefaultController()).self::getClass());
 		self::setClass(ucfirst(self::getProgram())."_".ucfirst(self::getController()).self::getClass());
     }
 /***************************************************************/
@@ -386,6 +431,30 @@ class Dadiweb_Configuration_Apps
     public function getController()
     {
     	return $this->_ctrl;
+    }
+/***************************************************************/
+    /**
+     *
+     * Set default controller
+     *
+     * @var String()
+     *
+     */
+    protected function setDefaultController($ctrl_default=NULL)
+    {
+    	return $this->_ctrl_default=$ctrl_default;
+    }
+/***************************************************************/
+    /**
+     *
+     * Get default controller
+     *
+     * @return String()
+     *
+     */
+    public function getDefaultController()
+    {
+    	return $this->_ctrl_default;
     }
 /***************************************************************/
     /**
@@ -534,6 +603,30 @@ class Dadiweb_Configuration_Apps
 /***************************************************************/
     /**
      *
+     * Set external class (default)
+     *
+     * @var String()
+     *
+     */
+    protected function setDefaultClass($class_default=NULL)
+    {
+    	return $this->_class_default=$class_default;
+    }
+/***************************************************************/
+    /**
+     *
+     * Get external class (default)
+     *
+     * @return String()
+     *
+     */
+    public function getDefaultClass()
+    {
+    	return $this->_class_default;
+    }
+/***************************************************************/
+    /**
+     *
      * Set program (layout)
      *
      * @var String()
@@ -578,6 +671,30 @@ class Dadiweb_Configuration_Apps
     public function getLayoutController()
     {
     	return $this->_layout_controller;
+    }
+/***************************************************************/
+    /**
+     *
+     * Set default controller (layout)
+     *
+     * @var String()
+     *
+     */
+    protected function setLayoutDefaultController($layout_default_controller=NULL)
+    {
+    	return $this->_layout_default_controller=$layout_default_controller;
+    }
+/***************************************************************/
+    /**
+     *
+     * Get default controller (layout)
+     *
+     * @return String()
+     *
+     */
+    public function getLayoutDefaultController()
+    {
+    	return $this->_layout_default_controller;
     }
 /***************************************************************/
     /**
