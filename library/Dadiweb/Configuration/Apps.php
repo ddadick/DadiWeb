@@ -204,14 +204,7 @@ class Dadiweb_Configuration_Apps
     			);
     		}
     	}
-    	self::setDefaultController(
-    			strtolower(
-    					(isset(Dadiweb_Configuration_Kernel::getInstance()->getSettings()->generic->App->ctrl_default))
-    					?Dadiweb_Configuration_Kernel::getInstance()->getSettings()->generic->App->ctrl_default
-    					:'index'
-				
-    			)
-    	);
+
 		if(NULL!==Dadiweb_Configuration_Kernel::getInstance()->getPattern()->getController()){
 			self::setController(strtolower(Dadiweb_Configuration_Kernel::getInstance()->getPattern()->getController()));
 		}else{
@@ -219,6 +212,7 @@ class Dadiweb_Configuration_Apps
 		}
 		self::setLayoutDefaultController(self::getDefaultController());
 		self::setLayoutController(self::getController());
+		
 		/**
 		 *  Set method of apps
 		 */
@@ -294,7 +288,7 @@ class Dadiweb_Configuration_Apps
 			);
 			
 		}
-		
+
 		/**
 		 *  Set path controller of apps
 		 */

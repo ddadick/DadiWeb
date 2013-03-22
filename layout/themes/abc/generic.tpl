@@ -1,0 +1,2 @@
+ABC Layout
+{$content}
