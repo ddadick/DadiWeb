@@ -545,7 +545,7 @@ class Dadiweb_Configuration_Layout
     public function setViewName($view_name=NULL,$used_as_is=false)
     {
     	if($view_name!==NULL && $used_as_is=false){
-    		$view_name=pathinfo($view_name);
+    		$view_name=pathinfo($view_name);		
     		$view_name=explode('_',$view_name['filename']);
     		if(is_array($view_name)){
     			$view_name=$view_name[0];
