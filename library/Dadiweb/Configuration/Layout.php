@@ -186,25 +186,6 @@ class Dadiweb_Configuration_Layout
      */
     public function getRendered($content='')
     {
-    	/**
-    	self::getView($content);
-    	Dadiweb_Aides_Debug::show(
-    	array(
-    	self::getPathGeneric(),
-    	Dadiweb_Configuration_Settings::getInstance()->getPath(),
-    	Dadiweb_Configuration_Settings::getInstance()->getAppsPath(),
-    	Dadiweb_Configuration_Settings::getInstance()->getABCAppsPath(),
-    	Dadiweb_Configuration_Kernel::getInstance()->getRoutes()->getABC(),
-    	Dadiweb_Configuration_Kernel::getInstance()->getApps()->getLayoutProgram(),
-    	Dadiweb_Configuration_Kernel::getInstance()->getApps()->getLayoutController(),
-    	Dadiweb_Configuration_Kernel::getInstance()->getApps()->getLayoutMethod(),
-    	Dadiweb_Configuration_Kernel::getInstance()->getApps()->getLayoutDefaultMethod()
-    	)
-    	,true);
-    	
-    	
-    	self::setTemplate('index.tpl');
-    	*/
     	Dadiweb_Configuration_Kernel::getInstance()->getRendered()->getRender()->setTemplateDir(self::getPathGeneric());
     	if(self::getSwitchRendered()){
     		if(self::getSwitchView()){
@@ -217,12 +198,6 @@ class Dadiweb_Configuration_Layout
     		
     	}
     	return ;
-    	//Dadiweb_Aides_Debug::show(Dadiweb_Configuration_Kernel::getInstance()->getApps()->getProgram(),true);
-    	//Dadiweb_Aides_Debug::show(Dadiweb_Configuration_Kernel::getInstance()->getApps()->getController(),true);
-    	
-    	self::setTemplate('index.tpl');
-    	Dadiweb_Configuration_Kernel::getInstance()->getRendered()->getRender()->setTemplateDir(self::getPathGeneric());
-    	return Dadiweb_Configuration_Kernel::getInstance()->getRendered()->_echo($content);
     }
 /***************************************************************/
     /**
