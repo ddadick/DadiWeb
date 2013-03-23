@@ -11,5 +11,6 @@ class Popal2_IndexCtrl extends Apps_Programs_Kernel
 		$this->useView(true);
 		$this->useRendered(true);
 		$this->setViewName('list_test');
+		$this->setLayoutName('d');
 	}
 }

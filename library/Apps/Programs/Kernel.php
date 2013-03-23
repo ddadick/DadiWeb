@@ -77,6 +77,18 @@ class Apps_Programs_Kernel
 		return Dadiweb_Configuration_Kernel::getInstance()->getLayout()->setViewName($view_name);
 	}
 /***************************************************************/
+	/**
+	 *
+	 * Set layout name
+	 *
+	 * @return Boolean()
+	 *
+	 */
+	public function setLayoutName($layout_name=NULL)
+	{
+		return Dadiweb_Configuration_Kernel::getInstance()->getLayout()->setLayoutName($layout_name);
+	}
+/***************************************************************/
     /**
      *
      * Handler variables that do not exist (input)

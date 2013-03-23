@@ -45,6 +45,14 @@ class Dadiweb_Configuration_Layout
     protected $_layout_switch = true;
 
     /**
+     * Name of layout (apps)
+     *
+     * @var String()
+     */
+    protected $_layout_name = null;
+    
+    
+    /**
      * View switch
      *
      * @var Boolean()
@@ -304,74 +312,88 @@ class Dadiweb_Configuration_Layout
 	    				:'tpl'
 	    				;
 	    	$filename=(
-	    		(
-	    			false!==realpath(
-    					$path.($filename=
-    						Dadiweb_Configuration_Kernel::getInstance()->getApps()->getLayoutProgram().'_'.
-    						Dadiweb_Configuration_Kernel::getInstance()->getApps()->getLayoutController().'_'.
-    						Dadiweb_Configuration_Kernel::getInstance()->getApps()->getLayoutMethod().'.'.
-    						$extension
-    					)
-    				)
-	    		)
-	    		?$filename
-	    		:(
+	    		(self::getLayoutName()!==NULL)
+	    		?(
 	    			(
 	    				false!==realpath(
 	    					$path.($filename=
-	    						Dadiweb_Configuration_Kernel::getInstance()->getApps()->getLayoutProgram().'_'.
-	    						Dadiweb_Configuration_Kernel::getInstance()->getApps()->getLayoutController().'.'.
-	    						$extension
-	    					)
+	    						self::getLayoutName().'.'.
+		    					$extension
+		    				)
 	    				)
+	    			)
+	    			?$filename
+		    		:NULL
+		    	)
+	    		:(		
+		    		(
+		    			false!==realpath(
+    						$path.($filename=
+    							Dadiweb_Configuration_Kernel::getInstance()->getApps()->getLayoutProgram().'_'.
+    							Dadiweb_Configuration_Kernel::getInstance()->getApps()->getLayoutController().'_'.
+    							Dadiweb_Configuration_Kernel::getInstance()->getApps()->getLayoutMethod().'.'.
+    							$extension
+	    					)
+    					)
 	    			)
 	    			?$filename
 	    			:(
 	    				(
 	    					false!==realpath(
 	    						$path.($filename=
-	    							Dadiweb_Configuration_Kernel::getInstance()->getApps()->getLayoutProgram().'.'.
-	    							$extension
+	    							Dadiweb_Configuration_Kernel::getInstance()->getApps()->getLayoutProgram().'_'.
+		    						Dadiweb_Configuration_Kernel::getInstance()->getApps()->getLayoutController().'.'.
+		    						$extension
 	    						)
 	    					)
 	    				)
 	    				?$filename
-	    				:(
-	    					(
+		    			:(
+		    				(
 	    						false!==realpath(
 	    							$path.($filename=
-	    								(
-	    									(isset(Dadiweb_Configuration_Kernel::getInstance()->getSettings()->apps->Layout->name))
-	    									?Dadiweb_Configuration_Kernel::getInstance()->getSettings()->apps->Layout->name
-	    									:(
-	    										(isset(Dadiweb_Configuration_Kernel::getInstance()->getSettings()->generic->Layout->name))
-	    										?Dadiweb_Configuration_Kernel::getInstance()->getSettings()->generic->Layout->name
-	    										:'generic'
-	    									)
-	    								).'.'.$extension
+	    								Dadiweb_Configuration_Kernel::getInstance()->getApps()->getLayoutProgram().'.'.
+	    								$extension
 	    							)
 	    						)
-	    					)
-	    					?$filename
-	    					:NULL
-	    				)
+		    				)
+		    				?$filename
+	    					:(
+	    						(
+	    							false!==realpath(
+	    								$path.($filename=
+	    									(
+	    										(isset(Dadiweb_Configuration_Kernel::getInstance()->getSettings()->apps->Layout->name))
+	    										?Dadiweb_Configuration_Kernel::getInstance()->getSettings()->apps->Layout->name
+	    										:(
+	    											(isset(Dadiweb_Configuration_Kernel::getInstance()->getSettings()->generic->Layout->name))
+	    											?Dadiweb_Configuration_Kernel::getInstance()->getSettings()->generic->Layout->name
+	    											:'generic'
+		    									)
+		    								).'.'.$extension
+	    								)
+	    							)
+	    						)
+	    						?$filename
+	    						:NULL
+		    				)
+		    			)
 	    			)
-	    		)
-    		);
-	    	if($filename==NULL){
-	    		$fp=fopen(
-	    			$path.($filename=
-	    				(
-	    					(isset(Dadiweb_Configuration_Kernel::getInstance()->getSettings()->apps->Layout->name))
-	    					?Dadiweb_Configuration_Kernel::getInstance()->getSettings()->apps->Layout->name
-				    		:(
-	    						(isset(Dadiweb_Configuration_Kernel::getInstance()->getSettings()->generic->Layout->name))
-					    		?Dadiweb_Configuration_Kernel::getInstance()->getSettings()->generic->Layout->name
-	    						:'generic'
-	    					)
-	    				).'.'.$extension
+    			)
+	    	);
+	    	$fp=$path.(
+	    		(
+	    			(isset(Dadiweb_Configuration_Kernel::getInstance()->getSettings()->apps->Layout->name))
+	    			?Dadiweb_Configuration_Kernel::getInstance()->getSettings()->apps->Layout->name
+	    			:(
+	    				(isset(Dadiweb_Configuration_Kernel::getInstance()->getSettings()->generic->Layout->name))
+	    				?Dadiweb_Configuration_Kernel::getInstance()->getSettings()->generic->Layout->name
+	    				:'generic'
 	    			)
-	    		, "w");
+	    		).'.'.$extension
+	    	);
+	    	if($filename==NULL && false===realpath($fp)){
+	    		$fp=fopen($fp, "w");
 	    		fwrite($fp,'{$content}');
 				fclose($fp);
 	    	}
@@ -564,6 +586,30 @@ class Dadiweb_Configuration_Layout
     protected function getViewName()
     {
     	return $this->_view_name;
+    }
+/***************************************************************/
+    /**
+     *
+     * Set name of layout (apps)
+     *
+     * @var String()
+     *
+     */
+    public function setLayoutName($layout_name=NULL)
+    {
+    	return $this->_layout_name=$layout_name;
+    }
+/***************************************************************/
+    /**
+     *
+     * Get name of layout (apps)
+     *
+     * @return String()
+     *
+     */
+    protected function getLayoutName()
+    {
+    	return $this->_layout_name;
     }
 /***************************************************************/
 	/**
