@@ -104,6 +104,7 @@ class Dadiweb_Configuration_Kernel
     public function buildKernel()
     {
     	self::setSettings(Dadiweb_Aides_Array::getInstance()->arr2obj(Dadiweb_Configuration_Settings::getInstance()->getGeneric()));
+    	Dadiweb_Aides_Debug::show(Dadiweb_Aides_Array::getInstance()->implode_Keys(self::getSettings()->session,'.',true),true);
     	self::setRoutes(Dadiweb_Configuration_Routes::getInstance());
     	self::setPattern(Dadiweb_Configuration_Pattern::getInstance());
     	self::setLayout(Dadiweb_Configuration_Layout::getInstance());
