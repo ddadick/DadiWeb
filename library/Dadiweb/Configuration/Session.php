@@ -88,7 +88,19 @@ class Dadiweb_Configuration_Session
 	    				?(
     						(DIRECTORY_SEPARATOR!==$item)
     						?Dadiweb_Aides_Filesystem::pathCreate(Dadiweb_Aides_Filesystem::pathValidator($item))
-    						:$item
+    						:Dadiweb_Aides_Filesystem::pathCreate(
+    							Dadiweb_Aides_Filesystem::pathValidator(
+    								APPS_PATH.'/../'.
+    								(
+    									(
+    										isset(Dadiweb_Configuration_Kernel::getInstance()->getSettings()->generic->Session->save_path)
+    										&& strlen(trim(Dadiweb_Configuration_Kernel::getInstance()->getSettings()->generic->Session->save_path))
+    									)
+    									?Dadiweb_Configuration_Kernel::getInstance()->getSettings()->generic->Session->save_path
+    									:'session'
+    								)
+    							)
+    						)
     					)
     					:(
     						('integer'==$this->_session->{'type.'.$key})
