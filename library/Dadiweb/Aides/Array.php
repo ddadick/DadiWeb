@@ -190,7 +190,7 @@ class Dadiweb_Aides_Array
     				$item=self::obj2arr($item);
 	    		}
 	    		if(is_array($item)){    			
-	    			foreach(self::implode_Keys($item) as $key2=>$item2){
+	    			foreach(self::implode_Keys($item,$delimiter) as $key2=>$item2){
 	    				$result[$key.$delimiter.$key2]=$item2;
 	    			}
 	    		}else{

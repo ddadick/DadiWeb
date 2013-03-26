@@ -13,7 +13,7 @@ class Dadiweb_Configuration_Session
      *
      * @var Dadiweb_Configuration_Session
      */
-    protected $_render = null;
+    protected $_session = null;
     
 /***************************************************************/
 	/**
@@ -63,11 +63,11 @@ class Dadiweb_Configuration_Session
     public function getGeneric()
     {
     	
-    	if($this->_render===NULL){
+    	if($this->_session===NULL){
     		self::setGeneric();
     	}
     	
-    	return $this->_render;
+    	return $this->_session;
     }
 /***************************************************************/
     /**
@@ -77,16 +77,45 @@ class Dadiweb_Configuration_Session
      */
     protected function setGeneric()
     {
-    	if(
-    		!isset(Dadiweb_Configuration_Kernel::getInstance()->getSettings()->apps->Render->bootstrap) ||
-    		!strlen(trim(Dadiweb_Configuration_Kernel::getInstance()->getSettings()->apps->Render->bootstrap))
-    	){
-    		throw Dadiweb_Throw_ErrorException::showThrow(
-    				sprintf('Variable into "apps.Render.bootstrap" in the file "%sapps.ini" is not valid', INI_PATH)
+    	$this->_session=Dadiweb_Aides_Array::getInstance()->implode_Keys(Dadiweb_Configuration_Kernel::getInstance()->getSettings()->session,'.',true);
+    	foreach($this->_session as $key=>$item){
+    		$this->_session->{$key}=(
+    			(false===strpos($key, 'type.'))
+    			?(
+    				(trim($item)!="")
+    				?(
+    					('path'==$this->_session->{'type.'.$key})
+	    				?(
+    						(DIRECTORY_SEPARATOR!==$item)
+    						?Dadiweb_Aides_Filesystem::pathCreate(Dadiweb_Aides_Filesystem::pathValidator($item))
+    						:$item
+    					)
+    					:(
+    						('integer'==$this->_session->{'type.'.$key})
+    						?(int)$item
+    						:(
+    							('boolean'==$this->_session->{'type.'.$key})
+    							?(boolean)$item
+    							:trim($item)
+    						)
+    					)
+    				)
+    				:NULL
+    			)
+    			:trim($item)
     		);
+    		if(NULL===$this->_session->{$key}){
+    			unset($this->_session->{$key});
+    		}
     	}
-    	Dadiweb_Render_Bootstrap::getInstance(Dadiweb_Configuration_Kernel::getInstance()->getSettings()->apps->Render->bootstrap);
-    	Dadiweb_Render_Bootstrap::resetInstance();
+    	foreach($this->_session as $key=>$item){
+    		if(false!==strpos($key, 'type.')){
+    			unset($this->_session->{$key});
+    		}else{
+    			ini_set($key, $item);
+    		}
+    	}
+    	session_start();
     	return;
     }
     
