@@ -103,6 +103,7 @@ class Dadiweb_Configuration_Pattern
 				}
 			}
 		}
+		
 		$this->uri=$this->uri[0];
    		$this->uri=split('\/',substr($this->uri, 1),4);
    		if(
@@ -120,6 +121,9 @@ class Dadiweb_Configuration_Pattern
    			$this->uri[0]='';
    		}else{
    			Dadiweb_Configuration_Kernel::getInstance()->getRoutes()->setABC();
+   		}
+   		if(NULL !== Dadiweb_Configuration_Locale::getInstance()->searchLocale($this->uri[0])){
+   			$this->uri=split('\/',implode('/',(array_shift($this->uri)?$this->uri:array('/'))),4);
    		}
    		if(($router=Dadiweb_Configuration_Kernel::getInstance()->getRoutes()->searchRouter($this->uri))!==NULL && is_string($router)){
    			$this->uri=split('\/',substr($router, 1),4);

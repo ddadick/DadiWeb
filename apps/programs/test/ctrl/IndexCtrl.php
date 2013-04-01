@@ -8,7 +8,8 @@ class Test_IndexCtrl extends Apps_Programs_Kernel
 		Dadiweb_Configuration_Routes::getInstance()->getABC(),
 		Dadiweb_Configuration_Settings::getInstance()->getABC(),
 		Dadiweb_Configuration_Settings::getInstance()->getAppsPath(),
-		$this->config
+		$this->config,
+		'中文'
 		)
 		,true);
 	}

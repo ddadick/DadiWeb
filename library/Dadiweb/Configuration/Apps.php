@@ -288,7 +288,6 @@ class Dadiweb_Configuration_Apps
 			);
 			
 		}
-
 		/**
 		 *  Set path controller of apps
 		 */

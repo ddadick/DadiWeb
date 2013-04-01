@@ -216,13 +216,13 @@ class Dadiweb_Configuration_Layout
     		);
     		self::getViewFilename(
     			Dadiweb_Configuration_Kernel::getInstance()->getApps()->getLayoutController(),
-    			Dadiweb_Configuration_Kernel::getInstance()->getApps()->getLayoutDefaultController(),
+    			Dadiweb_Configuration_Kernel::getInstance()->getApps()->getLayoutDefaultMethod(),
     			false
     		);
     		if(self::getViewName()===NULL){
 	    		self::getViewFilename(
     				Dadiweb_Configuration_Kernel::getInstance()->getApps()->getLayoutController(),
-    				NULL,
+    				Dadiweb_Configuration_Kernel::getInstance()->getApps()->getLayoutMethod(),
     				true
     			);
     		}else{
