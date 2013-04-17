@@ -33,6 +33,9 @@ class Apps_Programs_Kernel
 	public function __construct(){
 		$this->rendered=Dadiweb_Configuration_Kernel::getInstance()->getRendered();
 		$this->config=Dadiweb_Aides_Array::getInstance()->arr2obj(Apps_Configuration_Config::getInstance()->getGeneric());
+		Dadiweb_Aides_Debug::show(
+		Apps_Configuration_Locale::getInstance()->getGeneric()
+		,true);
 		/**
 		 * Reset instances all singleton of programm
 		 */

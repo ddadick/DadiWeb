@@ -115,7 +115,6 @@ class Dadiweb_Configuration_Layout
      */
     protected function setGeneric()
     {
-    	
     	if(
     		!isset(Dadiweb_Configuration_Kernel::getInstance()->getSettings()->apps->Layout->path) ||
     		!strlen($this->_path_generic=trim(Dadiweb_Configuration_Kernel::getInstance()->getSettings()->apps->Layout->path))

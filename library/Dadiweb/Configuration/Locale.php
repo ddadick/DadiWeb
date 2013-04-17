@@ -96,6 +96,15 @@ class Dadiweb_Configuration_Locale
     	/**
     	 * Set default locale
     	 */
+    	if(
+    		isset(Dadiweb_Configuration_Kernel::getInstance()->getSettings()->apps->Locales->default)
+    		&& strlen($locale=trim(Dadiweb_Configuration_Kernel::getInstance()->getSettings()->apps->Locales->default))
+    	){
+    		self::searchLocale($locale);
+    	}
+    	if(self::getLocale() instanceof stdClass){
+    		return self::getLocale();
+    	}
     	self::searchLocale('en-US');
     }
 /***************************************************************/
@@ -131,7 +140,7 @@ class Dadiweb_Configuration_Locale
      *
      * @return stdClass
      */
-    public static function getLocale()
+    public function getLocale()
     {
     	if($this->_locale instanceof stdClass){
     		return $this->_locale; 

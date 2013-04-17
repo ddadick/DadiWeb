@@ -80,14 +80,14 @@ class Apps_Configuration_Config
     {
     	$file=(
     			(
-    					isset(Dadiweb_Configuration_Kernel::getInstance()->getSettings()->resource->App->config_file_name)
-    					&& strlen(trim($config_file_name=strtolower(Dadiweb_Configuration_Kernel::getInstance()->getSettings()->resource->App->config_file_name)))
+    					isset(Dadiweb_Configuration_Kernel::getInstance()->getSettings()->generic->App->config_file_name)
+    					&& strlen($config_file_name=trim(strtolower(Dadiweb_Configuration_Kernel::getInstance()->getSettings()->generic->App->config_file_name)))
     			)
     			?$config_file_name.'.'
     			.(
     					(
-    							isset(Dadiweb_Configuration_Kernel::getInstance()->getSettings()->resource->App->config_file_exe)
-    							&& strlen(trim($config_file_exe=strtolower(Dadiweb_Configuration_Kernel::getInstance()->getSettings()->resource->App->config_file_exe)))
+    							isset(Dadiweb_Configuration_Kernel::getInstance()->getSettings()->generic->App->config_file_exe)
+    							&& strlen($config_file_exe=trim(strtolower(Dadiweb_Configuration_Kernel::getInstance()->getSettings()->generic->App->config_file_exe)))
     					)
     					?strtolower($config_file_exe)
     					:strtolower('ini')
@@ -96,8 +96,8 @@ class Apps_Configuration_Config
     					'config.'
     					.(
     							(
-    									isset(Dadiweb_Configuration_Kernel::getInstance()->getSettings()->resource->App->config_file_exe)
-    									&& strlen(trim($config_file_exe=strtolower(Dadiweb_Configuration_Kernel::getInstance()->getSettings()->resource->App->config_file_exe)))
+    									isset(Dadiweb_Configuration_Kernel::getInstance()->getSettings()->generic->App->config_file_exe)
+    									&& strlen($config_file_exe=trim(strtolower(Dadiweb_Configuration_Kernel::getInstance()->getSettings()->generic->App->config_file_exe)))
     							)
     							?$config_file_exe
     							:'ini'

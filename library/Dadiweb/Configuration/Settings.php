@@ -172,8 +172,8 @@ class Dadiweb_Configuration_Settings
     							self::getPath().DIRECTORY_SEPARATOR.$items['item'].DIRECTORY_SEPARATOR
     							.(
     								(
-    									isset($this->_settings['resource']['App']['settings_path'])
-    									&& strlen(trim($path=strtolower($this->_settings['resource']['App']['settings_path'])))
+    									isset($this->_settings['generic']['App']['settings_path'])
+    									&& strlen(trim($path=strtolower($this->_settings['generic']['App']['settings_path'])))
     								)
     								?$path
     								:strtolower('settings')
@@ -192,8 +192,8 @@ class Dadiweb_Configuration_Settings
     								.self::getABC().DIRECTORY_SEPARATOR
     								.(
     										(
-    												isset($this->_settings['resource']['App']['settings_path'])
-    												&& strlen(trim($path=strtolower($this->_settings['resource']['App']['settings_path'])))
+    												isset($this->_settings['generic']['App']['settings_path'])
+    												&& strlen(trim($path=strtolower($this->_settings['generic']['App']['settings_path'])))
     										)
     										?$path
     										:strtolower('settings')
