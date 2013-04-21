@@ -37,8 +37,7 @@ class Dadiweb_Widening_Xml_Reader
 	 */
 	public function getResult()
 	{
-		self::getXML($this->_content);
-		return $this->_return;
+		return $this->_return=Dadiweb_Aides_Array::getInstance()->arr2obj(self::getXML($this->_content));
 	}
 	
 /***************************************************************/
@@ -49,21 +48,18 @@ class Dadiweb_Widening_Xml_Reader
 	 * @var SimpleXMLElement()
 	 * @return Array()
 	 */
-	protected function getXML($_content=''){
-		if($_content instanceof SimpleXMLElement){
-   			if(count($_content->children())){
-   				foreach($_content->children() as $key=>$item){
-   					if(!is_array($this->_return)){
-   						$this->_return=array();
-   					}
-   					if($item instanceof SimpleXMLElement){
-   						$this->_return[$key]=self::getXML($item);
-   					}else{
-   						$this->_return[$key]=$item;
-   					}
-   				}
-   			}
+	protected function getXML($_content=NULL){
+		$test=array();
+		if($_content instanceof SimpleXMLElement && count($_content->children())){
+			foreach($_content->children() as $key=>$item){
+				if($item instanceof SimpleXMLElement){
+					$test[$key]=self::getXML($item);
+				}
+			}
+   		}else{
+   			return preg_replace("/\[CDATA\](.*?)\[\/CDATA\]/ies", "base64_decode('$1')", $_content);
    		}
+   		return $test;
 	}
 /***************************************************************/
 	/**
