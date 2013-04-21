@@ -36,6 +36,7 @@ class Dadiweb_Aides_Deprecated
         }
         return self::$_instance;
     }
+    
 /***************************************************************/
     /**
      * Chooses which functions (split() or preg_split()) use depending on the version of PHP
