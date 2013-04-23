@@ -93,22 +93,22 @@ class Dadiweb_Configuration_Pattern
    	 * @return Dadiweb_Configuration_Pattern Provides a fluent interface
      */
 	protected function setMVC(){
-		
-		$this->uri=split('\?',Dadiweb_Http_Client::getInstance()->getUri(),2);
-		if(is_array($this->uri) && isset($this->uri[1]) && is_array($array=split('\&',$this->uri[1]))){
+		$this->uri=Dadiweb_Aides_Deprecated::split(array('\?',Dadiweb_Http_Client::getInstance()->getUri(),2));
+		if(is_array($this->uri) && isset($this->uri[1]) && is_array($array=Dadiweb_Aides_Deprecated::split(array('\&',$this->uri[1])))){
 			foreach($array as $value){
-				$value=split('=',$value);
+				$value=Dadiweb_Aides_Deprecated::split(array('=',$value));
 				if(is_array($value) && isset($value[0]) && isset($value[1]) && $value[1]!=NULL && strlen(trim($value[1]))>0){
 					$this->variables[$value[0]]=$value[1];
 				}
 			}
 		}
 		$this->uri=$this->uri[0];
-   		$this->uri=split('\/',substr($this->uri, 1),4);
+   		$this->uri=Dadiweb_Aides_Deprecated::split(array('\/',substr($this->uri, 1),4));
+   		
    		if(
    			strtolower($this->uri[0])==Dadiweb_Configuration_Kernel::getInstance()->getRoutes()->getABC() && count($this->uri)>1
    		){
-   			$this->uri=split('\/',implode('/',(array_shift($this->uri)?$this->uri:array('/'))),4);
+   			$this->uri=Dadiweb_Aides_Deprecated::split(array('\/',implode('/',(array_shift($this->uri)?$this->uri:array('/'))),4));
    			
    		}elseif(
    			strtolower($this->uri[0])==Dadiweb_Configuration_Kernel::getInstance()->getRoutes()->getABC() && count($this->uri)==2
@@ -121,10 +121,13 @@ class Dadiweb_Configuration_Pattern
    		}else{
    			Dadiweb_Configuration_Kernel::getInstance()->getRoutes()->setABC();
    		}
+   		if(NULL !== Dadiweb_Configuration_Locale::getInstance()->searchLocale($this->uri[0])){
+   			$this->uri=Dadiweb_Aides_Deprecated::split(array('\/',implode('/',(array_shift($this->uri)?$this->uri:array('/'))),4));
+   		}
    		if(($router=Dadiweb_Configuration_Kernel::getInstance()->getRoutes()->searchRouter($this->uri))!==NULL && is_string($router)){
-   			$this->uri=split('\/',substr($router, 1),4);
+   			$this->uri=Dadiweb_Aides_Deprecated::split(array('\/',substr($router, 1),4));
    		}elseif($router!==NULL && is_array($router)){
-   			$this->uri=split('\/',substr($router[0], 1),4);   			
+   			$this->uri=Dadiweb_Aides_Deprecated::split(array('\/',substr($router[0], 1),4));   			
    			foreach($router[1] as $key=>$value){
    				$this->variables[$key]=$value;
    			}
@@ -141,7 +144,7 @@ class Dadiweb_Configuration_Pattern
 			if(isset($this->uri[1])){$this->setController($this->uri[1]);}
 			if(isset($this->uri[2])){$this->setView($this->uri[2]);}
 			if(isset($this->uri[3])){
-				foreach(array_chunk(split('\/',$this->uri[3]), 2) as $value){
+				foreach(array_chunk(Dadiweb_Aides_Deprecated::split(array('\/',$this->uri[3])), 2) as $value){
 					if(is_array($value) && isset($value[0]) && isset($value[1]) && $value[1]!==NULL && strlen(trim($value[1]))){
 						$this->variables[$value[0]]=$value[1];
 					}

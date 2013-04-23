@@ -67,6 +67,15 @@ class Dadiweb_Configuration_Kernel
      */
     protected $_path = NULL;
     
+    /**
+     *
+     * Locale for Apps
+     *
+     * @var stdClass()
+     *
+     */
+    protected $_locale = NULL;
+    
 /***************************************************************/
 	/**
      * Singleton pattern implementation makes "new" unavailable
@@ -104,8 +113,11 @@ class Dadiweb_Configuration_Kernel
     public function buildKernel()
     {
     	self::setSettings(Dadiweb_Aides_Array::getInstance()->arr2obj(Dadiweb_Configuration_Settings::getInstance()->getGeneric()));
+    	Dadiweb_Configuration_Session::getInstance()->getGeneric();
+    	//self::setLocale(Dadiweb_Configuration_Locale::getInstance()->getLocale());
     	self::setRoutes(Dadiweb_Configuration_Routes::getInstance());
     	self::setPattern(Dadiweb_Configuration_Pattern::getInstance());
+    	self::setLocale(Dadiweb_Configuration_Locale::getInstance()->getLocale());
     	self::setLayout(Dadiweb_Configuration_Layout::getInstance());
     	Dadiweb_Configuration_Render::getInstance()->getGeneric();
     	self::setApps(Dadiweb_Configuration_Apps::getInstance());
@@ -404,6 +416,30 @@ class Dadiweb_Configuration_Kernel
     public function getPath()
     {
     	return $this->_path;
+    }
+/***************************************************************/
+    /**
+     *
+     * Set locale for apps
+     *
+     * @var stdClass()
+     *
+     */
+    protected function setLocale($_locale=NULL)
+    {
+    	return $this->_locale=$_locale;
+    }
+/***************************************************************/
+    /**
+     *
+     * Get locale for apps
+     *
+     * @return stdClass()
+     *
+     */
+    public function getLocale()
+    {
+    	return $this->_locale;
     }
 /***************************************************************/
 	/**

@@ -165,7 +165,46 @@ class Dadiweb_Aides_Array
     	}
     	return $result;
     }
-    /***************************************************************/
+/***************************************************************/
+    /**
+     * Merge Array() or stdClass() keys into a string 
+     *
+     * $array - the input array
+     * $delimiter - separator
+     * $return:
+     * - NULL : return Array();
+     * - 0    : return Array();
+     * - 1    : return stdClass();
+     * @var Array() or stdClass()
+     * @return String()
+     */
+    public function implode_Keys($array=NULL, $delimiter=NULL, $return=NULL)
+    {
+    	$result=array();
+    	if($array instanceof stdClass){
+    		$array=self::obj2arr($array);
+    	}
+    	if(is_array($array)){
+    		foreach($array as $key=>$item){
+    			if($item instanceof stdClass){
+    				$item=self::obj2arr($item);
+	    		}
+	    		if(is_array($item)){    			
+	    			foreach(self::implode_Keys($item,$delimiter) as $key2=>$item2){
+	    				$result[$key.$delimiter.$key2]=$item2;
+	    			}
+	    		}else{
+	    			$result[$key]=$item;
+	    		}
+    		}
+    	}
+    	if($return!==NULL && $return){
+    		$result=self::arr2obj($result);
+    	}
+    	return $result;
+    }
+    
+/***************************************************************/
     /**
      * Elements of the Array(stdClass) in turn key multi-dimensional Array(stdClass)
      *

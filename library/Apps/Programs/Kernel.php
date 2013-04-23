@@ -16,6 +16,22 @@ class Apps_Programs_Kernel
 	
 	protected $_variables = array();
 	
+	/**
+	 * Config of programm
+	 *
+	 * @var Object
+	 */
+	
+	protected $config = array();
+	
+	/**
+	 * i18n of programm
+	 *
+	 * @var Object
+	 */
+	
+	protected $strings = array();
+	
 /***************************************************************/
 	/**
      * Init Programs
@@ -24,6 +40,12 @@ class Apps_Programs_Kernel
      */
 	public function __construct(){
 		$this->rendered=Dadiweb_Configuration_Kernel::getInstance()->getRendered();
+		$this->config=Dadiweb_Aides_Array::getInstance()->arr2obj(Apps_Configuration_Config::getInstance()->getGeneric());
+		$this->strings=Apps_Configuration_Locale::getInstance()->getGeneric();
+		/**
+		 * Reset instances all singleton of programm
+		 */
+		Apps_Configuration_Config::resetInstance();
 	}
 /***************************************************************/
 	/**

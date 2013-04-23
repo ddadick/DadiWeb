@@ -93,13 +93,13 @@ class Dadiweb_Configuration_Routes
     				.(
     					(
     						isset(Dadiweb_Configuration_Kernel::getInstance()->getSettings()->resource->App->routes_file_name)
-    						&& strlen(trim($routes_file_name=strtolower(Dadiweb_Configuration_Kernel::getInstance()->getSettings()->resource->App->routes_file_name)))
+    						&& strlen($routes_file_name=trim(strtolower(Dadiweb_Configuration_Kernel::getInstance()->getSettings()->resource->App->routes_file_name)))
 						)
 						?$routes_file_name.'.'
     						.(
     							(
     								isset(Dadiweb_Configuration_Kernel::getInstance()->getSettings()->resource->App->routes_file_exe)
-    								&& strlen(trim($routes_file_exe=strtolower(Dadiweb_Configuration_Kernel::getInstance()->getSettings()->resource->App->routes_file_exe)))
+    								&& strlen($routes_file_exe=trim(strtolower(Dadiweb_Configuration_Kernel::getInstance()->getSettings()->resource->App->routes_file_exe)))
     							)
     							?strtolower($routes_file_exe)
     							:strtolower('ini')
@@ -109,7 +109,7 @@ class Dadiweb_Configuration_Routes
     						.(
     							(
     								isset(Dadiweb_Configuration_Kernel::getInstance()->getSettings()->resource->App->routes_file_exe)
-    								&& strlen(trim($routes_file_exe=strtolower(Dadiweb_Configuration_Kernel::getInstance()->getSettings()->resource->App->routes_file_exe)))
+    								&& strlen($routes_file_exe=trim(strtolower(Dadiweb_Configuration_Kernel::getInstance()->getSettings()->resource->App->routes_file_exe)))
     							)
     							?$routes_file_exe
     							:'ini'
@@ -153,13 +153,13 @@ class Dadiweb_Configuration_Routes
     			.(
     					(
     							isset(Dadiweb_Configuration_Kernel::getInstance()->getSettings()->resource->App->routes_file_name)
-    							&& strlen(trim($routes_file_name=strtolower(Dadiweb_Configuration_Kernel::getInstance()->getSettings()->resource->App->routes_file_name)))
+    							&& strlen($routes_file_name=trim(strtolower(Dadiweb_Configuration_Kernel::getInstance()->getSettings()->resource->App->routes_file_name)))
     					)
     					?$routes_file_name.'.'
     					.(
     							(
     									isset(Dadiweb_Configuration_Kernel::getInstance()->getSettings()->resource->App->routes_file_exe)
-    									&& strlen(trim($routes_file_exe=strtolower(Dadiweb_Configuration_Kernel::getInstance()->getSettings()->resource->App->routes_file_exe)))
+    									&& strlen($routes_file_exe=trim(strtolower(Dadiweb_Configuration_Kernel::getInstance()->getSettings()->resource->App->routes_file_exe)))
     							)
     							?strtolower($routes_file_exe)
     							:strtolower('ini')
@@ -169,7 +169,7 @@ class Dadiweb_Configuration_Routes
     							.(
     									(
     											isset(Dadiweb_Configuration_Kernel::getInstance()->getSettings()->resource->App->routes_file_exe)
-    											&& strlen(trim($routes_file_exe=strtolower(Dadiweb_Configuration_Kernel::getInstance()->getSettings()->resource->App->routes_file_exe)))
+    											&& strlen($routes_file_exe=trim(strtolower(Dadiweb_Configuration_Kernel::getInstance()->getSettings()->resource->App->routes_file_exe)))
     									)
     									?$routes_file_exe
     									:'ini'
