@@ -117,7 +117,7 @@ class Dadiweb_Configuration_Locale
     {
     	if($_search==NULL || !is_string($_search) || !strlen(trim($_search))){return NULL;}
     	if(
-    		count($_search=explode('-',$_search))==2
+    		count($_search=explode('-',mb_strtolower($_search,'UTF-8')))==2
     		&& is_array($_search)
     		&& isset($_search[0])
     		&& isset($_search[1])
@@ -127,7 +127,7 @@ class Dadiweb_Configuration_Locale
     		$array=array();
     		$array['language']=$_search[0];
     		$array['region']=$_search[1];
-    		$array['locale']=$array['language'].'_'.$array['region'];
+    		$array['locale']=$array['language'].'_'.mb_strtoupper($array['region'],'UTF-8');
     		$array['original']=$array['language'].'-'.$array['region'];
     		$this->_locale=Dadiweb_Aides_Array::getInstance()->arr2obj($array);
     		return $this->_locale->original;
@@ -346,6 +346,9 @@ class Dadiweb_Configuration_Locale
     	$this->_languages[]='za'; //Zhuang, Chuang
     	$this->_languages[]='zh'; //Chinese
     	$this->_languages[]='zu'; //Zulu;
+    	foreach($this->_languages as $key=>$item){
+    		$this->_languages[$key]=mb_strtolower($item,'UTF-8');
+    	}
     	return $this->_languages;
     }
 /***************************************************************/
@@ -636,6 +639,9 @@ class Dadiweb_Configuration_Locale
     	$this->_regions[]='ZM'; //Zambia
     	$this->_regions[]='ZR'; //Zaire
     	$this->_regions[]='ZW'; //Zimbabwe
+    	foreach($this->_regions as $key=>$item){
+    		$this->_regions[$key]=mb_strtolower($item,'UTF-8');
+    	}
     	return $this->_regions; 
     }
 /***************************************************************/

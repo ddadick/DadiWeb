@@ -114,9 +114,10 @@ class Dadiweb_Configuration_Kernel
     {
     	self::setSettings(Dadiweb_Aides_Array::getInstance()->arr2obj(Dadiweb_Configuration_Settings::getInstance()->getGeneric()));
     	Dadiweb_Configuration_Session::getInstance()->getGeneric();
-    	self::setLocale(Dadiweb_Configuration_Locale::getInstance()->getLocale());
+    	//self::setLocale(Dadiweb_Configuration_Locale::getInstance()->getLocale());
     	self::setRoutes(Dadiweb_Configuration_Routes::getInstance());
     	self::setPattern(Dadiweb_Configuration_Pattern::getInstance());
+    	self::setLocale(Dadiweb_Configuration_Locale::getInstance()->getLocale());
     	self::setLayout(Dadiweb_Configuration_Layout::getInstance());
     	Dadiweb_Configuration_Render::getInstance()->getGeneric();
     	self::setApps(Dadiweb_Configuration_Apps::getInstance());

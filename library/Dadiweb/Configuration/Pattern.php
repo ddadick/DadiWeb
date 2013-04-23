@@ -102,7 +102,6 @@ class Dadiweb_Configuration_Pattern
 				}
 			}
 		}
-		
 		$this->uri=$this->uri[0];
    		$this->uri=Dadiweb_Aides_Deprecated::split(array('\/',substr($this->uri, 1),4));
    		

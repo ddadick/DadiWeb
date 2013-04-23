@@ -65,7 +65,7 @@ class Apps_Configuration_Locale
      */
     public function getGeneric()
     {
-    	if(!is_array($this->_locale)){
+    	if(!is_array($this->_locale) || $this->_locale instanceof stdClass){
     		self::setGeneric();
     	}
     	return $this->_locale;
@@ -179,8 +179,7 @@ class Apps_Configuration_Locale
    				
    			}
    			$t=new Dadiweb_Widening_Xml_Reader(array('content'=>$file));
-			Dadiweb_Aides_Debug::show($t->getResult(),true);
-   			
+   			$this->_locale = $t->getResult();
     	}
     }
     
