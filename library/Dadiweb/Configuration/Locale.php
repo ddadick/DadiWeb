@@ -16,6 +16,13 @@ class Dadiweb_Configuration_Locale
     protected $_locale = NULL;
     
     /**
+     * Charset of locale
+     *
+     * @var string
+     */
+    protected $_charset = NULL;
+    
+    /**
      * Language variable (list)
      *
      * @var Array()
@@ -72,7 +79,7 @@ class Dadiweb_Configuration_Locale
     }
 /***************************************************************/
     /**
-     * Returns Configuration Settings
+     * Returns Configuration i18n
      *
      * @return stdClass
      */
@@ -85,7 +92,7 @@ class Dadiweb_Configuration_Locale
     }
 /***************************************************************/
     /**
-     * Setup Configuration Object
+     * Setup Configuration i18n
      *
      * @return stdClass
      */
@@ -106,6 +113,52 @@ class Dadiweb_Configuration_Locale
     		return self::getLocale();
     	}
     	self::searchLocale('en-US');
+    	/**
+    	 * Set charset of locale
+    	 */
+    	self::setCharsetLocale();
+    	
+    }
+/***************************************************************/
+    /**
+     * Get charset of locale
+     *
+     * @return string
+     */
+    public function getCharsetLocale()
+    {
+        if(
+            NULL===$this->_charset ||
+            !is_string($this->_charset) ||
+            (is_string($this->_charset) && !strlen(trim($this->_charset)))
+        ){
+            return self::setCharsetLocale();
+        }
+        return $this->_charset;
+    }
+/***************************************************************/
+    /**
+     * Set charset of locale
+     *
+     * @return string
+     */
+    public function setCharsetLocale()
+    {
+        if(
+            NULL===$this->_charset &&
+            isset(
+                Dadiweb_Configuration_Kernel::getInstance()->getSettings()
+                    ->apps->Locales->charset
+            ) &&
+            is_string(
+                $charset=Dadiweb_Configuration_Kernel::getInstance()->getSettings()
+                    ->apps->Locales->charset
+            ) &&
+            strlen(trim($charset))
+        ){
+            return $this->_charset=$charset;
+        }
+        return $this->_charset='UTF-8';
     }
 /***************************************************************/
     /**
@@ -131,6 +184,32 @@ class Dadiweb_Configuration_Locale
     		$array['original']=$array['language'].'-'.$array['region'];
     		$this->_locale=Dadiweb_Aides_Array::getInstance()->arr2obj($array);
     		return $this->_locale->original;
+    	}
+    	return NULL;
+    }
+/***************************************************************/
+    /**
+     * Get select locale
+     *
+     * @return stdClass
+     */
+    public function getSelectLocale($_search=NULL)
+    {
+    	if($_search==NULL || !is_string($_search) || !strlen(trim($_search))){return NULL;}
+    	if(
+    		count($_search=explode('-',mb_strtolower($_search,'UTF-8')))==2
+    		&& is_array($_search)
+    		&& isset($_search[0])
+    		&& isset($_search[1])
+    		&& false!==array_search($_search[0],self::getLanguages())
+    		&& false!==array_search($_search[1],self::getRegions())
+    	){
+    		$array=array();
+    		$array['language']=$_search[0];
+    		$array['region']=$_search[1];
+    		$array['locale']=$array['language'].'_'.mb_strtoupper($array['region'],'UTF-8');
+    		$array['original']=$array['language'].'-'.$array['region'];
+    		return $this->_locale=Dadiweb_Aides_Array::getInstance()->arr2obj($array);
     	}
     	return NULL;
     }

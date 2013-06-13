@@ -59,25 +59,21 @@ class Dadiweb_Apps_Programs
     	$return=get_include_path();
     	set_include_path(
 	    	implode(PATH_SEPARATOR,
-    		array(
-    			realpath($path)
-    	)
-    	)
+	    		array(
+    				realpath($path)
+    			)
+    		)
     	);
-    	//ob_start(array($this,'test'));
     	$d=$class;
     	$d=new $d;
     	set_include_path(
-    	implode(PATH_SEPARATOR,
-    	array(
-    	$return
-    	)
-    	)
+    		implode(PATH_SEPARATOR,
+    			array(
+    				$return
+    			)
+    		)
     	);
     	return $d;
-    }
-    public function test($content){
-    	return (str_replace("as", "oranges", $content));
     }
 /***************************************************************/
 	/**

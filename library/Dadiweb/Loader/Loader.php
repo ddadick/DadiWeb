@@ -5,31 +5,44 @@ class Dadiweb_Loader_Loader
 /***************************************************************/
 	public static function loadClass($class)
     {
-    	if (class_exists($class, false) || interface_exists($class, false)) {
+        if (class_exists($class, false) || interface_exists($class, false)) {
             return;
         }
         $load=false;
         $file=str_replace('_', DIRECTORY_SEPARATOR, $class).'.php';
         foreach(explode(PATH_SEPARATOR, get_include_path()) as $path){
-        	if(false !== realpath($path.DIRECTORY_SEPARATOR.$file)){
-        		require_once $file;
-        		$load=true;
-        	}
+            if(false !== realpath($path.DIRECTORY_SEPARATOR.$file)){
+                require_once $file;
+                $load=true;
+            }
         }
         if(!$load){
-        	$file=explode('_', $class);        	
-        	foreach(explode(PATH_SEPARATOR, get_include_path()) as $path){
-        		if(is_array($file) && false !== realpath($filename=$path.DIRECTORY_SEPARATOR.$file[(count($file)-1)].'.php')){
-        			require_once $filename;
-        			$load=true;
-        		}elseif(is_string($file) && false !== realpath($filename=$path.DIRECTORY_SEPARATOR.$file.'.php')){
-        			require_once $filename;
-        			$load=true;
-        		}
-        	}
+            $file=explode('_', $class);
+            foreach(explode(PATH_SEPARATOR, get_include_path()) as $path){
+                if(is_array($file) && false !== realpath($filename=$path.DIRECTORY_SEPARATOR.$file[(count($file)-1)].'.php')){
+                    require_once $filename;
+                    $load=true;
+                }elseif(is_string($file) && false !== realpath($filename=$path.DIRECTORY_SEPARATOR.$file.'.php')){
+                    require_once $filename;
+                    $load=true;
+                }elseif(is_array($file)){
+                    $temp_file=$file;
+                    $filename=$file[count($file)-1];
+                    unset($temp_file[0]);
+                    unset($temp_file[count($file)-1]);
+                    if(false!==realpath(
+                            $filename=$path.DIRECTORY_SEPARATOR.
+                            strtolower(implode(DIRECTORY_SEPARATOR,$temp_file)).DIRECTORY_SEPARATOR.
+                            $filename.'.php'
+                    )){
+                        require_once $filename;
+                        $load=true;
+                    }
+                }
+            }
         }
-    	if (!$load) {
-			throw Dadiweb_Loader_Exception::getInstance()->getMessage("File \"$file\" does not exist or class \"$class\" was not found in the file \"$file\"");
+        if (!$load) {
+            throw Dadiweb_Loader_Exception::getInstance()->getMessage("File \"$file\" does not exist or class \"$class\" was not found in the file \"$file\"");
         }else{return;}
     }
 /***************************************************************/	

@@ -8,6 +8,7 @@ class Dadiweb_Throw_ErrorException extends ErrorException
 	}
 /***************************************************************/
 	public function exception_handler($exception) {
+		http_response_code(404);
 		echo "Warning!!! ". $exception->getMessage() ."<br />";
 		$i=0;
 		$trace_log=array_reverse($exception->getTrace());
@@ -37,6 +38,7 @@ class Dadiweb_Throw_ErrorException extends ErrorException
    public static function showThrow($message)
    {
    	ob_start();
+   	http_response_code(404);
    	$target=array_reverse(debug_backtrace());
    	echo '<br />';
    	echo 'Warning!!! '. $message.'<br />';

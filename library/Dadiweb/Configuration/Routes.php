@@ -302,29 +302,54 @@ class Dadiweb_Configuration_Routes
    	}
 /***************************************************************/    	
     /**
-   	 * 
-   	 * Get login administrative basic control
-   	 * 
-   	 * @return ABC
-   	 * 
-   	 */
-   	public function getABC()
-   	{
-   		return $this->_abc;
-   	}
-/***************************************************************/    	
+     * 
+     * Get login administrative basic control
+     * 
+     * @return ABC
+     * 
+     */
+    public function getABC()
+    {
+        return $this->_abc;
+    }
+/***************************************************************/
     /**
-   	 * 
-   	 * Get routes for Apps
-   	 * 
-   	 * @return Array()
-   	 * 
-   	 */
-   	public function getRoutes()
-   	{
-   		return (isset($this->_routes['routes']))?$this->_routes['routes']:NULL;
-   	}
-/***************************************************************/    	
+     * 
+     * Get routes for Apps
+     * 
+     * @return Array()
+     * 
+     */
+    public function getRoutes()
+    {
+        return (isset($this->_routes['routes']))?$this->_routes['routes']:NULL;
+    }
+/***************************************************************/
+    /**
+     * 
+     * Search routes for Apps
+     * 
+     * @return Array()
+     * 
+     */
+    public function searchRoutes($_search=NULL)
+    {
+        if(self::getABC()!==NULL && NULL!==($routes=self::getABCRoutes())){
+            if($_search!==NULL && is_string($_search) && strlen(trim($_search)) && array_key_exists($_search , $routes)){
+                return $routes[$_search]['alias'];
+            }
+        }elseif(NULL!==($routes=self::getRoutes())){
+            if($_search!==NULL && is_string($_search) && strlen(trim($_search)) && array_key_exists($_search , $routes)){
+                return $routes[$_search]['alias'];
+            }
+        }
+        $array=array();
+        foreach($routes as $key=>$items){
+            $array[$key]=$items['alias'];
+        }
+        return Dadiweb_Aides_Array::getInstance()->arr2obj($array);
+    }
+/***************************************************************/
     /**
    	 * 
    	 * Get routes for Apps
@@ -345,7 +370,7 @@ class Dadiweb_Configuration_Routes
      * @return Exeption, default - NULL
      * 
      */
-	public function __call($method, $args) 
+    public function __call($method, $args) 
     {
     	if(!method_exists($this, $method)) { 
          	throw Dadiweb_Configuration_Exception::getInstance()->getMessage(

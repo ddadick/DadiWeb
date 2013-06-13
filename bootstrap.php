@@ -11,6 +11,10 @@ defined('APPS_PATH')
 defined('HTDOCS_PATH')
 || define('HTDOCS_PATH', realpath($_SERVER["DOCUMENT_ROOT"]));
 
+defined('DATA_PATH')
+|| define('DATA_PATH', realpath($_SERVER["DOCUMENT_ROOT"].DIRECTORY_SEPARATOR.'data'));
+
+
 defined('INI_PATH')
 || define('INI_PATH', realpath(dirname(__FILE__).DIRECTORY_SEPARATOR.'apps'.DIRECTORY_SEPARATOR.'settings').DIRECTORY_SEPARATOR);
 

@@ -1,155 +1,130 @@
 <?php
-class Apps_Programs_Kernel
+class Apps_Programs_Kernel extends Apps_Programs_Abstract
 {
-	/**
-	 * Rendered Object
-	 *
-	 * @var Object
-	 */
-	protected $rendered=NULL;
-
-	/**
-	 * Default set variables
-	 *
-	 * @var Object
-	 */
-	
-	protected $_variables = array();
-	
-	/**
-	 * Config of programm
-	 *
-	 * @var Object
-	 */
-	
-	protected $config = array();
-	
-	/**
-	 * i18n of programm
-	 *
-	 * @var Object
-	 */
-	
-	protected $strings = array();
-	
+    /**
+     * Rendered Object.
+     *
+     * @var mixed
+     */
+    protected $rendered=NULL;
+    
+    /**
+     * Default set variables.
+     *
+     * @var array
+     */
+    protected $_variables = array();
+    
+    /**
+     * Config of programm.
+     *
+     * @var array|stdClass
+     */
+    protected $config = array();
+    
+    /**
+     * I18n of programm.
+     *
+     * @var array|stdClass
+     */
+    protected $strings = array();
+    
 /***************************************************************/
-	/**
-     * Init Programs
+    /**
+     * Init Programs.
      *
      * @return void
      */
-	public function __construct(){
-		$this->rendered=Dadiweb_Configuration_Kernel::getInstance()->getRendered();
-		$this->config=Dadiweb_Aides_Array::getInstance()->arr2obj(Apps_Configuration_Config::getInstance()->getGeneric());
-		$this->strings=Apps_Configuration_Locale::getInstance()->getGeneric();
-		/**
-		 * Reset instances all singleton of programm
-		 */
-		Apps_Configuration_Config::resetInstance();
-	}
-/***************************************************************/
-	/**
-	 *
-	 * Return variables from Dadiweb_Configuration_Pattern (variables url)
-	 *
-	 * @return Void
-	 *
-	 */
-	public function getParam($name=NULL, $value=NULL)
-	{
-		return Dadiweb_Configuration_Kernel::getInstance()->getPattern()->getParam($name, $value);
-	}
-	
-/***************************************************************/
-	/**
-	 *
-	 * Set rendered switch
-	 *
-	 * @return Boolean()
-	 *
-	 */
-	public function useRendered($rendered_switch=true)
-	{
-		return Dadiweb_Configuration_Kernel::getInstance()->getLayout()->useRendered($rendered_switch);
-	}
-	
-/***************************************************************/
-	/**
-	 *
-	 * Set view switch
-	 *
-	 * @return Boolean()
-	 *
-	 */
-	public function useView($view_switch=true)
-	{
-		return Dadiweb_Configuration_Kernel::getInstance()->getLayout()->useView($view_switch);
-	}
-	
-/***************************************************************/
-	/**
-	 *
-	 * Set view name
-	 *
-	 * @return Boolean()
-	 *
-	 */
-	public function setViewName($view_name=NULL)
-	{
-		return Dadiweb_Configuration_Kernel::getInstance()->getLayout()->setViewName($view_name);
-	}
-/***************************************************************/
-	/**
-	 *
-	 * Set layout name
-	 *
-	 * @return Boolean()
-	 *
-	 */
-	public function setLayoutName($layout_name=NULL)
-	{
-		return Dadiweb_Configuration_Kernel::getInstance()->getLayout()->setLayoutName($layout_name);
-	}
+    public function __construct(){
+        $this->rendered=Dadiweb_Configuration_Kernel::getInstance()->getRendered();
+        $this->config=Dadiweb_Aides_Array::getInstance()->arr2obj(
+            Apps_Configuration_Config::getInstance()->getGeneric()
+        );
+        $this->strings=Apps_Configuration_Locale::getInstance();
+        self::preInit();
+        /**
+         * Reset instances all singleton of programm
+         */
+        Apps_Configuration_Config::resetInstance();
+    }
+    
 /***************************************************************/
     /**
-     *
-     * Handler variables that do not exist (input)
-     *
-     * @return Nothing
-     *
+     * Handler variables that do not exist (input).
+     * 
+     * @param string $name
+     * @param mixed $value
+     * @return void
      */
     public function __set($name, $value)
     {
-    	$this->_variables[$name] = $value;
+        $this->_variables[$name] = $value;
     }
+    
 /***************************************************************/
     /**
-     *
-     * Handler variables that do not exist (output)
-     *
-     * @return $this->_variables
-     *
+     * Handler variables that do not exist (output).
+     * 
+     * @param string $name
+     * @return mixed
      */
     public function __get($name)
     {
-    	if (array_key_exists($name, $this->_variables)) {
-    		return $this->_variables[$name];
-    	}
-    	return NULL;
+        if($name=='table'){
+            if(
+                !isset($this->table) ||
+                !($this->table instanceof Dadiweb_Db_Table_Database)
+            ){
+                $this->table=new Dadiweb_Db_Table_Database();
+            }else{
+                return $this->table;
+            }
+        }
+        if($name=='request'){return Dadiweb_Aides_Request::getInstance();}
+        if($name=='response'){return Dadiweb_Aides_Response::getInstance();}
+        if($name=='layout'){return Dadiweb_Aides_Layout::getInstance();}
+        if($name=='meta'){return Dadiweb_Widening_Layout_Meta::getInstance();}
+        if (array_key_exists($name, $this->_variables)) {
+            return $this->_variables[$name];
+        }
+        return NULL;
     }
+    
 /***************************************************************/
-	/**
-     * 
-     * The handler functions that do not exist
-     * 
-     * @return Exeption, default - NULL
-     * 
+    /**
+     * Default method.
+     *
+     * @return void
      */
-	public function __call($method, $args) 
+    public function preInit()
     {
-    	if(!method_exists($this, $method)) { 
-    		throw Dadiweb_Throw_ErrorException::showThrow(sprintf('The required method "%s" does not exist for %s', $method, get_class($this))); 
-       	} 	
+        if(Dadiweb_Configuration_Routes::getInstance()->getABC()){
+            header("Location: http://".$_SERVER["SERVER_NAME"]);
+            exit;
+        }
+        return;
     }
+    
+/***************************************************************/
+    /**
+     * The handler functions that do not exist.
+     * 
+     * @param string $method
+     * @param mixed $args
+     * @return void
+     */
+    public function __call($method, $args)
+    {
+        if(!method_exists($this, $method)){
+            throw Dadiweb_Throw_ErrorException::showThrow(
+                sprintf(
+                    'The required method "%s" does not exist for %s',
+                    $method,
+                    get_class($this)
+                )
+            );
+        }
+    }
+    
 /***************************************************************/
 }

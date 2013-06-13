@@ -34,7 +34,7 @@ class Dadiweb_Throw_Exception
         return self::$_instance;
     }
     public function getMessage($message=null,$error_stack=array()){
-    	
+    	http_response_code(404);
     	if($message==null or count($error_stack)==0){
 	    	echo "Warning!!! Failed to initialize the error handler".'<br />';
     		$i=1;
