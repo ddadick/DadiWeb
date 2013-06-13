@@ -1,2 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<string><generic><![CDATA[RUHello, DadiWeb!]]></generic></string>
+<string>
+    <generic><![CDATA[RUHello, DadiWeb!]]></generic>
+    
+    <form_add_username><![CDATA[Имя Пользователя]]></form_add_username>
+</string>

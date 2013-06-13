@@ -103,7 +103,7 @@ class Dadiweb_Aides_Filesystem
     		}
     		
     	}else{
-    		$options=NULL;
+    		$options=$_SERVER["DOCUMENT_ROOT"];
     	}
     	return $options;
     }

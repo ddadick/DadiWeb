@@ -1,5 +1,27 @@
 Options -Indexes +FollowSymLinks
+
 RewriteEngine On
-RewriteCond %{REQUEST_FILENAME} !-f [OR]
-RewriteCond %{REQUEST_FILENAME} !-d
-RewriteRule ^.*$ index.php [NC,L]
+RewriteBase /
+
+RewriteCond %{REQUEST_METHOD} ^(TRACE|TRACK)
+RewriteRule .* - [F,L]
+
+
+RewriteCond %{REQUEST_FILENAME} -s [OR]
+RewriteCond %{REQUEST_FILENAME} -l [OR]
+RewriteCond %{REQUEST_FILENAME} -d [OR]
+RewriteCond %{Request_FILENAME} !-d
+RewriteCond %{REQUEST_FILENAME} !.*xap$|.*swf$|.*jpg$|.*.jpeg$|.*gif$|.*png$|.*flv$|.*mp4$|.*swf$|.*pdf$|.*css$|.*js$|.*htm$|.*html$|index.php$ [NC]
+RewriteRule .* index.php [NC,L] 
+RewriteRule .* - [L]
+
+<Files ~ "^.*\.([Hh][Tt][Aa])">
+ order allow,deny
+ deny from all
+ satisfy all
+</Files>
+
+<Files ~ "^(.*)\.(ini|xml|tpl|phtml|sql)$">
+Order deny,allow
+Deny from all
+</Files>
