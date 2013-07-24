@@ -129,6 +129,7 @@ class Dadiweb_Render_Params
      */
     public function __get($name)
     {
+        if($name=='strings'){$this->{$name} = Apps_Configuration_Locale::getInstance();}
         if($name=='html'){$this->{$name} = new Dadiweb_Widening_Layout_Html();}
         if($name=='baseUrl'){$this->{$name} = Dadiweb_Aides_Html::getInstance()->getBaseUrl();}
         if($name=='designUrl'){$this->{$name} = Dadiweb_Aides_Html::getInstance()->getDesignUrl();}
