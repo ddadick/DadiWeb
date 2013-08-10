@@ -95,8 +95,8 @@ class Dadiweb_Widening_Layout_Meta
                     (isset($this->_title))
                     ?$this->_title
                     :(
-                        Dadiweb_Configuration_Apps::getInstance()->getClass().'::'.
-                        Dadiweb_Configuration_Apps::getInstance()->getMethod()
+                        Dadiweb_Configuration_Kernel::getInstance()->getApps()->getClass().'::'.
+                        Dadiweb_Configuration_Kernel::getInstance()->getApps()->getMethod()
                     )
                 ).'</title>';
     }
