@@ -37,11 +37,11 @@ class Dadiweb_Throw_ErrorException extends ErrorException
     */
    public static function showThrow($message)
    {
-   	ob_start();
-   	http_response_code(404);
-   	$target=array_reverse(debug_backtrace());
-   	echo '<br />';
-   	echo 'Warning!!! '. $message.'<br />';
+    ob_start();
+    header("HTTP/1.0 404 Not Found");
+    $target=array_reverse(debug_backtrace());
+    echo '<br />';
+    echo 'Warning!!! '. $message.'<br />';
 	$i=0;
 	$trace_result=array();
 	foreach ($target as $trace){
