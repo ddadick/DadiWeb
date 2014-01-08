@@ -411,17 +411,18 @@ class Dadiweb_Forms_Functions
      * @return void
      */
     public function setValue($_name=NULL, $_value=NULL){
+        $getElements=self::getElements();
         if(
             $_name !== NULL &&
-            isset(self::getElements()[$_name]) &&
-            self::getElements()[$_name] instanceof Dadiweb_Tags_Abstract
+            isset($getElements[$_name]) &&
+            $getElements[$_name] instanceof Dadiweb_Tags_Abstract
         ){
             $this->{$_name}=(
                 (isset($_value))
                 ?$_value
                 :NULL
             );
-            self::getElements()[$_name]->setValue($this->{$_name});
+            $getElements[$_name]->setValue($this->{$_name});
         }
     }
     
@@ -433,13 +434,13 @@ class Dadiweb_Forms_Functions
      * @return void
      */
     public function setValues(array $_values=array()){
-        foreach(self::getElements() as $key=>$items){
+        foreach(($getElements=self::getElements()) as $key=>$items){
             $this->{$key}=(
                 (isset($_values[self::getFormName()][$key]))
                 ?$_values[self::getFormName()][$key]
                 :NULL
             );
-            self::getElements()[$key]->setValue($this->{$key});
+            $getElementsv[$key]->setValue($this->{$key});
         }
     }
     
@@ -722,6 +723,7 @@ class Dadiweb_Forms_Functions
      */
     public function __call($method, $args) 
     {
+        var_dump('sss');
         if(!method_exists($this, $method)) { 
             throw Dadiweb_Forms_Exception::getInstance()->getMessage(
                 sprintf(

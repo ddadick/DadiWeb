@@ -24,6 +24,7 @@ class Test_TestCtrl extends Apps_Programs_Kernel
     public function IndexMethod(){
         $this->rendered->ajax=false;
         $form=new Test_Forms_Add(array('strings'=>$this->strings));
+        $form=new Test_Forms_Add(array('strings'=>$this->strings));
         $t=new Test_Db_Guestbook();
         if($this->request->isXHR()){
             $this->rendered->ajax=true;
@@ -40,7 +41,6 @@ class Test_TestCtrl extends Apps_Programs_Kernel
                 $this->response->setBody(json_encode($array))->sendResponse();
             }
         }
-        
     }
     
 /***************************************************************/

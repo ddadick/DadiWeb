@@ -41,6 +41,7 @@ class Dadiweb_Loader_Loader
                 }
             }
         }
+        
         if (!$load) {
             throw Dadiweb_Loader_Exception::getInstance()->getMessage("File \"$file\" does not exist or class \"$class\" was not found in the file \"$file\"");
         }else{return;}
