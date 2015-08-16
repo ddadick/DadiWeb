@@ -57,7 +57,7 @@ class Dadiweb_Widening_Xml_Reader
 				}
 			}
    		}else{
-   			return preg_replace("/\[CDATA\](.*?)\[\/CDATA\]/ies", "base64_decode('$1')", $_content);
+   			return preg_replace("/\[CDATA\](.*?)\[\/CDATA\]/is", "base64_decode('$1')", $_content);
    		}
    		return $test;
 	}
